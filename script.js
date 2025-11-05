@@ -2,6 +2,11 @@ const monthName = document.getElementById("monthName");
 const yearNum = document.getElementById("yearNum");
 const daysContainer = document.getElementById("daysContainer");
 
+const listView = document.getElementById("listView");
+
+const calendarViewBtn = document.getElementById("calendarBtn");
+const listViewBtn = document.getElementById("listBtn");
+
 let date = new Date();
 
 // 🗓️ Store special days per month (0-based index)
@@ -214,15 +219,70 @@ function renderCalendar() {
   }
 }
 
+function renderListView() {
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  const monthEvents = events[year]?.[month];
+
+  const title = document.createElement("h2");
+  title.textContent = `${date.toLocaleString("default", { month: "long" })} ${year} Events`;
+  listView.appendChild(title);
+
+  if (!monthEvents || Object.values(monthEvents).every(obj => Object.keys(obj).length === 0)) {
+    listView.innerHTML += `<p>No events for this month.</p>`;
+    return;
+  }
+
+  const table = document.createElement("table");
+  table.classList.add("semester-table");
+  table.innerHTML = `
+    <tr><th>Date</th><th>Event</th><th>Type</th></tr>
+  `;
+
+  const addRow = (dateNum, text, type) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${month + 1}/${dateNum}/${year}</td>
+      <td>${text}</td>
+      <td>${type}</td>
+    `;
+    table.appendChild(row);
+  };
+
+  for (const [day, desc] of Object.entries(monthEvents.holidays || {})) addRow(day, desc, "Holiday");
+  for (const [day, desc] of Object.entries(monthEvents.academic || {})) addRow(day, desc, "Academic");
+  for (const [day, desc] of Object.entries(monthEvents.exam || {})) addRow(day, desc, "Exam");
+  for (const [day, desc] of Object.entries(monthEvents.break || {})) addRow(day, desc, "Break");
+
+  listView.appendChild(table);
+}
+
 // Navigation Buttons
 document.getElementById("prevMonth").addEventListener("click", () => {
   date.setMonth(date.getMonth() - 1);
   renderCalendar();
+  if (!listView.classList.contains("hidden")) renderListView();
 });
 
 document.getElementById("nextMonth").addEventListener("click", () => {
   date.setMonth(date.getMonth() + 1);
   renderCalendar();
+  if (!listView.classList.contains("hidden")) renderListView();
+});
+
+calendarViewBtn.addEventListener("click", () => {
+  calendarViewBtn.classList.add("active");
+  listViewBtn.classList.remove("active");
+  document.getElementById("calendarView").classList.remove("hidden");
+  listView.classList.add("hidden");
+});
+
+listViewBtn.addEventListener("click", () => {
+  listViewBtn.classList.add("active");
+  calendarViewBtn.classList.remove("active");
+  document.getElementById("calendarView").classList.add("hidden");
+  listView.classList.remove("hidden");
 });
 
 renderCalendar();

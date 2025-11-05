@@ -243,6 +243,185 @@ h1 {
   border-radius: 8px;
 }
 
+#listView {
+  background-color: #f3dfc1;
+  width: 100%;
+  max-width: 850px;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  text-align: left;
+}
+
+#listView h2 {
+  color: #772000;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.semester-table,
+.semester-table2,
+.semester-table3 {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+  background-color: #fffdf8;
+  border-radius: 10px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+
+.semester-table th,
+.semester-table2 th,
+.semester-table3 th {
+  background-color: #772000;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.semester-table td,
+.semester-table2 td,
+.semester-table3 td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5c8a6;
+  font-size: 15px;
+  color: #5c1c00;
+  word-wrap: break-word;
+}
+
+.semester-table tr:nth-child(even),
+.semester-table2 tr:nth-child(even),
+.semester-table3 tr:nth-child(even) {
+  background-color: #f7ebd6;
+}
+
+.semester-table tr:hover,
+.semester-table2 tr:hover,
+.semester-table3 tr:hover {
+  background-color: #edd7b6;
+  transition: 0.3s;
+}
+
+.semester-table td:first-child,
+.semester-table2 td:first-child,
+.semester-table3 td:first-child {
+  font-weight: bold;
+  width: 32%;
+  white-space: nowrap;
+}
+
+.semester-table td:last-child,
+.semester-table2 td:last-child,
+.semester-table3 td:last-child {
+  width: 68%; 
+}
+
+/* Hide list view by default */
+.hidden {
+  display: none;
+}
+
+.contact-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px 80px;
+  gap: 40px;
+}
+
+.contact-left {
+  flex: 1;
+}
+
+.contact-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.contact-right img {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Title */
+.script-font {
+  font-family: 'Great Vibes', cursive;
+  font-size: 48px;
+  color: #2d2d2d;
+}
+
+.thankyou {
+  font-size: 80px;
+  font-weight: 800;
+  color: #772000;
+  line-height: 1;
+  display: block;
+  margin-top: -10px;
+}
+
+.contact-left p {
+  line-height: 1.5;
+  margin: 20px 0;
+}
+
+.contact-info {
+  font-weight: 500;
+}
+
+/* Form Styles */
+form {
+  margin-top: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+input, textarea {
+  padding: 10px 15px;
+  border: 1px solid #aaa;
+  border-radius: 20px;
+  font-size: 16px;
+  outline: none;
+}
+
+textarea {
+  resize: none;
+  height: 120px;
+}
+
+.send-btn {
+  background-color: #772000;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.send-btn:hover {
+  background-color: #5e1800;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .calendar { width: 95%; padding: 10px; }
@@ -251,4 +430,23 @@ h1 {
   .header h2 { font-size: 22px; }
   .view-toggle { flex-direction: column; gap: 5px; }
   .view-toggle button { width: 60%; }
+
+  #listView {
+    padding: 15px;
+  }
+  .semester-table th, .semester-table2 th, .semester-table3 th,
+  .semester-table td, .semester-table2 td, .semester-table3 td {
+    font-size: 13px;
+    padding: 6px;
+  }
+  .contact-container {
+    flex-direction: column;
+    padding: 30px;
+  }
+
+  .contact-right img {
+    width: 100%;
+  }
 }
+
+

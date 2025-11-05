@@ -1,0 +1,254 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #d5b895;
+  text-align: center;
+  margin: 0;
+  color: #5c1c00;
+}
+
+/* Title */
+h1 {
+  margin-top: 30px;
+  color: #772000;
+  font-size: 40px;
+  letter-spacing: 2px;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.academic { background-color: #b36b00; }
+.holiday { background-color: #6c9134; }
+.exam { background-color: #d87070; }
+.break { background-color: rgb(37, 26, 12); }
+
+/* Toggle Buttons */
+.view-toggle {
+  margin: 15px auto;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.view-toggle button {
+  border: 1px solid #772000;
+  background: none;
+  color: #772000;
+  padding: 6px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+.view-toggle .active {
+  background-color: #772000;
+  color: #fff;
+}
+.view-toggle button:hover {
+  background-color: #772000;
+  color: #fff;
+}
+
+/* Calendar Box */
+/* Calendar Box */
+.calendar {
+  background-color: #f3dfc1;
+  width: 100%;
+  max-width: 750px;
+  margin: 20px auto;
+  border-radius: 20px;
+  padding: 20px ;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #772000;
+  font-weight: bold;
+  border-bottom: 2px solid #772000;
+  padding: 10px 40px;
+  position: relative;
+}
+
+/* Month + Year in the center */
+.month-year {
+  text-align: center;
+  line-height: 1.2;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header .year {
+  display: block;
+  font-size: 16px;
+  margin-top: 5px; /* spacing between month and year */
+}
+
+/* Arrows */
+.header .prev,
+.header .next {
+  cursor: pointer;
+  font-size: 22px;
+  user-select: none;
+  color: #772000;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header .prev {
+  left: 20px;
+}
+
+.header .next {
+  right: 20px;
+}
+
+
+/* Weekdays */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin: 10px 0;
+  gap: 8px;
+  padding: 0 10px;
+  justify-items: center;
+}
+.weekdays li {
+  list-style: none;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid #772000;
+  border-radius: 50%;
+  color: #772000;
+}
+
+/* Days */
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  justify-items: center;
+  padding: 0 10px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  padding: 5px 0;
+  box-sizing: border-box;
+}
+
+.day-num {
+  font-weight: bold;
+  color: #692c0b;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.label {
+  font-size: 10px;
+  margin-top: 4px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.holiday .label {
+  background-color: #b25a73;
+}
+
+.academic .label {
+  background-color: #324906;
+}
+
+.exam .label {
+  background-color: #5c7bad;
+}
+
+.break .label {
+  background-color: #4e3b2b;
+}
+
+/* Event Colors */
+.holiday { color: #6c9134; }
+.academic { color: #b36b00; }
+.exam { color: #d87070; }
+.break {color: rgb(65, 45, 18);}
+
+.holiday {
+  display: block;
+  color: #a00000;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #ffcccc;
+  border-radius: 8px;
+}
+
+.academic {
+  display: block;
+  color: #004d00;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #c1e1c1;
+  border-radius: 8px;
+}
+
+.exam {
+  display: block;
+  color: #015050;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #5fd1d5;
+  border-radius: 8px;
+}
+
+.break {
+  display: block;
+  color: #2e2a01;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #e1e1bd;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .calendar { width: 95%; padding: 10px; }
+  h1 { font-size: 28px; }
+  .weekdays li, .days li { font-size: 14px; width: 13%; }
+  .header h2 { font-size: 22px; }
+  .view-toggle { flex-direction: column; gap: 5px; }
+  .view-toggle button { width: 60%; }
+}

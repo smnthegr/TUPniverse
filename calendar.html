@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Calendar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>ACADEMIC CALENDAR</h1>
+
+<div class="legend">
+  <div><span class="dot academic"></span> Academic</div>
+  <div><span class="dot holiday"></span> Holiday</div>
+  <div><span class="dot exam"></span> Exam</div>
+  <div><span class="dot break"></span> Break</div>
+</div>
+
+
+<div class="view-toggle">
+  <button class="active" id="calendarBtn">Calendar</button>
+  <button id="listBtn">List</button>
+</div>
+
+<div class="calendar" id="calendarView">
+  <div class="header">
+    <span class="prev" id="prevMonth">&#171;</span>
+    <div class="month-year">
+      <h2 id="monthName">November</h2>
+      <span class="year" id="yearNum">2025</span>
+    </div>
+    <span class="next" id="nextMonth">&#187;</span>
+  </div>
+
+  <ul class="weekdays">
+    <li>S</li><li>M</li><li>T</li><li>W</li><li>TH</li><li>F</li><li>S</li>
+  </ul>
+
+  <ul class="days" id="daysContainer"></ul>
+</div>
+
+<!-- 📋 This is your new List View section -->
+<div class="calendar hidden" id="listView"></div>
+
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUP Manila</title>
+  <link rel="stylesheet" href="style(2).css">
+  <link rel="contact" href="contact.html">
+  <link rel="calendar" href="calendar.html">
+  <link rel="style" href="style.css">
+  <link rel="script" href="script.js">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Background Image -->
+    <div class="background-image">
+      <img 
+        src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+        alt="TUP Manila Campus"
+        onerror="this.style.display='none'"
+      />
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+        <div class="nav-inner">
+          <div class="logo-circle">
+  <img src="https://i.imgur.com/1xqJPbD.png" alt="TUP Logo" style="width: 100%; height: 100%; object-fit: contain;">
+</div>
+          
+          <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#campus">Campus</a>
+            <a href="#calendar">Calendar</a>
+            <a href="#service-assistance">Service Assistance</a>
+            <a href="#contact">Contact</a>
+          </div>
+
+          <div class="nav-icon">
+            <svg class="globe-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Hero Card -->
+      <div class="hero-wrapper">
+        <div class="hero-card">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <!-- Background Image inside card -->
+            <div class="hero-background">
+              <img 
+                src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+                alt="TUP Manila Campus"
+                onerror="this.style.display='none'"
+              />
+              <div class="hero-gradient"></div>
+            </div>
+
+            <!-- Centered Content -->
+            <div class="hero-center">
+              <div class="hero-text">
+                <h1>Welcome</h1>
+                <p>Discover our campus, explore our facilities, and connect with our community</p>
+              </div>
+
+              <button class="explore-button">Explore</button>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="badge-bottom-left">
+              <p class="badge-subtitle">Technological University</p>
+              <p class="badge-title">of the Philippines</p>
+            </div>
+
+            <div class="badge-top-right">
+              <p>Manila Campus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section id="campus">
+    <h2>Campus Virtual Tour</h2>
+    <p>Content...</p>
+  </section>
+  <section id="service-assistance" style="min-height: 100vh; padding: 4rem 2rem; background: #660002;">
+  <div style="max-width: 80rem; margin: 0 auto;">
+    <div id="servicesHeader" class="mb-12">
+    <div class="text-left">
+        <h1 class="text-[#ffffff] text-6xl mb-4" style="font-weight: 700; font-family: 'Outfit', sans-serif;">Student Services</h1>
+<p class="text-[#FFD6D6] text-xl mb-2">Everything you need, all in one place</p>
+<p class="text-[#FFD6D6] text-base">Browse our services or select from the list to learn more about each process</p>
+    </div>
+</div>
+
+        <!-- Main Container with Carousel and List -->
+        <div class="flex gap-8 items-start -mt-44">
+            <!-- Left Side - Carousel -->
+            <div class="flex-1 relative overflow-hidden mt-44">
+                <div id="serviceMenu" class="flex gap-6 service-carousel"></div>
+            </div>
+            
+            <!-- Right Side - Services List -->
+            <div class="w-80 bg-[#290001]/25 backdrop-blur-md rounded-xl border border-[#290001]/30 p-6 overflow-y-auto self-start shadow-lg" style="max-height: 600px;">
+                <h3 class="text-[#f5f5dc] text-xl mb-4 font-semibold" style="font-family: 'Outfit', sans-serif;">All Services</h3>
+                <div id="servicesList" class="space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- Pinboard View Container -->
+        <div id="pinboardView" class="hidden fade-in"></div>
+		<!-- Detail View Container -->
+        <div id="detailView" class="hidden fade-in"></div>
+    </section>
+<script>
+        // Services Data with Real Information
+        const servicesData = {
+            ctc: {
+                title: 'Certified True Copy (CTC)',
+                subtitle: 'Request certified true copies of your documents',
+                type: 'pinboard',
+                fee: '₱100',
+                processing: '3-5 working days',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Visit Registrar\'s Office',
+                        description: 'Proceed to the Office of the Registrar and present the document that needs to be certified true copy (CTC).',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 20, y: 20 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '02',
+                        title: 'Accomplish the Form',
+                        description: 'Secure and accomplish the form provided by the registrar. Fill out all required information accurately.',
+                        color: 'lavender',
+                        rotation: 2,
+                        position: { x: 50, y: 15 },
+                        pinColor: 'purple'
+                    },
+                    {
+                        number: '03',
+                        title: 'Pay Processing Fee',
+                        description: 'Go to the Cashier\'s Office at the Administration Building and pay the fee of ₱100 for the CTC.',
+                        color: 'peach',
+                        rotation: -3,
+                        position: { x: 75, y: 20 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '04',
+                        title: 'Submit & Get Claim Slip',
+                        description: 'Return to the Office of the Registrar and submit the accomplished form together with the official receipt. You will be issued a claim slip indicating the date when you may claim your CTC.',
+                        color: 'green',
+                        rotation: 2,
+                        position: { x: 40, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            goodmoral: {
+                title: 'Certificate of Good Moral',
+                subtitle: 'Obtain your certificate of good moral character',
+                type: 'pinboard',
+                fee: '₱100',
+                processing: '3-5 working days',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Visit OSA',
+                        description: 'Proceed to the Office of Student Affairs (OSA) and request for the Certificate of Good Moral.',
+                        color: 'pink',
+                        rotation: 2,
+                        position: { x: 20, y: 20 },
+                        pinColor: 'red'
+                    },
+                    {
+                        number: '02',
+                        title: 'Fill Out Form',
+                        description: 'Secure and accomplish the form provided by the OSA. Ensure all information is complete and accurate.',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 50, y: 15 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '03',
+                        title: 'Payment at Cashier',
+                        description: 'Go to the Cashier\'s Office at the Administration Building and pay the fee of ₱100 for the Certificate of Good Moral.',
+                        color: 'yellow',
+                        rotation: 3,
+                        position: { x: 75, y: 20 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '04',
+                        title: 'Submit & Claim',
+                        description: 'Return to the OSA and submit the accomplished form together with the official receipt. You will be issued a claim slip with the claiming date.',
+                        color: 'green',
+                        rotation: -2,
+                        position: { x: 40, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            ratingslip: {
+                title: 'Rating Slip Request',
+                subtitle: 'Get your rating slip without faculty evaluation',
+                type: 'pinboard',
+                fee: 'No fee',
+                processing: 'Same day after community service',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Request from Department Head',
+                        description: 'Proceed to the Department Head of your College and request your rating slip, stating that you were unable to complete the faculty evaluation.',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 30, y: 25 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '02',
+                        title: 'Complete Community Service',
+                        description: 'Complete the required community service for one to two hours as assigned by the department.',
+                        color: 'peach',
+                        rotation: 2,
+                        position: { x: 55, y: 20 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '03',
+                        title: 'Receive Rating Slip',
+                        description: 'After completing the community service, return to the Department Head of your College to receive the printed copy of your rating slip.',
+                        color: 'green',
+                        rotation: -3,
+                        position: { x: 45, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            enrollment: {
+                title: 'Enrollment Process',
+                subtitle: 'Complete guide for first year and continuing students',
+                type: 'accordion',
+                sections: [
+                    {
+                        title: 'First Year Students',
+                        icon: '👤',
+                        steps: [
+                            {
+                                title: 'Secure Notice of Admission',
+                                description: 'Present the following documents to the Office of Admissions:',
+                                details: [
+                                    'High School Card (Form 138) - Original',
+                                    'Transcript of Records for Transferees - Original',
+                                    'Certificate of Good Moral',
+                                    'Test Permit'
+                                ]
+                            },
+                            {
+                                title: 'Student Profiling',
+                                description: 'With your Notice of Admission and Medical Certificate, proceed to the Office of Admission for profiling.',
+                                details: []
+                            },
+                            {
+                                title: 'Course Adviser Enlistment',
+                                description: 'Proceed to your course adviser for subject enlistment and approval.',
+                                details: []
+                            },
+                            {
+                                title: 'Scholarship Notation (If Applicable)',
+                                description: 'Students availing scholarship must report to the Office of Student Affairs for scholarship notation.',
+                                details: []
+                            },
+                            {
+                                title: 'Assessment of Fees',
+                                description: 'Proceed to the Accounting Office for assessment and secure registration form.',
+                                details: []
+                            },
+                            {
+                                title: 'Confirmation at Registrar',
+                                description: 'With your Registration Form, present original requirements to the Registrar\'s Office for confirmation.',
+                                details: []
+                            },
+                            {
+                                title: 'Medical Certificate',
+                                description: 'Report to the University Clinic and secure Medical Certificate.',
+                                details: []
+                            },
+                            {
+                                title: 'ID Processing',
+                                description: 'Proceed to the Office of Student Affairs for Identification Card (ID) processing.',
+                                details: []
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Old Students - Online Enrollment (Regular)',
+                        icon: '💻',
+                        steps: [
+                            {
+                                title: 'Submit Rating Slips',
+                                description: 'Students shall send online their last semester rating slips to their department heads.',
+                                details: []
+                            },
+                            {
+                                title: 'Enlistment & Assessment',
+                                description: 'Department Head is responsible for enlistment and assessment of fees.',
+                                details: []
+                            },
+                            {
+                                title: 'Enrollment Confirmation',
+                                description: 'Registrar confirms enrollment through the system.',
+                                details: []
+                            },
+                            {
+                                title: 'Access COR',
+                                description: 'First Semester Certificate of Registration (COR) can be accessed through the ERS.',
+                                details: []
+                            },
+                            {
+                                title: 'Receive COR',
+                                description: 'All COR\'s will be forwarded to the respective Department Heads by Second Week of Classes.',
+                                details: []
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Old Students - Onsite Enrollment',
+                        icon: '🏫',
+                        info: 'Required for: Graduate Students (New & Old), Returning Students, All Irregular Students (2nd to 5th year)',
+                        steps: [
+                            {
+                                title: 'Special Requirements',
+                                description: 'Additional requirements based on student category:',
+                                details: [
+                                    'Returning Students: Report to Registrar to secure checklist and to Guidance Office for clearance',
+                                    'Students under probation: Warning Agreement required',
+                                    'Irregular Students: Face-to-face compliance of enrollment requirements'
+                                ]
+                            },
+                            {
+                                title: 'Present Rating Slips',
+                                description: 'Student presents rating slips to Department Heads/Enlistment Adviser.',
+                                details: []
+                            },
+                            {
+                                title: 'Warning Agreements',
+                                description: 'Completion of Warning Agreements if necessary (for probationary students).',
+                                details: []
+                            },
+                            {
+                                title: 'Enlistment & Assessment',
+                                description: 'Department Head is responsible for enlistment and assessment of fees.',
+                                details: []
+                            },
+                            {
+                                title: 'Confirmation & COR',
+                                description: 'Registrar confirms and issues Certificate of Registration (COR) through the Department Heads.',
+                                details: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            transfer: {
+                title: 'Transfer of Students',
+                subtitle: 'Transferring in or out of TUP',
+                type: 'list',
+                sections: [
+                    {
+                        title: 'Transferring Within TUP Campuses',
+                        icon: '🔄',
+                        content: 'A student from a campus of the University is allowed to transfer to another TUP campus; provided that he satisfies the admission requirements of the program in the college concerned.'
+                    },
+                    {
+                        title: 'Transfer from Other SUCs',
+                        icon: '🏛️',
+                        content: 'A transfer student from other State Universities and Colleges (SUCs) may be admitted provided that he has no failed/dropped mark and he satisfies the admission requirements of the program in the college concerned.'
+                    },
+                    {
+                        title: 'Transfer from Private Institutions',
+                        icon: '🎓',
+                        content: 'A transfer student from private institutions may be admitted to any three-year program of the University provided that he has no failed/dropped mark and he satisfies the admission requirements of the program in the college concerned.'
+                    },
+                    {
+                        title: 'Transferring Out Requirements',
+                        icon: '📋',
+                        content: 'Any student who intends to transfer to another school, college or university must be cleared of all liabilities and responsibilities (administrative, academic, and financial) in the University. The necessary documents for transfer could be secured from the Office of the Registrar.'
+                    }
+                ]
+            },
+            addsubject: {
+                title: 'Adding of Subject',
+                subtitle: 'Conditions and requirements for adding subjects',
+                type: 'list',
+                intro: 'A student may add a subject upon the recommendation of the Department Head and approved by the Dean under the following conditions:',
+                sections: [
+                    {
+                        title: 'Maximum Unit Load',
+                        icon: '📊',
+                        content: 'The student is not carrying the maximum unit load per semester/term prescribed in the curriculum.'
+                    },
+                    {
+                        title: 'Probationary Students',
+                        icon: '⚠️',
+                        content: 'The student has not met the authorized load for probationary students.'
+                    },
+                    {
+                        title: 'Graduating Students',
+                        icon: '🎓',
+                        content: 'For graduating undergraduate students, they may be allowed to add subject(s) not more than six (6) units on top of the semester/term load.'
+                    }
+                ]
+            },
+            dropsubject: {
+                title: 'Dropping of Subject',
+                subtitle: 'Process for officially dropping subjects',
+                type: 'pinboard',
+                fee: 'May incur fees for late dropping',
+                processing: 'Must be done before midterm',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Write a Letter',
+                        description: 'A student must write a letter noted (whenever applicable) by the parent/guardian specifying the reason(s) for dropping. The Dean of the college must approve the dropping of the subject(s).',
+                        color: 'pink',
+                        rotation: 2,
+                        position: { x: 25, y: 20 },
+                        pinColor: 'red'
+                    },
+                    {
+                        number: '02',
+                        title: 'Consult Guidance',
+                        description: 'The approved letter must be presented to the guidance personnel and a dropping form must be secured.',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 55, y: 15 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '03',
+                        title: 'Get Required Signatures',
+                        description: 'The dropping form must be accomplished and the subject professor and the Dean of the college must sign it.',
+                        color: 'peach',
+                        rotation: 3,
+                        position: { x: 75, y: 25 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '04',
+                        title: 'Submit to Offices',
+                        description: 'Copies of the dropping form must be presented to the offices concerned (Registrar, Accounting, Department).',
+                        color: 'green',
+                        rotation: -2,
+                        position: { x: 45, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            scholastic: {
+                title: 'Scholastic Delinquency',
+                subtitle: 'Academic probation and dismissal policies',
+                type: 'accordion',
+                sections: [
+                    {
+                        title: 'Probationary Status',
+                        icon: '⚠️',
+                        intro: 'A student is placed on probationary status under any of the following circumstances:',
+                        steps: [
+                            {
+                                title: 'Failed Grades',
+                                description: 'Obtains a rating of 5.0 in two subjects in a semester/term.',
+                                details: []
+                            },
+                            {
+                                title: 'Unofficial Dropping',
+                                description: 'Drops unofficially three or more or all subjects without written consent from the parents.',
+                                details: []
+                            },
+                            {
+                                title: 'Load Requirements',
+                                description: 'Fails to pass at least 75% of the load for the term.',
+                                details: []
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Dismissal Policy',
+                        icon: '🚫',
+                        intro: 'A student who is not in the last two years of a five-year course or in the last year of a four (4) or three (3) year course is considered dismissed from the official roll of the university under any of the following conditions:',
+                        steps: [
+                            {
+                                title: 'Multiple Failures',
+                                description: 'Obtains a rating of 5.0 in three (3) subjects.',
+                                details: []
+                            },
+                            {
+                                title: 'While Under Probation',
+                                description: 'Obtains a dropped or failing grade in one subject while under probation.',
+                                details: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            honors: {
+                title: 'Academic Honors',
+                subtitle: 'Honor qualifications and requirements',
+                type: 'accordion',
+                intro: 'A student who completes his course as prescribed by his curriculum shall be rewarded with the corresponding honors provided that he has no grade lower than 2.75 in any of the subjects and has not been found guilty of any major offense.',
+                sections: [
+                    {
+                        title: 'Baccalaureate Programs',
+                        icon: '🎓',
+                        steps: [
+                            {
+                                title: 'Summa Cum Laude',
+                                description: 'General Weighted Average (GWA): 1.00 - 1.20',
+                                details: []
+                            },
+                            {
+                                title: 'Magna Cum Laude',
+                                description: 'General Weighted Average (GWA): 1.21 - 1.45',
+                                details: []
+                            },
+                            {
+                                title: 'Cum Laude',
+                                description: 'General Weighted Average (GWA): 1.46 - 1.75',
+                                details: []
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Pre-Baccalaureate Programs',
+                        icon: '📜',
+                        steps: [
+                            {
+                                title: 'With Highest Honors',
+                                description: 'General Weighted Average (GWA): 1.00 - 1.20',
+                                details: []
+                            },
+                            {
+                                title: 'With High Honors',
+                                description: 'General Weighted Average (GWA): 1.21 - 1.45',
+                                details: []
+                            },
+                            {
+                                title: 'With Honors',
+                                description: 'General Weighted Average (GWA): 1.46 - 1.75',
+                                details: []
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Transfer Students',
+                        icon: '🔄',
+                        steps: [
+                            {
+                                title: 'Residency Requirement',
+                                description: 'A transfer student vying for honors must have completed at least 75% of the total number of academic units of the curriculum in the University.',
+                                details: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            idvalidation: {
+                title: 'ID Validation Process',
+                subtitle: 'Validate your ID for the current school year',
+                type: 'pinboard',
+                fee: 'No fee for validation',
+                processing: 'Same day',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Present COR and ID',
+                        description: 'Present the Certificate of Registration (COR) together with your school ID. Ensure the old sticker has been removed.',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 30, y: 25 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '02',
+                        title: 'Sign Logbook',
+                        description: 'Accomplish the logbook for proper recording of your ID validation.',
+                        color: 'peach',
+                        rotation: 2,
+                        position: { x: 55, y: 20 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '03',
+                        title: 'Receive Validated ID',
+                        description: 'Claim your school ID affixed with the new sticker for the current school year.',
+                        color: 'green',
+                        rotation: -3,
+                        position: { x: 45, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            idlost: {
+                title: 'Lost ID Replacement',
+                subtitle: 'Get a replacement ID if lost or damaged',
+                type: 'pinboard',
+                fee: 'Varies (check with OSA)',
+                processing: '7-10 working days',
+                steps: [
+                    {
+                        number: '01',
+                        title: 'Affidavit of Loss',
+                        description: 'Secure an affidavit of loss of ID from a notary public or barangay.',
+                        color: 'pink',
+                        rotation: 2,
+                        position: { x: 20, y: 20 },
+                        pinColor: 'red'
+                    },
+                    {
+                        number: '02',
+                        title: 'Get Application Form',
+                        description: 'Get an application form at the Office of Student Affairs (OSA).',
+                        color: 'blue',
+                        rotation: -2,
+                        position: { x: 50, y: 15 },
+                        pinColor: 'blue'
+                    },
+                    {
+                        number: '03',
+                        title: 'Pay ID Fee',
+                        description: 'Pay the required ID fee at the Cashier\'s Office in the Administration Building.',
+                        color: 'yellow',
+                        rotation: 3,
+                        position: { x: 75, y: 20 },
+                        pinColor: 'orange'
+                    },
+                    {
+                        number: '04',
+                        title: 'Photo & Signature',
+                        description: 'Proceed to the ID room for photo and signature capturing. Bring the official receipt.',
+                        color: 'green',
+                        rotation: -2,
+                        position: { x: 40, y: 60 },
+                        pinColor: 'green'
+                    }
+                ]
+            },
+            scholarship: {
+                title: 'Scholarship Application',
+                subtitle: 'Apply for various scholarship programs',
+                type: 'accordion',
+                sections: [
+                    {
+                        title: 'Scholarship Categories',
+                        icon: '🏆',
+                        intro: 'Scholarship and educational grants offered by the University are categorized as follows:',
+                        steps: [
+                            {
+                                title: 'Institutionally Funded / Internal Grants',
+                                description: 'Scholarships funded directly by TUP.',
+                                details: []
+                            },
+                            {
+                                title: 'TUP Employees / Legal Dependents',
+                                description: 'Under the Collective Negotiation Agreement (CNA) for employees and their dependents.',
+                                details: []
+                            },
+                            {
+                                title: 'External Grants',
+                                description: 'Scholarships from various sources:',
+                                details: [
+                                    'Industry partnerships',
+                                    'Non-Government Organizations (NGOs)',
+                                    'Government Agencies/Organizations'
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Application Process',
+                        icon: '📝',
+                        steps: [
+                            {
+                                title: 'Fill Up Application Form',
+                                description: 'Students fill up the application form available at the Office of Student Affairs (OSA). Attach one ID picture.',
+                                details: []
+                            },
+                            {
+                                title: 'Submit Requirements',
+                                description: 'Present the following requirements together with the duly accomplished application form:',
+                                details: [
+                                    'Photocopy of high school card (for freshmen applicants)',
+                                    'Rating slip from the Office of the Registrar (for sophomore to senior students)',
+                                    'Photocopy of Registration Form',
+                                    'Income Tax Return (ITR) of parents/guardian',
+                                    'Notice of Admission',
+                                    'Certification of good moral character',
+                                    'Essay - "My Autobiography"'
+                                ]
+                            },
+                            {
+                                title: 'Interview',
+                                description: 'Attend the scholarship interview as scheduled by the OSA.',
+                                details: []
+                            }
+                        ]
+                    }
+                ]
+            },
+            loa: {
+                title: 'Leave of Absence (LOA)',
+                subtitle: 'Request temporary leave from studies',
+                type: 'accordion',
+                sections: [
+                    {
+                        title: 'Filing Process',
+                        icon: '📄',
+                        steps: [
+                            {
+                                title: 'Submit Written Request',
+                                description: 'A student may take a leave of absence by submitting a written request addressed to the Dean/Assistant to the Director of Academic Affairs (ADAA) indicating the reasons and duration for the leave of absence which must not exceed one academic year (2 semesters or 3 terms).',
+                                details: [
+                                    'The intention shall be presented to the faculty adviser/department head',
+                                    'Subject to approval of the Dean/ADAA'
+                                ]
+                            },
+                            {
+                                title: 'Filing Deadline',
+                                description: 'No leave of absence shall be granted two weeks before the last day of classes of a semester/term.',
+                                details: [
+                                    'If inability to continue is for health or similar justifiable cause, the absence shall be considered "excused"',
+                                    'Student must present a letter of excuse to faculty members',
+                                    'Required to make up for lessons/work missed'
+                                ]
+                            },
+                            {
+                                title: 'Returning Students',
+                                description: 'Returning students who did not apply for a leave of absence and have been out of the campus beyond the allowable maximum period of one (1) academic year shall be readmitted on probationary basis within the maximum residency rule.',
+                                details: []
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // Service Icons
+        const icons = {
+            ctc: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg>',
+            goodmoral: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>',
+            ratingslip: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+            enrollment: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>',
+            transfer: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 21 7 17 3"></polyline><line x1="21" y1="7" x2="9" y2="7"></line><polyline points="7 21 3 17 7 13"></polyline><line x1="15" y1="17" x2="3" y2="17"></line></svg>',
+            addsubject: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="9" x2="12" y2="15"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>',
+            dropsubject: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="12" x2="15" y2="12"></line></svg>',
+            scholastic: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+            honors: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>',
+            idvalidation: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line><path d="m15 14 2 2 4-4"></path></svg>',
+            idlost: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line><circle cx="12" cy="14" r="2"></circle></svg>',
+            scholarship: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>',
+            loa: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
+        };
+
+        const services = [
+            { id: 'ctc', icon: 'ctc', title: 'Certified True Copy (CTC)', description: 'Request certified true copies - ₱100' },
+            { id: 'goodmoral', icon: 'goodmoral', title: 'Certificate of Good Moral', description: 'Get your good moral certificate - ₱100' },
+            { id: 'ratingslip', icon: 'ratingslip', title: 'Rating Slip Request', description: 'Request rating slip without faculty evaluation' },
+            { id: 'enrollment', icon: 'enrollment', title: 'Enrollment Process', description: 'Complete enrollment guide for all students' },
+            { id: 'transfer', icon: 'transfer', title: 'Transfer of Students', description: 'Transfer in or out of TUP' },
+            { id: 'addsubject', icon: 'addsubject', title: 'Adding of Subject', description: 'Add subjects to your enrollment' },
+            { id: 'dropsubject', icon: 'dropsubject', title: 'Dropping of Subject', description: 'Officially drop subjects from your load' },
+            { id: 'scholastic', icon: 'scholastic', title: 'Scholastic Delinquency', description: 'Probation and dismissal policies' },
+            { id: 'honors', icon: 'honors', title: 'Academic Honors', description: 'Latin honors and award qualifications' },
+            { id: 'idvalidation', icon: 'idvalidation', title: 'ID Validation', description: 'Validate your ID for the school year' },
+            { id: 'idlost', icon: 'idlost', title: 'Lost ID Replacement', description: 'Get a replacement for lost ID' },
+            { id: 'scholarship', icon: 'scholarship', title: 'Scholarship Application', description: 'Apply for various scholarship programs' },
+            { id: 'loa', icon: 'loa', title: 'Leave of Absence', description: 'File for temporary leave from studies' }
+        ];
+
+        // Color map for sticky notes
+        const colorMap = {
+            peach: 'bg-orange-50',
+            blue: 'bg-blue-50',
+            lavender: 'bg-purple-50',
+            pink: 'bg-pink-50',
+            yellow: 'bg-yellow-50',
+            green: 'bg-green-50'
+        };
+
+        // Pin color map
+        const pinColorMap = {
+            red: { main: '#991b1b', shadow: '#7f1d1d' },
+            orange: { main: '#ea580c', shadow: '#c2410c' },
+            blue: { main: '#1e40af', shadow: '#1e3a8a' },
+            purple: { main: '#7e22ce', shadow: '#6b21a8' },
+            green: { main: '#15803d', shadow: '#166534' }
+        };
+
+        // Create Pushpin SVG
+        function createPushpin(color) {
+            const colors = pinColorMap[color] || pinColorMap.red;
+            return `
+                <div class="relative w-8 h-8" style="animation: zoomIn 0.3s ease-out 0.2s both;">
+                    <div class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-6 rounded-full opacity-30" style="background-color: ${colors.shadow}"></div>
+                    <div class="absolute top-2 left-1/2 -translate-x-1/2 w-0.5 h-6 rounded-full" style="background-color: #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.2)"></div>
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2">
+                        <div class="w-6 h-3 rounded-t-full" style="background: linear-gradient(to bottom, ${colors.main}, ${colors.shadow}); box-shadow: 0 2px 6px rgba(0,0,0,0.3)"></div>
+                        <div class="w-6 h-2 rounded-b-full -mt-0.5" style="background-color: ${colors.shadow}; box-shadow: 0 3px 6px rgba(0,0,0,0.3)"></div>
+                        <div class="absolute top-0.5 left-1 w-2 h-1.5 rounded-full opacity-40" style="background-color: white"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+function renderServiceMenu() {
+    const menuContainer = document.getElementById('serviceMenu');
+    const listContainer = document.getElementById('servicesList');
+    menuContainer.innerHTML = '';
+    listContainer.innerHTML = '';
+    
+    // Duplicate services for infinite loop effect
+    const duplicatedServices = [...services, ...services, ...services];
+    
+    duplicatedServices.forEach((service, index) => {
+        // Create carousel card
+        const card = document.createElement('div');
+        card.className = 'group relative cursor-pointer transition-all duration-500 service-card flex-shrink-0';
+        card.style.width = '400px';
+        card.onclick = () => showDetail(service.id);
+        
+        card.innerHTML = `
+            <div class="relative bg-[#290001]/35 backdrop-blur-md rounded-xl p-8 border border-[#290001]/30 hover:border-[#290001]/60 transition-all duration-500 h-full flex flex-col overflow-hidden shadow-lg">
+                <!-- Number Badge -->
+                <div class="text-6xl font-bold mb-6 bg-[#ffffff] bg-clip-text text-transparent" style="font-family: 'Outfit', sans-serif;">
+                    ${String((index % services.length) + 1).padStart(2, '0')}
+                </div>
+                
+                <!-- Icon -->
+                <div class="w-12 h-12 rounded-lg bg-[#FF8589]/10 flex items-center justify-center mb-6 text-[#ffffff] group-hover:bg-[#8b0000]/20 transition-all duration-300">
+                    ${icons[service.icon]}
+                </div>
+                
+                <!-- Title -->
+                <h3 class="text-[#f5f5dc] text-xl mb-3 group-hover:text-[#FF474E] transition-colors duration-300" style="font-family: 'Outfit', sans-serif; font-weight: 600;">
+                    ${service.title}
+                </h3>
+                
+                <!-- Description -->
+                <p class="text-[#f5f5dc]/80 text-sm leading-relaxed flex-grow" style="font-family: 'Outfit', sans-serif;">
+                    ${service.description}
+                </p>
+                
+                <!-- Hover Arrow -->
+                <div class="mt-6 flex items-center gap-2 text-[#FF474E] opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300">
+                    <span class="text-sm font-semibold">Learn More</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+                
+                <!-- Background Glow Effect -->
+                <div class="absolute inset-0 bg-gradient-to-br from-[#FF474E]/0 via-[#660000]/0 to-[#8b0000]/0 group-hover:from-[#8b0000]/10 group-hover:via-[#660000]/10 group-hover:to-[#8b0000]/10 transition-all duration-500 rounded-xl pointer-events-none"></div>
+            </div>
+        `;
+        
+        menuContainer.appendChild(card);
+    });
+    
+    // Create list items (only original services, not duplicated)
+    services.forEach((service, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'flex items-center gap-3 p-3 rounded-lg hover:bg-[#3D0001]/20 cursor-pointer transition-all duration-300 border border-transparent hover:border-[#3D0001]/40 backdrop-blur-sm';
+        listItem.onclick = () => {
+            showDetail(service.id);
+        };
+        
+        listItem.innerHTML = `
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#FF474E]/10 flex items-center justify-center text-[#ffffff]">
+                ${icons[service.icon]}
+            </div>
+            <div class="flex-1">
+                <h4 class="text-[#f5f5dc] text-sm font-semibold" style="font-family: 'Outfit', sans-serif;">${service.title}</h4>
+            </div>
+            <div class="text-[#ffffff]/60 font-bold" style="font-family: 'Outfit', sans-serif;">
+                ${String(index + 1).padStart(2, '0')}
+            </div>
+        `;
+        
+        listContainer.appendChild(listItem);
+    });
+    
+    // Setup navigation controls
+    setupCarouselControls();
+    
+    // Start auto-scroll after initial positioning
+    setTimeout(() => {
+        const cardWidth = 400 + 24;
+        menuContainer.scrollLeft = services.length * cardWidth;
+        startAutoScroll();
+    }, 100);
+}
+
+// Carousel Controls with Auto-Scroll
+let currentIndex = 0;
+let autoScrollInterval;
+let isUserInteracting = false;
+
+function startAutoScroll() {
+    const menuContainer = document.getElementById('serviceMenu');
+    const cardWidth = 400 + 24;
+    
+    autoScrollInterval = setInterval(() => {
+        if (!isUserInteracting) {
+            menuContainer.scrollLeft += 3;
+            
+            // Reset to middle section when reaching end
+            const maxScroll = menuContainer.scrollWidth - menuContainer.clientWidth;
+            const middlePoint = services.length * cardWidth;
+            
+            if (menuContainer.scrollLeft >= middlePoint * 2 - cardWidth) {
+                menuContainer.scrollLeft = middlePoint;
+            } else if (menuContainer.scrollLeft <= 0) {
+                menuContainer.scrollLeft = middlePoint;
+            }
+        }
+    }, 30);
+}
+
+function stopAutoScroll() {
+    if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+    }
+}
+
+function setupCarouselControls() {
+    const menuContainer = document.getElementById('serviceMenu');
+    
+    // Enable mouse drag to scroll
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    menuContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        isUserInteracting = true;
+        menuContainer.style.cursor = 'grabbing';
+        startX = e.pageX - menuContainer.offsetLeft;
+        scrollLeft = menuContainer.scrollLeft;
+    });
+    
+    menuContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        menuContainer.style.cursor = 'grab';
+        setTimeout(() => { isUserInteracting = false; }, 500);
+    });
+    
+    menuContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        menuContainer.style.cursor = 'grab';
+        setTimeout(() => { isUserInteracting = false; }, 500);
+    });
+    
+    menuContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - menuContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        menuContainer.scrollLeft = scrollLeft - walk;
+    });
+    
+    // Pause on hover
+    menuContainer.addEventListener('mouseenter', () => {
+        isUserInteracting = true;
+    });
+    
+    menuContainer.addEventListener('mouseleave', () => {
+        if (!isDown) {
+            setTimeout(() => { isUserInteracting = false; }, 500);
+        }
+    });
+}
+
+function scrollToCard(index) {
+    const menuContainer = document.getElementById('serviceMenu');
+    const cardWidth = 400 + 24;
+    const scrollPosition = index * cardWidth;
+    
+    menuContainer.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+    });
+    
+    currentIndex = index;
+}
+
+// Carousel Animation
+function startCarousel() {
+    const menuContainer = document.getElementById('serviceMenu');
+    let scrollPosition = 0;
+    const scrollSpeed = 1; // Adjust speed (pixels per frame)
+    
+    function animate() {
+        scrollPosition += scrollSpeed;
+        
+        // Reset position for seamless loop
+        const cardWidth = 350 + 24; // card width + gap
+        const totalWidth = cardWidth * services.length;
+        
+        if (scrollPosition >= totalWidth) {
+            scrollPosition = 0;
+        }
+        
+        menuContainer.style.transform = `translateX(-${scrollPosition}px)`;
+        requestAnimationFrame(animate);
+    }
+    
+    // Pause on hover
+    menuContainer.addEventListener('mouseenter', () => {
+        menuContainer.style.animationPlayState = 'paused';
+    });
+    
+    menuContainer.addEventListener('mouseleave', () => {
+        menuContainer.style.animationPlayState = 'running';
+    });
+    
+    animate();
+}
+
+        // Show Detail View
+        function showDetail(serviceId) {
+            const service = servicesData[serviceId];
+            if (!service) return;
+
+            const menuContainer = document.getElementById('serviceMenu');
+            const detailContainer = document.getElementById('detailView');
+
+            menuContainer.classList.add('hidden');
+            detailContainer.classList.remove('hidden');
+
+            document.querySelector('.w-80').style.display = 'none';
+            document.getElementById('servicesHeader').style.display = 'none';
+
+            // Create back button
+            const backButton = document.createElement('button');
+            backButton.className = 'mb-8 flex items-center gap-2 text-white hover:text-red-400 transition-colors duration-200 group';
+            backButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-1 transition-transform duration-200">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back to Services</span>
+            `;
+            backButton.onclick = showServiceMenu;
+
+            // Create title section
+            const titleSection = document.createElement('div');
+            titleSection.className = 'text-center mb-8';
+            titleSection.innerHTML = `
+                <h2 class="text-white text-4xl mb-3">${service.title}</h2>
+                <p class="text-[#ffffff] text-lg">${service.subtitle}</p>
+                ${service.fee ? `
+                    <div class="flex justify-center gap-6 mt-4">
+                        <div class="bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+                            <span class="text-[#ffffff] text-sm">Fee: </span>
+                            <span class="text-[#ffffff] font-bold">${service.fee}</span>
+                        </div>
+                        <div class="bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+                            <span class="text-[#ffffff] text-sm">Processing: </span>
+                            <span class="text-[#ffffff] font-bold">${service.processing}</span>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+
+            detailContainer.innerHTML = '';
+            detailContainer.appendChild(backButton);
+            detailContainer.appendChild(titleSection);
+
+            // Render based on type
+            if (service.type === 'pinboard') {
+                detailContainer.appendChild(renderPinboard(service));
+            } else if (service.type === 'accordion') {
+                detailContainer.appendChild(renderAccordion(service));
+            } else if (service.type === 'list') {
+                detailContainer.appendChild(renderList(service));
+            }
+        }
+
+        // Render Pinboard View
+        function renderPinboard(service) {
+            const pinboard = document.createElement('div');
+            pinboard.className = 'relative min-h-[600px] pb-20';
+
+            // Create SVG for connection lines
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'absolute inset-0 w-full h-full pointer-events-none');
+            svg.style.zIndex = '0';
+
+            service.steps.forEach((step, index) => {
+                if (index < service.steps.length - 1) {
+                    const fromPos = service.steps[index].position;
+                    const toPos = service.steps[index + 1].position;
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', `${fromPos.x}%`);
+                    line.setAttribute('y1', `${fromPos.y}%`);
+                    line.setAttribute('x2', `${toPos.x}%`);
+                    line.setAttribute('y2', `${toPos.y}%`);
+                    line.setAttribute('class', 'connection-line');
+                    
+                    svg.appendChild(line);
+                }
+            });
+
+            pinboard.appendChild(svg);
+
+            // Create sticky notes
+            service.steps.forEach((step, index) => {
+                const noteContainer = document.createElement('div');
+                noteContainer.className = 'sticky-note absolute transition-all duration-300 cursor-pointer group';
+                noteContainer.style.left = `${step.position.x}%`;
+                noteContainer.style.top = `${step.position.y}%`;
+                noteContainer.style.transform = `translate(-50%, -50%) rotate(${step.rotation}deg)`;
+                noteContainer.style.zIndex = '1';
+
+                const pushpinDiv = document.createElement('div');
+                pushpinDiv.className = 'absolute -top-4 left-1/2 -translate-x-1/2 z-10';
+                pushpinDiv.innerHTML = createPushpin(step.pinColor);
+
+                const noteCard = document.createElement('div');
+                noteCard.className = `${colorMap[step.color] || 'bg-white'} rounded-lg p-6 w-64 shadow-lg group-hover:shadow-2xl transition-shadow duration-300`;
+                noteCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.15)';
+                noteCard.innerHTML = `
+                    <div class="inline-block px-3 py-1 rounded-full bg-white/60 mb-3">
+                        <span class="text-slate-600">${step.number}</span>
+                    </div>
+                    <h3 class="text-slate-900 text-lg mb-2">${step.title}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">${step.description}</p>
+                `;
+
+                noteContainer.appendChild(pushpinDiv);
+                noteContainer.appendChild(noteCard);
+                pinboard.appendChild(noteContainer);
+            });
+
+            return pinboard;
+        }
+
+        // Render Accordion View
+        function renderAccordion(service) {
+            const container = document.createElement('div');
+            container.className = 'max-w-4xl mx-auto';
+
+            if (service.intro) {
+                const introBox = document.createElement('div');
+                introBox.className = 'info-box p-6 rounded-lg mb-6';
+                introBox.innerHTML = `<p class="text-slate-300">${service.intro}</p>`;
+                container.appendChild(introBox);
+            }
+
+            service.sections.forEach((section, sectionIndex) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'mb-4';
+
+                const accordionHeader = document.createElement('button');
+                accordionHeader.className = 'w-full bg-[#290001]/10 hover:bg-white/10 border border-white/10 rounded-lg p-6 text-left transition-all duration-300 flex items-center justify-between';
+                accordionHeader.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="text-white text-xl">${section.title}</span>
+                    </div>
+                    <svg class="w-6 h-6 text-red-400 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                `;
+
+                const accordionContent = document.createElement('div');
+                accordionContent.className = 'accordion-content bg-white/5 border border-white/10 rounded-b-lg overflow-hidden';
+                
+                let contentHTML = '<div class="p-6 space-y-4">';
+                
+                if (section.intro) {
+                    contentHTML += `<p class="text-slate-300 mb-4">${section.intro}</p>`;
+                }
+
+                if (section.info) {
+                    contentHTML += `<div class="info-box p-4 rounded-lg mb-4"><p class="text-slate-300 text-sm">${section.info}</p></div>`;
+                }
+
+                section.steps.forEach((step, stepIndex) => {
+                    contentHTML += `
+                        <div class="process-card bg-white/5 p-5 rounded-lg">
+                            <div class="flex items-start gap-4">
+                                <div class="step-number flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm">
+                                    ${stepIndex + 1}
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-white text-lg mb-2 font-semibold">${step.title}</h4>
+                                    <p class="text-[#ffffff] text-sm mb-2">${step.description}</p>
+                                    ${step.details && step.details.length > 0 ? `
+                                        <ul class="list-disc list-inside text-[#ffffff] text-sm space-y-1 mt-3 ml-2">
+                                            ${step.details.map(detail => `<li>${detail}</li>`).join('')}
+                                        </ul>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                contentHTML += '</div>';
+                accordionContent.innerHTML = contentHTML;
+
+                accordionHeader.onclick = () => {
+                    const isActive = accordionContent.classList.contains('active');
+                    // Close all accordions
+                    document.querySelectorAll('.accordion-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.querySelectorAll('.accordion-content').forEach((content, idx) => {
+                        const header = content.previousElementSibling;
+                        const svg = header.querySelector('svg');
+                        svg.classList.remove('rotate-180');
+                    });
+                    
+                    // Open clicked accordion if it wasn't active
+                    if (!isActive) {
+                        accordionContent.classList.add('active');
+                        accordionHeader.querySelector('svg').classList.add('rotate-180');
+                    }
+                };
+
+                accordionItem.appendChild(accordionHeader);
+                accordionItem.appendChild(accordionContent);
+                container.appendChild(accordionItem);
+            });
+
+            return container;
+        }
+
+        // Render List View
+        function renderList(service) {
+            const container = document.createElement('div');
+            container.className = 'max-w-4xl mx-auto';
+
+            if (service.intro) {
+                const introBox = document.createElement('div');
+                introBox.className = 'info-box p-6 rounded-lg mb-6';
+                introBox.innerHTML = `<p class="text-slate-300">${service.intro}</p>`;
+                container.appendChild(introBox);
+            }
+
+            service.sections.forEach((section, index) => {
+                const card = document.createElement('div');
+                card.className = 'process-card bg-white/10 border border-white/20 rounded-lg p-6 mb-4';
+                card.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="text-4xl flex-shrink-0">${section.icon}</div>
+                        <div class="flex-1">
+                            <h3 class="text-white text-xl mb-3">${section.title}</h3>
+                            <p class="text-slate-300 leading-relaxed">${section.content}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            return container;
+        }
+
+        // Show Service Menu
+        function showServiceMenu() {
+            const menuContainer = document.getElementById('serviceMenu');
+            const detailContainer = document.getElementById('detailView');
+
+            detailContainer.classList.add('hidden');
+            menuContainer.classList.remove('hidden');
+
+            document.querySelector('.w-80').style.display = 'block';
+            document.getElementById('servicesHeader').style.display = 'block';
+        }
+
+        // Initialize
+        renderServiceMenu();
+    </script>
+</body>
+</html>

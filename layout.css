@@ -1,0 +1,134 @@
+/* ==============================================
+   CONSISTENT LAYOUT SIZING - ADD TO global.css
+   ============================================== */
+
+/* Universal Layout Container Settings */
+:root {
+  --max-content-width: 1400px;
+  --page-padding-x: 3rem;
+  --page-padding-y: 2rem;
+  --top-spacing: 6rem;
+}
+
+/* Base container constraints for ALL pages */
+.container,
+.content,
+.contact-container,
+#service-assistance > div:first-child,
+.calendar,
+#listView {
+  max-width: var(--max-content-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Consistent horizontal padding for all main content areas */
+.content,
+.contact-container,
+#service-assistance {
+  padding-left: var(--page-padding-x) !important;
+  padding-right: var(--page-padding-x) !important;
+}
+
+/* Consistent top spacing for all pages */
+.content,
+.contact-container {
+  padding-top: var(--top-spacing) !important;
+}
+
+#service-assistance {
+  padding-top: calc(var(--top-spacing) + 4rem) !important;
+}
+
+body:has(.calendar) {
+  padding-top: var(--top-spacing) !important;
+}
+
+/* Calendar specific sizing */
+.calendar,
+#listView {
+  width: 90% !important;
+  max-width: 850px !important;
+}
+
+/* Hero card on homepage */
+.hero-wrapper {
+  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Service assistance inner container */
+#service-assistance > div {
+  max-width: var(--max-content-width) !important;
+}
+
+/* Campus tour search panel - maintain position but relative to viewport */
+.search-panel {
+  left: max(2rem, calc((100vw - var(--max-content-width)) / 2 + 2rem)) !important;
+}
+
+/* Info badge positioning */
+.info-badge {
+  right: max(2rem, calc((100vw - var(--max-content-width)) / 2 + 2rem)) !important;
+}
+
+/* ==============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================== */
+
+@media (max-width: 1440px) {
+  :root {
+    --max-content-width: 1200px;
+  }
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --max-content-width: 960px;
+    --page-padding-x: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --max-content-width: 100%;
+    --page-padding-x: 1rem;
+    --page-padding-y: 1rem;
+    --top-spacing: 4rem;
+  }
+  
+  .calendar,
+  #listView {
+    width: 95% !important;
+  }
+  
+  .search-panel {
+    left: 1rem !important;
+  }
+  
+  .info-badge {
+    right: 1rem !important;
+  }
+  
+  .contact-container {
+    flex-direction: column !important;
+    padding: 20px !important;
+  }
+}
+
+/* Ensure video backgrounds still cover full viewport */
+.video-background,
+.service-video-background {
+  position: fixed !important;
+  width: 100vw !important;
+  max-width: none !important;
+}
+
+/* Background images maintain full coverage */
+.background-image {
+  width: 100vw !important;
+  max-width: none !important;
+}

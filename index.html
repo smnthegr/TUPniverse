@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUP Manila</title>
+  <!-- Keep layout.css and navbar.css separate as requested -->
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="navbar.css">
+  <script src="navbar.js"></script>
+</head>
+<body class="homepage">
+  <div class="container">
+    <!-- Background Image -->
+    <div class="background-image">
+      <img 
+        src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+        alt="TUP Manila Campus"
+        onerror="this.classList.add('hidden')"
+      />
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Main Hero Card -->
+      <div class="hero-wrapper">
+        <div class="hero-card">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <!-- Background Image inside card -->
+            <div class="hero-background">
+              <img 
+                src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+                alt="TUP Manila Campus"
+                onerror="this.classList.add('hidden')"
+              />
+              <div class="hero-gradient"></div>
+            </div>
+
+            <!-- Centered Content -->
+            <div class="hero-center">
+              <div class="hero-text">
+                <h1>Welcome</h1>
+                <p>Discover our campus, explore our facilities, and connect with our community</p>
+              </div>
+
+              <button class="explore-button" onclick="window.location.href='campus.html'">Explore Campus</button>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="badge-bottom-left">
+              <p class="badge-subtitle">Technological University</p>
+              <p class="badge-title">of the Philippines</p>
+            </div>
+
+            <div class="badge-top-right">
+              <p>Manila Campus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

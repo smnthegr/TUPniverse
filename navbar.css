@@ -1,0 +1,123 @@
+/* navbar.css - Global Navigation Styles */
+
+.navbar-global {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  width: calc(100% - 4rem);
+  max-width: 80rem;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 1rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.nav-inner-global {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-circle-global {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo-circle-global img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.nav-links-global {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links-global a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-bottom: 0.5rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+}
+
+.nav-links-global a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.nav-links-global a:hover::after,
+.nav-links-global a.active-page::after {
+  width: 100%;
+}
+
+.nav-links-global:hover a {
+  color: rgba(255, 255, 255, 0.4);
+  transform: scale(0.95);
+}
+
+.nav-links-global a:hover,
+.nav-links-global a.active-page {
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-icon-global {
+  display: flex;
+  align-items: center;
+}
+
+.globe-icon-global {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .navbar-global {
+    width: calc(100% - 2rem);
+    padding: 0.9rem 1rem;
+    top: 1rem;
+  }
+
+  .nav-inner-global {
+    gap: 0.8rem;
+  }
+
+  .nav-links-global {
+    flex: 1;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .nav-links-global a {
+    font-size: 0.85rem;
+  }
+
+  .logo-circle-global {
+    width: 2rem;
+    height: 2rem;
+  }
+}

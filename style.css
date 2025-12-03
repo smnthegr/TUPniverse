@@ -350,6 +350,8 @@ body {
   -webkit-backdrop-filter: none;
   border: none;
   box-shadow: none;
+  bottom: 50%;
+  transform: translateY(50%);
 }
 
 .search-panel.collapsed .panel-header {

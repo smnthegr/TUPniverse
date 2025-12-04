@@ -98,6 +98,7 @@
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.setCustomParameters({
             hd: 'tup.edu.ph'  // Only allow TUP emails
+            prompt: 'consent'
         });
 
         // Sign in with Google
@@ -165,5 +166,6 @@
     </script>
 </body>
 </html>
+
 
 

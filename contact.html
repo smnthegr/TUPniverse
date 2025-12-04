@@ -9,12 +9,13 @@
   <link rel="stylesheet" href="navbar.css">
   <script src="navbar.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  
   <style>
     .error-message {
-      color: red;
+      color: #ff5555; /* Changed to a standard error red for better visibility */
       font-size: 0.9em;
       margin-top: 5px;
-      display: block; /* Ensures it takes a new line */
+      display: block; 
     }
   </style>
 </head>
@@ -61,9 +62,11 @@
 
         <div class="form-group">
           <label>Message (Required)</label>
-          <textarea name="message" id="message" required minlength="10" maxlength="1000"></textarea>
+          <textarea name="message" id="message" required minlength="10" maxlength="1000"></textarea> 
           <span class="error-message" id="message-error"></span>
         </div>
+
+        <span class="error-message" id="global-status"></span>
 
         <button type="submit" class="send-btn">SEND</button>
       </form>
@@ -75,18 +78,22 @@
   </div>
 
   <script>
-    // --- Helper Functions ---
+    const form = document.getElementById("contact-form");
+    // Ensure the global status element exists to avoid errors
+    const globalStatus = document.getElementById("global-status");
 
-    // Sanitization Function
+
+    // --- Helper Functions ---
     function sanitizeInput(str) {
       if (!str) return '';
       return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
+
+    // 2. Error Display Functions
     function displayError(id, message) {
       const errorElement = document.getElementById(id);
       if (errorElement) {
         errorElement.textContent = message;
-        errorElement.style.color = 'red'; 
       }
     }
 
@@ -94,74 +101,101 @@
       document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
     }
 
-
     // --- Core Validation Function ---
     function validateContactForm() {
       let isValid = true;
       clearErrors(); 
+      if (globalStatus) globalStatus.textContent = ''; // Clear global status
 
-      // 1. Get raw input values
-      const rawFirstName = document.getElementById('firstName').value;
-      const rawLastName = document.getElementById('lastName').value;
-      const rawEmail = document.getElementById('email').value;
-      const rawMessage = document.getElementById('message').value;
-
-      // 2. Sanitize and trim all values
-      const firstName = sanitizeInput(rawFirstName).trim();
-      const lastName = sanitizeInput(rawLastName).trim();
-      const email = sanitizeInput(rawEmail).trim(); 
-      const message = sanitizeInput(rawMessage).trim();
-      
+      const fields = ['firstName', 'lastName', 'email', 'message'];
+      let inputs = {};
+      let rawInputs = {};
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      document.getElementById('firstName').value = firstName;
-      document.getElementById('lastName').value = lastName;
-      document.getElementById('email').value = email;
-      document.getElementById('message').value = message;
 
+      fields.forEach(field => {
+        const inputElement = document.getElementById(field);
+        rawInputs[field] = inputElement.value; // Get the original input
 
-      if (firstName.length < 2 || firstName.length > 50) { 
-          displayError('firstName-error', 'First Name must be between 2 and 50 characters.');
+        const sanitizedValue = sanitizeInput(inputElement.value).trim();
+        inputElement.value = sanitizedValue; 
+        inputs[field] = sanitizedValue;
+      });
+      
+
+      // --- CRITICAL SECURITY CHECK (Explicit Rejection) ---
+      const checkAttackChars = (value) => value.includes('<') || value.includes('>') || value.includes(';');
+      let attackDetected = false;
+
+      if (checkAttackChars(rawInputs.firstName) || checkAttackChars(rawInputs.lastName) || checkAttackChars(rawInputs.email) || checkAttackChars(rawInputs.message)) {
+          // If attack code is found, show the security alert and stop
+          displayError('global-status', '⚠️ Security Alert: Input contains forbidden characters (<, >, or ;). Please remove them.');
+          if (checkAttackChars(rawInputs.message)) {
+              displayError('message-error', 'Potential injection attack detected in message.');
+          }
+          isValid = false;
+          attackDetected = true;
+      }
+      
+      if (attackDetected) return false;
+
+      if (inputs.firstName.length < 2 || inputs.firstName.length > 50) { 
+          displayError('firstName-error', 'Must be 2-50 characters.');
+          isValid = false;
+      }
+      if (inputs.lastName.length < 2 || inputs.lastName.length > 50) { 
+          displayError('lastName-error', 'Must be 2-50 characters.');
           isValid = false;
       }
 
-      if (lastName.length < 2 || lastName.length > 50) { 
-          displayError('lastName-error', 'Last Name must be between 2 and 50 characters.');
+      if (!emailRegex.test(inputs.email)) {
+          displayError('email-error', 'Enter a valid email address.');
           isValid = false;
       }
 
-      if (!emailRegex.test(email)) {
-          displayError('email-error', 'Please enter a valid email address.');
-          isValid = false;
-      }
-
-      if (message.length < 10 || message.length > 500) { 
-          displayError('message-error', 'Message must be between 10 and 1000 characters.');
+      if (inputs.message.length < 10 || inputs.message.length > 500) { 
+          displayError('message-error', 'Message must be 10-500 characters.');
           isValid = false;
       }
 
       return isValid;
     }
-    const form = document.getElementById("contact-form");
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault(); 
 
       if (!validateContactForm()) {
-        return; // Stop submission if validation fails
+        if (globalStatus.textContent === "") {
+            globalStatus.textContent = "Please correct the highlighted errors.";
+        }
+        return;
       }
+      try {
+        globalStatus.style.color = 'yellow';
+        globalStatus.textContent = "Sending message...";
+        
+        const data = new FormData(form);
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
 
-      const data = new FormData(form);
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
+        if (response.ok) {
+          globalStatus.style.color = 'lightgreen';
+          globalStatus.textContent = "✅ Thank you! Your message has been sent successfully.";
+          form.reset();
+        } else {
+          const responseBody = await response.json();
+          globalStatus.style.color = 'red';
+          globalStatus.textContent = `⚠️ Submission Failed. Formspree error: ${responseBody.error || 'Unknown issue'}.`;
+          console.error("Formspree Submission Failed:", responseBody);
+        }
 
-      if (response.ok) {
-        alert("✅ Thank you! Your message has been sent successfully.");
-        form.reset();
-      } else {
-        alert("⚠️ Oops! There was a problem sending your message. Please try again.");
+      } catch (error) {
+        globalStatus.style.color = 'red';
+        globalStatus.textContent = `🚫 Network Error: Could not complete the request.`;
+        console.error("Network or Fetch error:", error);
       }
     });
   </script>

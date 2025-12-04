@@ -45,7 +45,7 @@
                 </div>
                 
                 <!-- Right Side - Services List -->
-                <div class="w-80 bg-[#290001]/25 backdrop-blur-md rounded-xl border border-[#290001]/30 p-6 overflow-y-auto self-start shadow-lg" style="max-height: 600px;">
+                <div class="w-80 bg-[#290001]/25 backdrop-blur-md rounded-xl border border-white/25 p-6 overflow-y-auto self-start shadow-lg" style="max-height: 600px;">
                     <!--allservices-->
                     <h3 class="text-[#f5f5dc] text-xl mb-4 font-semibold" style="font-family: 'Outfit', sans-serif;">All Services</h3>
                     <div id="servicesList" class="space-y-2"></div>
@@ -779,7 +779,7 @@ function renderServiceMenu() {
         card.onclick = () => showDetail(service.id);
         
         card.innerHTML = `
-            <div class="relative bg-[#290001]/35 backdrop-blur-md rounded-xl p-8 border border-[#290001]/30 hover:border-[#290001]/60 transition-all duration-500 h-full flex flex-col overflow-hidden shadow-lg">
+            <div class="relative bg-[#290001]/35 backdrop-blur-md rounded-xl p-8 border border-white/25 hover:border-white/40 transition-all duration-500 h-full flex flex-col overflow-hidden shadow-lg">
                 <!--num1-->
                 <div class="text-6xl font-bold mb-6 bg-[#ffffff] bg-clip-text text-transparent" style="font-family: 'Outfit', sans-serif;">
                     ${String((index % services.length) + 1).padStart(2, '0')}
@@ -820,7 +820,8 @@ function renderServiceMenu() {
     // Create list items (only original services, not duplicated)
     services.forEach((service, index) => {
         const listItem = document.createElement('div');
-        listItem.className = 'flex items-center gap-3 p-3 rounded-lg hover:bg-[#3D0001]/20 cursor-pointer transition-all duration-300 border border-transparent hover:border-[#3D0001]/40 backdrop-blur-sm';
+        // Changed hover:border-[#3D0001]/40 to hover:border-white/50
+listItem.className = 'flex items-center gap-3 p-3 rounded-lg hover:bg-[#3D0001]/10 cursor-pointer transition-all duration-300 border border-transparent hover:border-white/25 backdrop-blur-sm';
         listItem.onclick = () => {
             showDetail(service.id);
         };

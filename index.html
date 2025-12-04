@@ -49,6 +49,11 @@
     </div>
 
     <div class="content">
+      <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        <button onclick="signOut()" style="background: #dc2626; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;">
+          Sign Out
+        </button>
+      </div>
       <div class="hero-wrapper">
         <div class="hero-card">
           <div class="hero-content">
@@ -115,6 +120,16 @@
             console.log('User authenticated:', user.email);
         }
     });
+    function signOut() {
+        if (confirm('Are you sure you want to sign out?')) {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Sign out error:', error);
+                alert('Failed to sign out. Please try again.');
+            });
+        }
+    }
   </script>
 </body>
 </html>

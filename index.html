@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TUP Manila</title>
@@ -10,6 +12,7 @@
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="loginstyle.css">
   <script src="navbar.js"></script>
 </head>
 <body class="homepage">
@@ -66,35 +69,118 @@
     </div>
   </div>
     <script>
-      // Your Firebase config
-      const firebaseConfig = {
-          apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
-          authDomain: "tupniverse-login-2ab22.firebaseapp.com",
-          projectId: "tupniverse-login-2ab22",
-          storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
-          messagingSenderId: "223789253678",
-          appId: "1:223789253678:web:80c828a9c2d695a720cbbf"
-      };
-      
-      // Initialize Firebase (only once)
-      if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
-      }
-      const auth = firebase.auth();
-      
-      // Protect the page - redirect to login if not authenticated
-      auth.onAuthStateChanged((user) => {
-          if (!user || !user.email.endsWith('@tup.edu.ph')) {
-              window.location.href = 'login.html';
-          }
-      });
-      
-      // Logout function
-      function logout() {
-          auth.signOut().then(() => {
-              window.location.href = 'login.html';
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
+      authDomain: "tupniverse-login-2ab22.firebaseapp.com",
+      projectId: "tupniverse-login-2ab22",
+      storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
+      messagingSenderId: "223789253678",
+      appId: "1:223789253678:web:80c828a9c2d695a720cbbf"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Configure Google Sign-In
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({
+      hd: 'tup.edu.ph',
+      prompt: 'select_account'
+    });
+
+    // Show/Hide Error in Modal
+    function showModalError(message) {
+      const errorDiv = document.getElementById('modalError');
+      const errorText = document.getElementById('modalErrorText');
+      errorText.textContent = message;
+      errorDiv.classList.add('active');
+    }
+
+    function hideModalError() {
+      document.getElementById('modalError').classList.remove('active');
+    }
+
+    // Save user data to Firestore
+    async function saveUserData(user) {
+      try {
+        const userRef = db.collection('users').doc(user.uid);
+        const userDoc = await userRef.get();
+        
+        if (!userDoc.exists) {
+          await userRef.set({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            loginCount: 1
           });
+          console.log('New user profile created');
+        } else {
+          await userRef.update({
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            loginCount: firebase.firestore.FieldValue.increment(1)
+          });
+          console.log('User login updated');
+        }
+      } catch (error) {
+        console.error('Error saving user data:', error);
       }
+    }
+
+    // Sign in with Google
+    function signInWithGoogle() {
+      hideModalError();
+      
+      auth.signInWithPopup(provider)
+        .then(async (result) => {
+          const user = result.user;
+          const email = user.email;
+          
+          if (email.endsWith('@tup.edu.ph')) {
+            await saveUserData(user);
+            // Modal will hide automatically via onAuthStateChanged
+          } else {
+            auth.signOut();
+            showModalError('Please use your @tup.edu.ph email address');
+          }
+        })
+        .catch((error) => {
+          console.error('Login error:', error);
+          if (error.code === 'auth/popup-closed-by-user') {
+            showModalError('Sign-in cancelled. Please try again.');
+          } else if (error.code === 'auth/popup-blocked') {
+            showModalError('Pop-up blocked. Please allow pop-ups and try again.');
+          } else {
+            showModalError('Login failed: ' + error.message);
+          }
+        });
+    }
+
+    // Check authentication and show appropriate content
+    auth.onAuthStateChanged(user => {
+      if (!user || !user.email.endsWith('@tup.edu.ph')) {
+        document.getElementById('loginModal').classList.add('active');
+        document.body.classList.add('modal-open');
+        document.getElementById('mainContent').classList.remove('active');
+      } else {
+        document.getElementById('loginModal').classList.remove('active');
+        document.body.classList.remove('modal-open');
+        document.getElementById('mainContent').classList.add('active');
+      }
+    });
+
+    // Logout function
+    function logout() {
+      auth.signOut().then(() => {
+        console.log('User signed out');
+      });
+    }
   </script>
 </body>
 </html>

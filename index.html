@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TUP Manila</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
-  <script src="navbar.js"></script>
-  
+
   <style>
     /* Loading screen */
     #loadingScreen {
@@ -21,11 +17,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: white;
+      background: rgba(255, 255, 255, 0.7); 
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 9999;
+      transition: opacity 0.5s ease;
     }
   </style>
 </head>
@@ -39,27 +37,22 @@
   </div>
 
   <!-- Main Content -->
-  <div class="container" id="mainContent" style="display: none;">
+  <div class="container" id="mainContent" style="display: none; transition: opacity 0.8s ease;">
     <div class="background-image">
       <img 
-        src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+        src="tupbg.jpg"
         alt="TUP Manila Campus"
         onerror="this.classList.add('hidden')"
       />
     </div>
 
     <div class="content">
-      <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
-        <button onclick="signOut()" style="background: #dc2626; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;">
-          Sign Out
-        </button>
-      </div>
-      <div class="hero-wrapper">
+      <div class="hero-wrapper" id="heroContent" style="opacity: 0;">
         <div class="hero-card">
           <div class="hero-content">
             <div class="hero-background">
               <img 
-                src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
+                src="tupbg.jpg"
                 alt="TUP Manila Campus"
                 onerror="this.classList.add('hidden')">
               <div class="hero-gradient"></div>
@@ -87,48 +80,87 @@
     </div>
   </div>
 
-  <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ", // FIXED: Removed the "<" typo
-        authDomain: "tupniverse-login-2ab22.firebaseapp.com",
-        projectId: "tupniverse-login-2ab22",
-        storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
-        messagingSenderId: "223789253678",
-        appId: "1:223789253678:web:80c828a9c2d695a720cbbf"
-    };
+  <!-- Firebase Scripts - Load FIRST before any code that uses Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <!-- Navbar Script - Load AFTER Firebase -->
+  <script src="navbar.js"></script>
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    
-    // Track if redirect has happened to prevent loop
-    let hasRedirected = false;
-    
-    // Check authentication
-    auth.onAuthStateChanged((user) => {
-        if (!user || !user.email.endsWith('@tup.edu.ph')) {
-            // Not logged in or wrong email - redirect to login ONCE
-            if (!hasRedirected) {
-                hasRedirected = true;
-                window.location.replace('login.html'); // Use replace instead of href
+  <script>
+    // Wait for Firebase to be fully loaded
+    function initializeApp() {
+        console.log('Initializing app...');
+        
+        // Check if Firebase is available
+        if (typeof firebase === 'undefined') {
+            console.error('Firebase not loaded yet, retrying...');
+            setTimeout(initializeApp, 100);
+            return;
+        }
+
+        console.log('Firebase loaded successfully');
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
+            authDomain: "tupniverse-login-2ab22.firebaseapp.com",
+            projectId: "tupniverse-login-2ab22",
+            storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
+            messagingSenderId: "223789253678",
+            appId: "1:223789253678:web:80c828a9c2d695a720cbbf"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('Firebase initialized');
+        }
+        const auth = firebase.auth();
+        
+        // SECURITY: Check authentication - MUST be logged in to see page
+        auth.onAuthStateChanged((user) => {
+            console.log('Auth state changed:', user ? 'User logged in' : 'No user');
+            
+            // If NO user is logged in, redirect to login page
+            if (!user) {
+                console.log('No user detected - redirecting to login');
+                window.location.replace('login.html');
+                return; // Stop execution
             }
-        } else {
-            // Logged in with correct email - show the page
+
+            // If user IS logged in, show the page
+            console.log('User authenticated:', user.email);
+            
+            // Hide loading screen and show content
             document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
-            console.log('User authenticated:', user.email);
-        }
-    });
-    function signOut() {
-        if (confirm('Are you sure you want to sign out?')) {
-            firebase.auth().signOut().then(() => {
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Sign out error:', error);
-                alert('Failed to sign out. Please try again.');
-            });
-        }
+            
+            // Animate hero content in
+            setTimeout(() => {
+                document.getElementById('heroContent').style.opacity = '1';
+            }, 100);
+
+            // Update profile info
+            setTimeout(() => {
+                const navImg = document.getElementById('navProfileImg');
+                if (navImg && user.photoURL) navImg.src = user.photoURL;
+
+                const nameTxt = document.getElementById('dropdownName');
+                const emailTxt = document.getElementById('dropdownEmail');
+                
+                if (nameTxt) nameTxt.textContent = user.displayName || "TUP Student";
+                if (emailTxt) emailTxt.textContent = user.email;
+            }, 500);
+        });
+    }
+
+    // Start initialization when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+        initializeApp();
     }
   </script>
 </body>

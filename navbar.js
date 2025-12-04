@@ -1,5 +1,5 @@
-// navbar.js - Global Navigation Bar
 document.addEventListener('DOMContentLoaded', function() {
+  // 1. RENDER NAVBAR HTML
   const navbarHTML = `
     <nav class="navbar-global">
       <div class="nav-inner-global">
@@ -15,25 +15,76 @@ document.addEventListener('DOMContentLoaded', function() {
           <a href="contact.html">Contact</a>
         </div>
 
-        <div class="nav-icon-global">
-          <svg class="globe-icon-global" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-          </svg>
+        <div class="profile-container">
+            <div class="profile-trigger" onclick="toggleProfileDropdown(event)">
+               <img id="navProfileImg" src="https://ui-avatars.com/api/?name=T&background=random" alt="Profile">
+            </div>
+
+            <div id="profileDropdown" class="profile-dropdown">
+                <div class="dropdown-header">
+                    <p id="dropdownName" class="user-name">Loading...</p>
+                    <p id="dropdownEmail" class="user-email">Waiting for data...</p>
+                </div>
+                <div class="dropdown-divider"></div>
+                <button onclick="handleLogout()" class="dropdown-item logout-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sign Out
+                </button>
+            </div>
         </div>
       </div>
     </nav>
   `;
   
-  // Insert navbar at the beginning of body
   document.body.insertAdjacentHTML('afterbegin', navbarHTML);
   
-  // Highlight current page
+  // 2. HIGHLIGHT ACTIVE PAGE
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav-links-global a').forEach(link => {
     if (link.getAttribute('href') === currentPage) {
       link.classList.add('active-page');
     }
   });
+
+  // 3. CLOSE DROPDOWN ON OUTSIDE CLICK
+  document.addEventListener('click', function(e) {
+    const container = document.querySelector('.profile-container');
+    const dropdown = document.getElementById('profileDropdown');
+    if (container && !container.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+  });
+
+  // 4. UNIVERSAL PROFILE UPDATER (Running on every page)
+  if (typeof firebase !== 'undefined') {
+      firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+              const navImg = document.getElementById('navProfileImg');
+              const nameTxt = document.getElementById('dropdownName');
+              const emailTxt = document.getElementById('dropdownEmail');
+
+              if (navImg && user.photoURL) navImg.src = user.photoURL;
+              if (nameTxt) nameTxt.textContent = user.displayName;
+              if (emailTxt) emailTxt.textContent = user.email;
+          }
+      });
+  }
 });
+
+// Toggle Logic
+window.toggleProfileDropdown = function(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Logout Logic
+window.handleLogout = function() {
+    firebase.auth().signOut().then(() => {
+        window.location.href = 'login.html';
+    });
+}

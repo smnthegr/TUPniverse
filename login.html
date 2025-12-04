@@ -380,21 +380,32 @@
                     }
                 });
         }
-
-        // Check if already logged in
-        // Show the login modal
-        document.getElementById('loginModal').classList.add('active');
-        document.body.classList.add('modal-open');
         
-        // Check if already logged in
+        let authCheckComplete = false;
+        
         auth.onAuthStateChanged((user) => {
+            authCheckComplete = true;
+            
             if (user && user.email.endsWith('@tup.edu.ph')) {
                 // Already logged in, redirect to index
                 window.location.href = 'index.html';
+            } else {
+                // Not logged in, ensure modal is visible
+                document.getElementById('loginModal').classList.add('active');
+                document.body.classList.add('modal-open');
             }
         });
+        
+        // Fallback: if auth check takes too long, show modal anyway
+        setTimeout(() => {
+            if (!authCheckComplete) {
+                document.getElementById('loginModal').classList.add('active');
+                document.body.classList.add('modal-open');
+            }
+        }, 1000);
     </script>
 </body>
 </html>
+
 
 

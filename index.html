@@ -12,18 +12,43 @@
   <link rel="stylesheet" href="style.css">
 
   <script src="navbar.js"></script>
+  
+  <style>
+    /* Loading screen */
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+  </style>
 </head>
 <body class="homepage">
+  <!-- Loading Screen -->
+  <div id="loadingScreen">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading...</p>
+    </div>
+  </div>
+
   <!-- Main Content -->
-  <div class="container">
+  <div class="container" id="mainContent" style="display: none;">
     <div class="background-image">
       <img 
         src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
         alt="TUP Manila Campus"
-        onerror="this.classList.add('hidden')">
+        onerror="this.classList.add('hidden')"
+      />
     </div>
 
-    <div class="content" id="mainContent">
+    <div class="content">
       <div class="hero-wrapper">
         <div class="hero-card">
           <div class="hero-content">
@@ -31,8 +56,7 @@
               <img 
                 src="https://cdn.kami.com.ph/images/1120/542505fd70386a12.jpeg?v=1"
                 alt="TUP Manila Campus"
-                onerror="this.classList.add('hidden')"
-              />
+                onerror="this.classList.add('hidden')">
               <div class="hero-gradient"></div>
             </div>
 
@@ -61,7 +85,7 @@
   <script>
     // Firebase Configuration
     const firebaseConfig = {
-        apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
+        apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ", // FIXED: Removed the "<" typo
         authDomain: "tupniverse-login-2ab22.firebaseapp.com",
         projectId: "tupniverse-login-2ab22",
         storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
@@ -73,19 +97,24 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     
-    // Hide content initially
-    document.getElementById('mainContent').style.display = 'none';
+    // Track if redirect has happened to prevent loop
+    let hasRedirected = false;
     
-    // Check authentication - redirect if not logged in
+    // Check authentication
     auth.onAuthStateChanged((user) => {
         if (!user || !user.email.endsWith('@tup.edu.ph')) {
-            // Not logged in or wrong email, redirect to login page
-            window.location.href = 'login.html';
+            // Not logged in or wrong email - redirect to login ONCE
+            if (!hasRedirected) {
+                hasRedirected = true;
+                window.location.replace('login.html'); // Use replace instead of href
+            }
         } else {
-            // Logged in with correct email, show the page
+            // Logged in with correct email - show the page
+            document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
+            console.log('User authenticated:', user.email);
         }
     });
-</script>
+  </script>
 </body>
 </html>

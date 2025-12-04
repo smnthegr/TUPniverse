@@ -7,201 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-    <style>
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .modal-overlay.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
-            border: 1px solid rgba(11, 11, 11, 0.397);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            position: relative;
-            animation: slideUp 0.3s ease;
-        }
-        
-        .modal-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .modal-logo {
-            width: 60px;
-            height: 60px;
-            background: rgb(133, 1, 1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .modal-logo svg {
-            width: 40px;
-            height: 40px;
-            color: white;
-        }
-        
-        .modal-title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-        
-        .modal-subtitle {
-            font-size: 16px;
-            color: #e3e3e3;
-        }
-        
-        .info-box {
-            background: linear-gradient(135deg, #930011d3 0%, #a21d2da2 100%);
-            border-left: 4px solid #8a0404;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            gap: 12px;
-        }
-        
-        .info-box svg {
-            width: 20px;
-            height: 20px;
-            color: rgb(255, 255, 255);
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        
-        .info-text {
-            font-size: 13px;
-            color: white;
-            line-height: 1.5;
-        }
-        
-        .google-btn {
-            width: 100%;
-            background: white;
-            border: 2px solid #e5e7eb;
-            padding: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            transition: all 0.2s;
-        }
-        
-        .google-btn:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .google-icon {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-        
-        .modal-footer {
-            text-align: center;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #e5e7eb;
-        }
-        
-        .modal-footer-text {
-            font-size: 12px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        
-        .modal-footer-text svg {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .error-message {
-            display: none;
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 16px;
-        }
-        
-        .error-message.active {
-            display: flex;
-            gap: 10px;
-            align-items: start;
-        }
-        
-        .error-message svg {
-            width: 18px;
-            height: 18px;
-            color: #dc2626;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        
-        .error-text {
-            font-size: 13px;
-            color: #991b1b;
-            line-height: 1.4;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        body.modal-open {
-            overflow: hidden;
-        }
-    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="loginstyle.css">
 </head>
 <body>
     <!-- Login Modal -->
@@ -209,7 +16,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-logo">
-                    <img src="logo.png" alt="TUPniverse Logo" style="width: 80px; height: 80px; object-fit: contain;">
+                    <img src="logo.png" alt="TUPniverse Logo">
                 </div>
                 <h2 class="modal-title">Welcome to TUPniverse</h2>
                 <p class="modal-subtitle">Sign in to continue</p>
@@ -289,6 +96,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // Configure Google Sign-In
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -296,23 +104,6 @@
             hd: 'tup.edu.ph',
             prompt: 'select_account'
         });
-
-        // Show/Hide Modal
-        function showLoginModal() {
-            document.getElementById('loginModal').classList.add('active');
-            document.body.classList.add('modal-open');
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').classList.remove('active');
-            document.body.classList.remove('modal-open');
-            hideModalError();
-        }
-
-        // Prevent modal from closing manually
-        function preventModalClose() {
-            return false;
-        }
 
         // Show/Hide Error in Modal
         function showModalError(message) {
@@ -326,18 +117,48 @@
             document.getElementById('modalError').classList.remove('active');
         }
 
+        // Save user data to Firestore
+        async function saveUserData(user) {
+            try {
+                const userRef = db.collection('users').doc(user.uid);
+                const userDoc = await userRef.get();
+                
+                if (!userDoc.exists) {
+                    await userRef.set({
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        loginCount: 1
+                    });
+                    console.log('New user profile created');
+                } else {
+                    await userRef.update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        loginCount: firebase.firestore.FieldValue.increment(1)
+                    });
+                    console.log('User login updated');
+                }
+            } catch (error) {
+                console.error('Error saving user data:', error);
+            }
+        }
+
         // Sign in with Google
         function signInWithGoogle() {
             hideModalError();
             
             auth.signInWithPopup(provider)
-                .then((result) => {
+                .then(async (result) => {
                     const user = result.user;
                     const email = user.email;
                     
                     if (email.endsWith('@tup.edu.ph')) {
-                        closeLoginModal();
-                        showMainContent(user.displayName, user.email);
+                        // Save user data to Firestore
+                        await saveUserData(user);
+                        // Redirect to index page
+                        window.location.href = 'index.html';
                     } else {
                         auth.signOut();
                         showModalError('Please use your @tup.edu.ph email address');
@@ -355,28 +176,11 @@
                 });
         }
 
-        // Sign out
-        function signOut() {
-            auth.signOut().then(() => {
-                document.getElementById('mainContent').style.display = 'none';
-                showLoginModal();
-            });
-        }
-
-        // Show main content after login
-        function showMainContent(name, email) {
-            document.getElementById('userName').textContent = name || 'Student';
-            document.getElementById('userEmail').textContent = email;
-            document.getElementById('mainContent').style.display = 'flex';
-        }
-
-        // Check authentication state
+        // Check if already logged in
         auth.onAuthStateChanged((user) => {
             if (user && user.email.endsWith('@tup.edu.ph')) {
-                closeLoginModal();
-                showMainContent(user.displayName, user.email);
-            } else {
-                setTimeout(showLoginModal, 500);
+                // Already logged in, redirect to index
+                window.location.href = 'index.html';
             }
         });
     </script>

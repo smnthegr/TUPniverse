@@ -8,15 +8,6 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
   <script src="navbar.js"></script>
-  
-  <style>
-    .error-message {
-      color: #ff5555; /* Error red */
-      font-size: 0.9em;
-      margin-top: 5px;
-      display: block; 
-    }
-  </style>
 </head>
 <body class="tour-body">
   <div class="tour-container">
@@ -56,11 +47,10 @@
             id="searchInput"
             placeholder="Search buildings, rooms..."
             oninput="filterLocations()"
-            maxlength="50"           >
-          <span class="error-message" id="search-filter-error"></span>
+          >
         </div>
-        
-                <div class="category" id="mainBuildingCategory">
+
+        <div class="category" id="mainBuildingCategory">
           <div class="category-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -272,20 +262,6 @@
 
   <script>
     let isPanelCollapsed = false;
-    
-    // Sanitization Function 
-    function sanitizeInput(str) {
-      if (!str) return '';
-      return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    function displayError(id, message) {
-      const errorElement = document.getElementById(id);
-      if (errorElement) {
-        errorElement.textContent = message;
-        errorElement.style.color = '#ff5555'; 
-      }
-    }
 
     function togglePanel() {
       const panel = document.getElementById('searchPanel');
@@ -308,38 +284,21 @@
         element.classList.add('active');
         
         const locationName = element.getAttribute('data-name');
-        // Note: The element with ID 'currentLocation' does not exist in the HTML, 
-        // so this line is commented out to prevent a JavaScript error.
-        // document.getElementById('currentLocation').textContent = locationName;
+        document.getElementById('currentLocation').textContent = locationName;
       }
     }
 
     function filterLocations() {
-      const searchInput = document.getElementById('searchInput');
-      const searchTermRaw = searchInput.value;
-      const errorHookId = 'search-filter-error';
-      
-      displayError(errorHookId, ''); 
-
-      const checkAttackChars = (value) => value.includes('<') || value.includes('>') || value.includes(';');
-      
-      if (checkAttackChars(searchTermRaw)) {
-          displayError(errorHookId, '⚠️ Security Alert: Input contains forbidden characters.');
-          searchInput.value = '';
-          return; 
-      }
-
-      const searchTerm = sanitizeInput(searchTermRaw).toLowerCase();
-     
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const categories = document.querySelectorAll('.category');
-      
+      
       categories.forEach(category => {
         let categoryHasVisibleItems = false;
         const categoryItems = category.querySelectorAll('.location-item');
-        
+        
         categoryItems.forEach(item => {
           const locationName = item.getAttribute('data-name').toLowerCase();
-          
+          
           if (locationName.includes(searchTerm)) {
             item.classList.remove('hidden-by-search');
             categoryHasVisibleItems = true;
@@ -347,7 +306,7 @@
             item.classList.add('hidden-by-search');
           }
         });
-        
+        
         if (categoryHasVisibleItems) {
           category.classList.remove('hidden-by-search');
         } else {

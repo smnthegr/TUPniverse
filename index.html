@@ -61,7 +61,7 @@
   <script>
     // Firebase Configuration
     const firebaseConfig = {
-        apiKey: "AIzaSyCBet<8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
+        apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
         authDomain: "tupniverse-login-2ab22.firebaseapp.com",
         projectId: "tupniverse-login-2ab22",
         storageBucket: "tupniverse-login-2ab22.firebasestorage.app",
@@ -73,13 +73,18 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     
+    // Hide content initially
+    document.getElementById('mainContent').style.display = 'none';
+    
     // Check authentication - redirect if not logged in
     auth.onAuthStateChanged((user) => {
         if (!user || !user.email.endsWith('@tup.edu.ph')) {
             // Not logged in or wrong email, redirect to login page
             window.location.href = 'login.html';
+        } else {
+            // Logged in with correct email, show the page
+            document.getElementById('mainContent').style.display = 'block';
         }
-        // If logged in with correct email, page will display normally
     });
 </script>
 </body>

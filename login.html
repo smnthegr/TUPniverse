@@ -386,6 +386,11 @@
         }
 
         // Check if already logged in
+        // Show the login modal
+        document.getElementById('loginModal').classList.add('active');
+        document.body.classList.add('modal-open');
+        
+        // Check if already logged in
         auth.onAuthStateChanged((user) => {
             if (user && user.email.endsWith('@tup.edu.ph')) {
                 // Already logged in, redirect to index
@@ -395,3 +400,4 @@
     </script>
 </body>
 </html>
+

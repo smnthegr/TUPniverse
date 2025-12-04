@@ -39,7 +39,11 @@
             justify-content: center;
             padding: 20px;
         }
-  
+
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+                
         .modal-content {
             background: rgba(240, 240, 240, 0.2);
             backdrop-filter: blur(10px);
@@ -53,6 +57,110 @@
             position: relative;
             animation: slideUp 0.3s ease;
         }
+
+        /* --- Styles for Modals (Privacy & Contact) --- */
+        .secondary-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.3s ease;
+        }
+
+        .privacy-text p {
+            margin-bottom: 12px;
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: #991b1b;
+            background: #fffafa;
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-textarea:focus {
+            border-color: #991b1b;
+            background: #fffafa;
+        }
+        
+        .privacy-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .privacy-checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #991b1b;
+        }
+
+        .privacy-link {
+            color: #fbbf24;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .footer-link {
+            color: #e3e3e3;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: color 0.2s;
+            display: inline-block;
+            margin-top: 12px;
+            opacity: 0.8;
+        }
+        .footer-link:hover {
+            color: white;
+            text-decoration: underline;
+            opacity: 1;
+        }
+        /* ------------------------------------ */
                 
         .modal-header {
             text-align: center;
@@ -81,7 +189,7 @@
         .modal-title {
             font-size: 28px;
             font-weight: bold;
-            color: #1f2937;
+            color: white;
             margin-bottom: 8px;
         }
                 
@@ -236,6 +344,14 @@
                 </div>
             </div>
 
+            <!-- PRIVACY CHECKBOX ADDED HERE -->
+            <div class="privacy-checkbox-container">
+                <input type="checkbox" id="privacyCheck">
+                <label for="privacyCheck" class="select-none cursor-pointer">
+                    I agree to the <span onclick="openPrivacyModal()" class="privacy-link">Privacy Policy & Terms</span>
+                </label>
+            </div>
+
             <button onclick="signInWithGoogle()" class="google-btn">
                 <svg class="google-icon" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -260,7 +376,67 @@
                     </svg>
                     Secure authentication via Google
                 </div>
+                <!-- Contact Support Link -->
+                <a onclick="openContactModal()" class="footer-link">
+                    Need help? Contact Support
+                </a>
             </div>
+        </div>
+    </div>
+
+    <!-- PRIVACY POLICY TEXT MODAL -->
+    <div id="privacyTextModal" class="modal-overlay">
+        <div class="secondary-modal-content">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="text-xl font-bold text-gray-800">Privacy Policy</h3>
+                <button onclick="closePrivacyModal()" class="text-gray-500 hover:text-red-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="privacy-text">
+                <p><strong>1. Data Collection:</strong> We collect your email address and basic profile information provided by Google solely for authentication purposes within TUPniverse.</p>
+                <p><strong>2. Usage:</strong> Your data is used to verify your status as a TUP student and to maintain your user profile.</p>
+                <p><strong>3. Security:</strong> We implement standard security measures to protect your data. We do not sell your personal information to third parties.</p>
+                <p><strong>4. Contact Information:</strong> If you use our contact forms to reach support, we collect your <strong>name</strong> and <strong>email address</strong>. This information is used strictly to communicate with you regarding your inquiry and is not used for marketing purposes.</p>
+                <p><strong>5. Consent:</strong> By using this service, you consent to the processing of your data as described herein.</p>
+            </div>
+            <button onclick="closePrivacyModal()" class="w-full mt-6 bg-red-900 text-white py-2 rounded-lg hover:bg-red-800 transition-colors">
+                I Understand
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTACT SUPPORT MODAL -->
+    <div id="contactModal" class="modal-overlay">
+        <div class="secondary-modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Contact Support</h3>
+                <button onclick="closeContactModal()" class="text-gray-500 hover:text-red-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="contactName" class="form-input" placeholder="Juan Dela Cruz" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="contactEmail" class="form-input" placeholder="juan@tup.edu.ph" required>
+                    <p class="text-xs text-gray-400 mt-1">We'll send our reply here.</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Message</label>
+                    <textarea id="contactMessage" class="form-textarea" placeholder="Describe your issue..." required></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-red-900 text-white py-3 rounded-lg hover:bg-red-800 transition-colors font-semibold mt-2">
+                    Send Message
+                </button>
+            </form>
         </div>
     </div>
 
@@ -307,7 +483,7 @@
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.setCustomParameters({
             hd: 'tup.edu.ph',
-            prompt: 'consent'
+            prompt: 'select_account'
         });
 
         // Show/Hide Error in Modal
@@ -321,6 +497,84 @@
         function hideModalError() {
             document.getElementById('modalError').classList.remove('active');
         }
+
+        // --- Privacy Modal Logic ---
+        function openPrivacyModal() {
+            const privacyModal = document.getElementById('privacyTextModal');
+            privacyModal.style.zIndex = "10000";
+            privacyModal.classList.add('active');
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyTextModal').classList.remove('active');
+        }
+
+        // --- Contact Modal Logic ---
+        function openContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.style.zIndex = "10000";
+            modal.classList.add('active');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            
+            // Get values
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            try {
+                // Send to Firestore Collection 'contact_messages'
+                await db.collection('contact_messages').add({
+                    name: name,
+                    email: email,
+                    message: message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'new' // To track if you've read it later
+                });
+
+                // Success Feedback
+                btn.innerText = "Message Sent!";
+                btn.classList.remove('bg-red-900');
+                btn.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    closeContactModal();
+                    e.target.reset();
+                    btn.innerText = originalText;
+                    btn.classList.add('bg-red-900');
+                    btn.classList.remove('bg-green-600');
+                    btn.disabled = false;
+                }, 1500);
+
+            } catch (error) {
+                console.error("Error sending message: ", error);
+                btn.innerText = "Failed to Send";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }
+        }
+        // ---------------------------
+
+        // NEW: Auto-open privacy policy when checked
+        document.getElementById('privacyCheck').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                openPrivacyModal();
+            }
+        });
 
         // Save user data to Firestore
         async function saveUserData(user) {
@@ -353,6 +607,18 @@
         // Sign in with Google
         function signInWithGoogle() {
             hideModalError();
+
+            // CHECK PRIVACY CONSENT
+            const privacyCheckbox = document.getElementById('privacyCheck');
+            if (!privacyCheckbox.checked) {
+                showModalError('Please agree to the Privacy Policy to continue.');
+                // Add a little shake animation or visual cue to the checkbox
+                privacyCheckbox.parentElement.style.border = "1px solid #ef4444";
+                setTimeout(() => {
+                    privacyCheckbox.parentElement.style.border = "none";
+                }, 2000);
+                return;
+            }
             
             auth.signInWithPopup(provider)
                 .then(async (result) => {
@@ -380,33 +646,26 @@
                     }
                 });
         }
+
+        // Check if already logged in
+        // Show the login modal
+        document.getElementById('loginModal').classList.add('active');
+        document.body.classList.add('modal-open');
         
-        let authCheckComplete = false;
-        
+        // Check if already logged in
         auth.onAuthStateChanged((user) => {
-            authCheckComplete = true;
-            
             if (user && user.email.endsWith('@tup.edu.ph')) {
                 // Already logged in, redirect to index
                 window.location.href = 'index.html';
-            } else {
-                // Not logged in, ensure modal is visible
-                document.getElementById('loginModal').classList.add('active');
-                document.body.classList.add('modal-open');
             }
         });
-        
-        // Fallback: if auth check takes too long, show modal anyway
-        setTimeout(() => {
-            if (!authCheckComplete) {
-                document.getElementById('loginModal').classList.add('active');
-                document.body.classList.add('modal-open');
-            }
-        }, 1000);
+
+        // Add Sign Out function for testing purposes
+        function signOut() {
+            auth.signOut().then(() => {
+                location.reload();
+            });
+        }
     </script>
 </body>
 </html>
-
-
-
-

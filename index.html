@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  <script>
+ <script>
     // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
@@ -130,6 +130,14 @@
         hd: 'tup.edu.ph',
         prompt: 'select_account'
     });
+
+    // Hide main content initially
+    const mainContent = document.getElementById('mainContent');
+    const loginModal = document.getElementById('loginModal');
+    
+    if (mainContent) {
+        mainContent.style.display = 'none';
+    }
 
     // Show/Hide Error in Modal
     function showModalError(message) {
@@ -181,7 +189,10 @@
                 if (email.endsWith('@tup.edu.ph')) {
                     await saveUserData(user);
                     // Hide modal and show main content
-                    document.getElementById('loginModal').classList.add('hidden');
+                    loginModal.classList.add('hidden');
+                    if (mainContent) {
+                        mainContent.style.display = 'block';
+                    }
                 } else {
                     auth.signOut();
                     showModalError('Please use your @tup.edu.ph email address');
@@ -201,14 +212,18 @@
 
     // Check authentication status
     auth.onAuthStateChanged((user) => {
-        const loginModal = document.getElementById('loginModal');
-        
         if (user && user.email.endsWith('@tup.edu.ph')) {
-            // User is authenticated, hide modal
+            // User is authenticated, hide modal and show content
             loginModal.classList.add('hidden');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+            }
         } else {
-            // Not authenticated, show modal
+            // Not authenticated, show modal and hide content
             loginModal.classList.remove('hidden');
+            if (mainContent) {
+                mainContent.style.display = 'none';
+            }
         }
     });
 </script>

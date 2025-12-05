@@ -129,21 +129,32 @@
     }
 
     function triggerWelcome(user) {
-        console.log("Triggering Welcome Modal for Admin only..."); // Debug check
-        
-        const modal = document.getElementById('welcomeModal');
-        const title = document.getElementById('welcomeTitle');
-        const msg = document.getElementById('welcomeMsg');
-        const iconSvg = document.getElementById('welcomeIconSvg');
-        const iconBg = document.getElementById('welcomeIconBg');
-
         const ADMIN_EMAIL = "samanthaelaine.egar@tup.edu.ph";
+        const POPUP_SEEN_KEY = 'welcomeShown';
 
-        // *** ONLY RUN LOGIC FOR ADMIN ***
+        // Check if the user is the Admin
         if (user.email === ADMIN_EMAIL) {
+            
+            // ⭐️ CRITICAL STEP 1: Check if the flag is already set ⭐️
+            if (sessionStorage.getItem(POPUP_SEEN_KEY) === 'true') {
+                console.log("Admin previously welcomed in this session. Hiding modal.");
+                // Ensure the modal is hidden if the flag is set (e.g., when navigating back)
+                document.getElementById('welcomeModal').style.display = 'none';
+                return; 
+            }
+            
+            // If the code reaches here, it means: (1) User is Admin AND (2) Flag is NOT set.
+            
+            console.log("Triggering Welcome Modal for Admin (first time this session)..."); 
+
+            const modal = document.getElementById('welcomeModal');
+            const title = document.getElementById('welcomeTitle');
+            const msg = document.getElementById('welcomeMsg');
+            const iconSvg = document.getElementById('welcomeIconSvg');
+            const iconBg = document.getElementById('welcomeIconBg');
+
             // ADMIN STYLE
             title.innerText = "Welcome, Admin Samantha!";
-            // Using the professional message you preferred
             msg.innerText = "Administrative View Confirmed."; 
             // Crown Icon
             iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />';
@@ -151,14 +162,16 @@
             iconBg.classList.remove('from-white/20');
             iconBg.classList.add('from-red-500/20');
 
-            // Force display flex to override any hidden states
+            // Force display flex to show the modal
             modal.style.display = 'flex';
             
-            // Setting session storage flag for the admin only
-            sessionStorage.setItem('welcomeShown', 'true');
+            // ⭐️ CRITICAL STEP 2: Set the flag AFTER the modal is shown ⭐️
+            sessionStorage.setItem(POPUP_SEEN_KEY, 'true');
+
         } else {
             // Regular user: Do nothing, skip the modal
             console.log("Regular user detected. Skipping welcome modal.");
+            document.getElementById('welcomeModal').style.display = 'none';
         }
     }
 
@@ -187,6 +200,8 @@
         
         auth.onAuthStateChanged((user) => {
             if (!user) {
+                // If user logs out or session expires, clean up the flag
+                sessionStorage.removeItem('welcomeShown');
                 window.location.replace('login.html');
                 return; 
             }
@@ -199,7 +214,7 @@
             // 2. Show Main Content
             document.getElementById('mainContent').style.display = 'block';
 
-            // 3. Trigger Welcome Modal (only shows for Admin inside the function logic)
+            // 3. Trigger Welcome Modal (logic inside function handles the sessionStorage check)
             triggerWelcome(user);
             
             // Animate hero content

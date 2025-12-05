@@ -9,162 +9,8 @@ const listViewBtn = document.getElementById("listBtn");
 
 let date = new Date();
 
-// 🗓️ Store special days per month (0-based index)
-const events = {
-  2025: { 
-    5: { // June
-        holidays: { 12: "Independence Day" },
-        academic: { 2: "Freshmen Enrollment" },
-        exam: {},
-        break: {}
-    },
-    6: { // July
-        holidays: {},
-        academic: {
-        14: "Graduate Programs",
-        21: "2nd - 5th Year and GP Enrollment",
-        28: "Returning Students Enrollment | Adding / Changing of Subjects (irregular)"
-        },
-        exam: {},
-        break: {}
-    },
-    7: { // August
-        holidays: { 21: "Ninoy Aquino Day", 25: "National Heroes Day" },
-        academic: {
-        4: "Freshmen Orientation",
-        11: "Start of Classes"
-        },
-        exam: {},
-        break: {}
-    },
-    8: { // September
-        holidays: {},
-        academic: {},
-        exam: { 16: "Preliminary Examination" },
-        break: {}
-    },
-    9: { // October
-        holidays: {},
-        academic: { 27: "Deadline of Dropping Subjects" },
-        exam: { 28: "Midterm Examination" },
-        break: {}
-    },
-    10: { // November (0 = January)
-        holidays: {1: "All Saint's Day", 30: "Bonifacio Day"},
-        academic: {10: "Faculty Evaluation"},
-        exam: {},
-        break: {3: "Academic Break"}
-    },
-    11: { // December
-            holidays: {
-        8: "Feast of the Immaculate Conception of Mary",
-        25: "Christmas Day",
-        30: "Rizal Day",
-        31: "Last Day of the Year"
-        },
-        academic: {
-        4: "Application for Graduation",
-        12: "Deadline for Submission of Grades (Graduating)",
-        14: "End of 1st Semester",
-        15: "ACSO Week",
-        17: "TUP Foundation Day",
-        21: "Deadline for Submission of Grades (Non-Graduating)"
-        },
-        exam: {
-        2: "Final Examination (Graduating)",
-        10: "Final Examination (Non-Graduating)"
-        },
-        break: {
-        22: "Christmas Break Begins"
-        }
-    }
-  },
-  2026: {
-    0: { // january
-        holidays: {1: "New Year's Day"},
-        academic: {
-        5: "1st-5th Year and GP Enrollment",
-        12: "Return of Faculty | Adding / Changing of Subjects (Irregular)", 
-        13: "Academic Council Meeting",
-        14: "Start of Classes for 2nd Semester",
-        },
-        exam: {},
-        break: {}
-    },
-    1: { // February
-        holidays: {
-        10: "Chinese New Year",
-        25: "EDSA People Power Revolution Anniversary"
-      },
-        academic: {},
-        exam: {18: "Preliminary Examination"},
-        break: {}
-    },
-    2: { // March
-        holidays: {},
-        academic: {25: "Deadline for Dropping Subjects"},
-        exam: {},
-        break: {26: "Midterm Examination"}
-    },
-    3: { // April
-        holidays: {
-        9: "Maundy Thursday | Araw ng Kagitingan",
-        10: "Good Friday",
-        11: "Black Saturday"
-        },
-        academic: {
-        13: "Faculty Evaluation | Application for Graduation",
-        15: "Cultural and Sports Week"
-      },
-        exam: {},
-        break: {6: "Academic Break"}
-    },
-    4: { // May
-        holidays: {1: "Labor Day"},
-        academic: {
-        9: "Moratorium for Final Defense",
-        16: "Deadline of Submission of Grades (Graduating)",
-        21: "End of 2nd Semester | Start of PVP",
-        25: "1st to 5th Year and GP Enrollment (Midyear)",
-        30: "Deadline of Submission of Grades (Non-Graduating)"
-      },
-        exam: {
-        5: "Final Exam (Graduating)",
-        18: "Final Exam (Non-Graduating)"
-      },
-        break: {}
-    },
-    5: { // June
-        holidays: {12: "Independence Day"},
-        academic: {
-        1: "Start of Classes (Midyear)",
-        2: "Deadline of Dropping Subjects (Midyear)",
-        3: "Academic Council Meeting",
-        22: "Application for Graduation (Midyear)"
-      },
-        exam: {},
-        break: {}
-    },
-    6: { // July
-        holidays: {},
-        academic: {
-        10: "Deadline for Submission of Grades for Midyear (Graduating)",
-        11: "End of Midyear Classes",
-        16: "Academic Council Meeting (Midyear)",
-        20: "Deadline of Submission of Grades for Midyear (Non-Graduating)",
-        27: "Return of Faculty",
-        29: "Start of Classes (SY 2026-2027)"
-      },
-        exam: {
-        1: "Final Examination For Midyear (Graduating)",
-        9: "Final Examination For Midyear (Non-Graduating)"
-      },
-        break: {}
-    },
-
-  }
-    
-};
+// 🗓️ Global events object (Populated by Firebase in the HTML file)
+window.events = {}; 
 
 function renderCalendar() {
   const month = date.getMonth();
@@ -194,7 +40,8 @@ function renderCalendar() {
     div.classList.add("day");
 
     let labelText = "";
-    const monthEvents = events[year]?.[month] || {};
+    // Access the global window.events object
+    const monthEvents = window.events[year]?.[month] || {};
 
     if (monthEvents.holidays && monthEvents.holidays[d]) {
       labelText = monthEvents.holidays[d];
@@ -219,56 +66,15 @@ function renderCalendar() {
   }
 }
 
-function renderListView() {
-  const month = date.getMonth();
-  const year = date.getFullYear();
-
-  const monthEvents = events[year]?.[month];
-
-  const title = document.createElement("h2");
-  title.textContent = `${date.toLocaleString("default", { month: "long" })} ${year} Events`;
-  listView.appendChild(title);
-
-  if (!monthEvents || Object.values(monthEvents).every(obj => Object.keys(obj).length === 0)) {
-    listView.innerHTML += `<p>No events for this month.</p>`;
-    return;
-  }
-
-  const table = document.createElement("table");
-  table.classList.add("semester-table");
-  table.innerHTML = `
-    <tr><th>Date</th><th>Event</th><th>Type</th></tr>
-  `;
-
-  const addRow = (dateNum, text, type) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${month + 1}/${dateNum}/${year}</td>
-      <td>${text}</td>
-      <td>${type}</td>
-    `;
-    table.appendChild(row);
-  };
-
-  for (const [day, desc] of Object.entries(monthEvents.holidays || {})) addRow(day, desc, "Holiday");
-  for (const [day, desc] of Object.entries(monthEvents.academic || {})) addRow(day, desc, "Academic");
-  for (const [day, desc] of Object.entries(monthEvents.exam || {})) addRow(day, desc, "Exam");
-  for (const [day, desc] of Object.entries(monthEvents.break || {})) addRow(day, desc, "Break");
-
-  listView.appendChild(table);
-}
-
 // Navigation Buttons
 document.getElementById("prevMonth").addEventListener("click", () => {
   date.setMonth(date.getMonth() - 1);
   renderCalendar();
-  if (!listView.classList.contains("hidden")) renderListView();
 });
 
 document.getElementById("nextMonth").addEventListener("click", () => {
   date.setMonth(date.getMonth() + 1);
   renderCalendar();
-  if (!listView.classList.contains("hidden")) renderListView();
 });
 
 calendarViewBtn.addEventListener("click", () => {
@@ -276,6 +82,7 @@ calendarViewBtn.addEventListener("click", () => {
   listViewBtn.classList.remove("active");
   document.getElementById("calendarView").classList.remove("hidden");
   listView.classList.add("hidden");
+  renderCalendar(); // Re-render to ensure updates show
 });
 
 listViewBtn.addEventListener("click", () => {
@@ -285,5 +92,5 @@ listViewBtn.addEventListener("click", () => {
   listView.classList.remove("hidden");
 });
 
+// Initial render
 renderCalendar();
-

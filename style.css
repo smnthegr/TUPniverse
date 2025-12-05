@@ -445,10 +445,15 @@ body {
   background: #f1f5f9;
   color: #ffffff;
 }
-
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
 /* Search Input - Light Theme */
 .search-box {
   position: relative;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 1.5rem;
 }
 

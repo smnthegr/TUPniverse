@@ -39,23 +39,39 @@ function renderCalendar() {
     const div = document.createElement("div");
     div.classList.add("day");
 
-    let labelText = "";
     // Access the global window.events object
     const monthEvents = window.events[year]?.[month] || {};
 
-    if (monthEvents.holidays && monthEvents.holidays[d]) {
-      labelText = monthEvents.holidays[d];
-      div.classList.add("holiday");
-    } else if (monthEvents.academic && monthEvents.academic[d]) {
-      labelText = monthEvents.academic[d];
-      div.classList.add("academic");
-    } else if (monthEvents.exam && monthEvents.exam[d]) {
-      labelText = monthEvents.exam[d];
-      div.classList.add("exam");
-    } else if (monthEvents.break && monthEvents.break[d]) {
-      labelText = monthEvents.break[d];
-      div.classList.add("break");
+    // ⭐️ START OF MERGING LOGIC ⭐️
+    const dayEvents = [];
+    
+    // Check all event categories for the current day
+    ['holidays', 'academic', 'exam', 'break'].forEach(catKey => {
+        // Events are stored as an array of strings (from fetchEvents in HTML)
+        const eventsForCat = monthEvents[catKey]?.[d];
+        
+        if (eventsForCat && eventsForCat.length > 0) {
+            // Collect all events
+            dayEvents.push(...eventsForCat);
+            
+            // Apply the category class to the day cell for coloring/styling
+            // Replace 'holidays' with 'holiday' to match your CSS dot classes
+            div.classList.add(catKey.replace('holidays', 'holiday')); 
+        }
+    });
+
+    let labelText = "";
+    
+    if (dayEvents.length > 0) {
+        // Create the tooltip (what you see on hover) by joining events with a newline
+        const tooltipText = dayEvents.join('\n');
+        div.setAttribute('title', tooltipText);
+        div.classList.add('has-event'); // Add a general class for styling event days
+        
+        // 🔥🔥🔥 CRITICAL CHANGE: Join all events with a <br> for visible merging 🔥🔥🔥
+        labelText = dayEvents.join('<br>');
     }
+    // ⭐️ END OF MERGING LOGIC ⭐️
 
     div.innerHTML = `
       <div class="day-num">${d}</div>
@@ -65,6 +81,9 @@ function renderCalendar() {
     daysContainer.appendChild(div);
   }
 }
+// ... rest of the script.js file ...
+
+
 
 // Navigation Buttons
 document.getElementById("prevMonth").addEventListener("click", () => {

@@ -209,17 +209,19 @@ async function checkIfDbEmpty() {
     if (snap.empty) document.getElementById('initCalendarBtn').classList.remove('hidden');
 }
 
+
 async function fetchEvents() {
     const snapshot = await db.collection('calendar').get();
     
-    const sem1 = document.getElementById('sem1Body');
-    const sem2 = document.getElementById('sem2Body');
-    const mid = document.getElementById('midBody');
+    const sem1Body = document.getElementById('sem1Body');
+    const sem2Body = document.getElementById('sem2Body');
+    const midBody = document.getElementById('midBody');
     
-    sem1.innerHTML = ''; sem2.innerHTML = ''; mid.innerHTML = '';
+    sem1Body.innerHTML = ''; sem2Body.innerHTML = ''; midBody.innerHTML = '';
 
-    // Reset Calendar Data
-    if(typeof window.events !== 'undefined') window.events = {}; 
+    // Reset Calendar Data (Calendar View Merging is preserved)
+    if(typeof window.events === 'undefined') window.events = {}; 
+    window.events = {};
 
     let allEvents = [];
 
@@ -229,6 +231,7 @@ async function fetchEvents() {
         
         // Smart Date Parsing
         let sortDate = new Date(8640000000000000); // Default to end of time
+        let dateKey = data.date.trim(); // Use the raw date string as the primary List View key
         try {
             let datePart = data.date.split('-')[0].split('|')[0].trim();
             const yearMatch = data.date.match(/\b20\d{2}\b/);
@@ -236,55 +239,139 @@ async function fetchEvents() {
             if (!datePart.includes(year)) datePart = `${datePart} ${year}`;
             
             const parsed = new Date(datePart);
-            if (!isNaN(parsed)) sortDate = parsed;
+            if (!isNaN(parsed)) {
+                sortDate = parsed;
+                // Use a precise ISO string for List View grouping if possible, 
+                // but the raw date string is often better for multi-day events.
+                // For simplicity, we'll primarily rely on sortDate for sorting 
+                // and data.date for grouping, as multi-day events often share the same data.date string.
+            }
         } catch (e) {}
 
-        allEvents.push({ id: doc.id, ...data, sortDate });
+        allEvents.push({ id: doc.id, ...data, sortDate, dateKey });
     });
 
     // 2. Sort Chronologically
     allEvents.sort((a, b) => a.sortDate - b.sortDate);
 
-    // 3. Render Standard Rows
+    // 3. GROUP EVENTS FOR LIST VIEW (THE MERGE LOGIC)
+    const groupedEvents = { '1st': {}, '2nd': {}, 'mid': {} };
+
     allEvents.forEach(data => {
-        const row = document.createElement('tr');
+        const semester = data.semester;
+        const key = data.date; // Group by the exact date string
         
-        let controls = '';
-        if (isAdminUser) {
-            const safeEvent = data.event.replace(/'/g, "\\'");
-            const safeDate = data.date.replace(/'/g, "\\'");
-            const safeCat = data.category || 'academic';
-            
-            // NEW GLASS BUTTON STYLE FOR TABLE ROWS
-            controls = `
-                <div class="flex items-center gap-2">
-                    <button onclick="openEditModal('${data.id}', '${safeDate}', '${safeEvent}', '${data.semester}', '${safeCat}')" 
-                        class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/30 text-blue-300 hover:text-white border border-blue-500/20 transition-all" title="Edit">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    </button>
-                    <button onclick="deleteEvent('${data.id}')" 
-                        class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-300 hover:text-white border border-red-500/20 transition-all" title="Delete">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </button>
-                </div>
-            `;
+        if (!groupedEvents[semester][key]) {
+            groupedEvents[semester][key] = {
+                date: data.date,
+                category: data.category,
+                events: [],
+                ids: []
+            };
         }
+        
+        // Merge the event name and ID
+        groupedEvents[semester][key].events.push(data.event);
+        groupedEvents[semester][key].ids.push({ id: data.id, category: data.category });
 
-        row.innerHTML = `
-            <td>${data.date}</td>
-            <td>${data.event}</td>
-            <td class="flex justify-between items-center capitalize">
-                <span class="text-xs px-2 py-1 rounded bg-slate-800">${data.category || 'academic'}</span>
-                ${controls}
-            </td>
-        `;
+        // Merge category classes for display. Use the category of the first event for the row's general color.
+        // For simplicity, we'll keep the category field simple, but the action buttons will use the full list of IDs/Categories.
+    });
 
-        if (data.semester === '1st') sem1.appendChild(row);
-        else if (data.semester === '2nd') sem2.appendChild(row);
-        else if (data.semester === 'mid') mid.appendChild(row);
 
-        // Populate Calendar Object
+    // 4. Render Grouped Rows
+    
+    // Helper function to render table rows from grouped data
+    const renderTable = (semKey, bodyElement) => {
+        const sortedKeys = Object.keys(groupedEvents[semKey]).sort((a, b) => {
+             // Re-sort using the original sortDate from the event data
+             const eventA = allEvents.find(e => e.dateKey === a && e.semester === semKey);
+             const eventB = allEvents.find(e => e.dateKey === b && e.semester === semKey);
+             return (eventA?.sortDate || 0) - (eventB?.sortDate || 0);
+        });
+
+        sortedKeys.forEach(key => {
+            const data = groupedEvents[semKey][key];
+            const row = document.createElement('tr');
+            
+            // Join all events into a single cell, using <br> for separation
+            const mergedEvents = data.events.join('<br>');
+            
+            // Display all unique categories for the row
+            const uniqueCategories = [...new Set(data.ids.map(i => i.category || 'academic'))];
+            const categoryTags = uniqueCategories.map(cat => 
+                `<span class="text-xs px-2 py-1 rounded bg-slate-800">${cat}</span>`
+            ).join(' ');
+
+
+            // Controls for merged rows
+            let controls = '';
+            if (isAdminUser) {
+                // If there's only one event, use the standard edit button
+                if (data.ids.length === 1) {
+                    const singleEvent = allEvents.find(e => e.id === data.ids[0].id);
+                    if (singleEvent) {
+                        const safeEvent = singleEvent.event.replace(/'/g, "\\'");
+                        const safeDate = singleEvent.date.replace(/'/g, "\\'");
+                        const safeCat = singleEvent.category || 'academic';
+
+                        controls = `
+                            <div class="flex items-center gap-2">
+                                <button onclick="openEditModal('${singleEvent.id}', '${safeDate}', '${safeEvent}', '${singleEvent.semester}', '${safeCat}')" 
+                                    class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/30 text-blue-300 hover:text-white border border-blue-500/20 transition-all" title="Edit">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </button>
+                                <button onclick="deleteEvent('${singleEvent.id}')" 
+                                    class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-300 hover:text-white border border-red-500/20 transition-all" title="Delete">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // For merged rows, we'll only provide the "Delete All" option for simplicity.
+                    // To implement "Edit," you'd need a more complex modal to select which sub-event to edit.
+                    const firstId = data.ids[0].id; // Get the ID of the first event for a single deletion reference if needed
+                    controls = `
+                        <div class="flex items-center gap-8">
+                            <span class="text-xs text-white/50">Merged (${data.ids.length})</span>
+                            <button onclick="alert('Please edit individual events via the calendar view or add a unique date string.')" 
+                                class="p-2 rounded-lg bg-gray-500/10 hover:bg-gray-500/30 text-gray-300 hover:text-white border border-gray-500/20 transition-all" title="Edit Disabled for Merged Row">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                             <button onclick="deleteAllEventsByDate('${key}', '${semKey}')" 
+                                class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-300 hover:text-white border border-red-500/20 transition-all" title="Delete All Events on this Date">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+            
+            row.innerHTML = `
+                <td class="whitespace-nowrap">${data.date}</td>
+                <td>${mergedEvents}</td>
+                <td class="flex justify-between items-center capitalize">
+                    <div>${categoryTags}</div>
+                    ${controls}
+                </td>
+            `;
+
+            bodyElement.appendChild(row);
+        });
+    };
+    
+    // Render the tables
+    renderTable('1st', sem1Body);
+    renderTable('2nd', sem2Body);
+    renderTable('mid', midBody);
+
+    // 5. Populate Calendar Object (Kept the merging logic for Calendar View)
+    allEvents.forEach(data => {
         try {
+            // Note: This only works well for single-day events (e.g., 'Oct 28, 2025').
+            if (data.sortDate.getTime() === 8640000000000000) return; // Skip if date wasn't fully parsed
+            
             const year = data.sortDate.getFullYear();
             const month = data.sortDate.getMonth();
             const day = data.sortDate.getDate();
@@ -296,14 +383,51 @@ async function fetchEvents() {
             if(data.category === 'holiday') catKey = 'holidays';
             if(data.category === 'exam') catKey = 'exam';
             if(data.category === 'break') catKey = 'break';
+            
+            // MERGING LOGIC for Calendar View: Store as array.
+            if (!window.events[year][month][catKey][day]) {
+                window.events[year][month][catKey][day] = [];
+            }
+            window.events[year][month][catKey][day].push(data.event);
 
-            window.events[year][month][catKey][day] = data.event;
-        } catch (e) {}
+        } catch (e) {
+             // Error during calendar view population
+        }
     });
+
 
     if(typeof renderCalendar === 'function') renderCalendar();
 }
 
+// NEW FUNCTION: Delete all events that share a date string and semester
+async function deleteAllEventsByDate(dateString, semester) {
+    if (!confirm(`Are you sure you want to delete ALL events matching the date "${dateString}" in ${semester} Semester?`)) return;
+
+    try {
+        const snapshot = await db.collection('calendar')
+            .where('date', '==', dateString)
+            .where('semester', '==', semester)
+            .get();
+
+        if (snapshot.empty) {
+            alert("No matching events found to delete.");
+            return;
+        }
+
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        
+        alert(`Successfully deleted ${snapshot.size} merged events.`);
+        fetchEvents(); // Refresh UI
+    } catch (err) {
+        console.error("Error deleting merged events:", err);
+        alert("Error deleting events: " + err.message);
+    }
+}
 // 3. Modal Logic
 function openAdminModal() { 
     document.getElementById('modalTitle').textContent = "Add Event";
@@ -479,7 +603,7 @@ async function uploadDefaultCalendar() {
             alert("Error uploading: " + err.message);
         }
     }
-    
+
 // View Toggling
 function toggleView(view) {
     const calendarView = document.getElementById('calendarView');

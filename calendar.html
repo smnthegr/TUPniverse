@@ -4,25 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Academic Calendar</title>
+  
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="navbar.css">
+  
   <script src="navbar.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <script src="firebase-config.js"></script>
+
+  <style>
+      .action-btn {
+          opacity: 0;
+          transition: opacity 0.2s;
+          cursor: pointer;
+          margin-left: 10px;
+      }
+      tr:hover .action-btn {
+          opacity: 1;
+      }
+  </style>
 </head>
 <body>
-  <!-- Video Background -->
-<div class="video-background">
+  <div class="video-background">
     <video autoplay muted loop playsinline>
         <source src="bg.mp4" type="video/mp4">
         <source src="bg.webm" type="video/webm">
-        Your browser does not support the video tag.
     </video>
+  </div>
+
+<div class="fixed top-32 right-6 z-[100] flex flex-col gap-3 items-end">
+    
+    <button id="initCalendarBtn" onclick="uploadDefaultCalendar()" 
+        style="font-family: 'Outfit', sans-serif;"
+        class="hidden bg-yellow-600/90 hover:bg-yellow-500 text-white px-5 py-2.5 rounded-lg shadow-lg font-bold flex items-center gap-2 transition-all border border-yellow-400/30 backdrop-blur-md hover:shadow-[0_0_15px_rgba(234,179,8,0.4)]">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Initialize
+    </button>
+
+    <button id="clearAllBtn" onclick="clearAllEvents()" 
+        style="font-family: 'Outfit', sans-serif;"
+        class="hidden bg-red-900/80 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg shadow-lg font-bold flex items-center gap-2 transition-all border border-red-500/30 backdrop-blur-sm hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] group">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-12 transition-transform">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Clear All
+    </button>
 </div>
 
 <h1>ACADEMIC CALENDAR</h1>
@@ -36,8 +71,8 @@
 
 
 <div class="view-toggle">
-  <button class="active" id="calendarBtn">Calendar</button>
-  <button id="listBtn">List View</button>
+  <button class="active" id="calendarBtn" onclick="toggleView('calendar')">Calendar</button>
+  <button id="listBtn" onclick="toggleView('list')">List View</button>
 </div>
 
 <div class="calendar" id="calendarView">
@@ -57,251 +92,411 @@
   <ul class="days" id="daysContainer"></ul>
 </div>
 
-<!-- 📋 This is your new List View section -->
 <div class="calendar hidden" id="listView">
-  <h2>Academic Calendar List</h2>
-  <h2>First Semester</h2>
-
+  <h2 class="text-2xl font-bold mb-6 text-center">Academic Calendar List</h2>
+  
+  <h2 class="text-xl font-bold mt-6 mb-2 pl-2">First Semester</h2>
   <table class="semester-table">
-    <tr>
-      <th>Date</th>
-      <th>Events</th>
-    </tr>
-    <tr>
-      <td>June 2 - August 1, 2025</td>
-      <td>Freshmen Enrollment</td>
-    </tr>
-    <tr>
-      <td>July 14 - 26, 2025</td>
-      <td>Graduate Programs (New Student) Enrollment</td>
-    </tr>
-    <tr>
-      <td>July 28 - August 1, 2025</td>
-      <td>Returning Students Enrollment</td>
-    </tr>
-    <tr>
-      <td>July 21 - 26, 2025</td>
-      <td>2nd - 5th year and GP Enrollment</td>
-    </tr>
-    <tr>
-      <td>July 28 - August 2, 2025</td>
-      <td>Adding/Changing of Subjects</td>
-    </tr>
-    <tr>
-      <td>August 4 - 8, 2025</td>
-      <td>Freshmen Orientation</td>
-    </tr>
-    <tr>
-      <td>August 11, 2025</td>
-      <td>Start of Classes</td>
-    </tr>
-    <tr>
-      <td>September 16 - 19, 2025</td>
-      <td>Preliminary Examination</td>
-    </tr>
-    <tr>
-      <td>October 27, 2025</td>
-      <td>Deadline of Dropping Subjects</td>
-    </tr>
-    <tr>
-      <td>October 28 - 31, 2025</td>
-      <td>Midterm Examination</td>
-    </tr>
-    <tr>
-      <td>November 3 - 5, 2025</td>
-      <td>Academic Break / Mental Health Break</td>
-    </tr>
-    <tr>
-      <td>November 10 - 14, 2025</td>
-      <td>Faculty Evaluation</td>
-    </tr>
-    <tr>
-      <td>December 2 - 4, 2025</td>
-      <td>Final Examination (Graduating)</td>
-    </tr>
-    <tr>
-      <td>December 4 - 10, 2025</td>
-      <td>Application for Graduation</td>
-    </tr>
-    <tr>
-      <td>December 10 - 14, 2025</td>
-      <td>Final Examination (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>December 12, 2025</td>
-      <td>Deadline for Submission of Grades</td>
-    </tr>
-    <tr>
-      <td>December 14, 2025</td>
-      <td>End of 1st Semester</td>
-    </tr>
-    <tr>
-      <td>December 15 - 16, 2025</td>
-      <td>ACSO Week</td>
-    </tr>
-    <tr>
-      <td>December 17 - 20, 2025</td>
-      <td>TUP Foundation Day</td>
-    </tr>
-    <tr>
-      <td>December 21, 2025</td>
-      <td>Deadline for Submission of Grades (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>December 22, 2025</td>
-      <td>Start of Christmas Vacation</td>
-    </tr>
-    <tr>
-      <td>January 12, 2026</td>
-      <td>Return of Faculty</td>
-    </tr>
-    <tr>
-      <td>January 13, 2026</td>
-      <td>Academic Council Meeting</td>
-    </tr>
+    <thead><tr><th>Date</th><th>Events</th><th>Category</th></tr></thead>
+    <tbody id="sem1Body"><tr><td colspan="3" class="text-center p-4">Loading data...</td></tr></tbody>
   </table>
 
-  <h2>Second Semester</h2>
-
+  <h2 class="text-xl font-bold mt-8 mb-2 pl-2">Second Semester</h2>
   <table class="semester-table2">
-    <tr>
-      <th>Date</th>
-      <th>Events</th>
-    </tr>
-    <tr>
-      <td>January 5 - 10, 2026</td>
-      <td>1st - 5th Year and GP Enrollment</td>
-    </tr>
-    <tr>
-      <td>January 12 - 13, 2026</td>
-      <td>Adding/Changing of Subjects (Irregular)</td>
-    </tr>
-    <tr>
-      <td>January 14, 2026</td>
-      <td>Start of Classes</td>
-    </tr>
-    <tr>
-      <td>February 18 - 20, 2026</td>
-      <td>Preliminary Examination</td>
-    </tr>
-    <tr>
-      <td>March 25, 2026</td>
-      <td>Deadline of Dropping Subjects</td>
-    </tr>
-    <tr>
-      <td>March 26 - 31, 2026</td>
-      <td>Midterm Examination</td>
-    </tr>
-    <tr>
-      <td>April 6 - 8, 2026</td>
-      <td>Academic Break / Mental Health Break</td>
-    </tr>
-    <tr>
-      <td>April 13 - 17, 2026</td>
-      <td>Faculty Evaluation</td>
-    </tr>
-    <tr>
-      <td>April 13 - May 9, 2026</td>
-      <td>Application for Graduation</td>
-    </tr>
-    <tr>
-      <td>April 15 - 17, 2026</td>
-      <td>Cultural and Sports Week</td>
-    </tr>
-    <tr>
-      <td>May 5 - 7, 2026</td>
-      <td>Final Examination (Graduating)</td>
-    </tr>
-    <tr>
-      <td>May 9, 2026</td>
-      <td>Moratorium for Final Defense</td>
-    </tr>
-    <tr>
-      <td>May 18 - 20, 2026</td>
-      <td>Final Examination (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>May 16, 2026</td>
-      <td>Deadline for Submission of Grades (Graduating)</td>
-    </tr>
-    <tr>
-      <td>May 21, 2026</td>
-      <td>End of 2nd Semester / Start of PVP</td>
-    </tr>
-    <tr>
-      <td>May 30, 2026</td>
-      <td>Deadline of Submission of Grades (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>June 3, 2026</td>
-      <td>Academic Council Meeting</td>
-    </tr>
-    <tr>
-      <td>July 2026</td>
-      <td>121st Commencement Exercises</td>
-    </tr>
+    <thead><tr><th>Date</th><th>Events</th><th>Category</th></tr></thead>
+    <tbody id="sem2Body"><tr><td colspan="3" class="text-center p-4">Loading data...</td></tr></tbody>
    </table> 
   
-    <h2>Midyear</h2>
-
+  <h2 class="text-xl font-bold mt-8 mb-2 pl-2">Midyear</h2>
   <table class="semester-table3">
-    <tr>
-      <th>Date</th>
-      <th>Events</th>
-    </tr>
-    <tr>
-      <td>May 25 - 30, 2026</td>
-      <td>1st - 5th Year and GP Enrollment</td>
-    </tr>
-    <tr>
-      <td>June 1, 2026</td>
-      <td>Start of Classes</td>
-    </tr>
-    <tr>
-      <td>June 2, 2026</td>
-      <td>Deadline of Dropping Subjects</td>
-    </tr>
-    <tr>
-      <td>July 1 - 2, 2026</td>
-      <td>Final Examination (Graduating)</td>
-    </tr>
-    <tr>
-      <td>July 10, 2026</td>
-      <td>Deadline for Submission of Grades (Graduating)</td>
-    </tr>
-    <tr>
-      <td>June 22 - July 10, 2026</td>
-      <td>Application for Graduation</td>
-    </tr>
-    <tr>
-      <td>July 9 - 11, 2026</td>
-      <td>Final Examination (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>July 11, 2026</td>
-      <td>End of Midyear Class</td>
-    </tr>
-    <tr>
-      <td>July 16, 2026</td>
-      <td>Academic Council Meeting</td>
-    </tr>
-    <tr>
-      <td>July 20, 2026</td>
-      <td>Deadline of Submission of Grades (Non-Graduating)</td>
-    </tr>
-    <tr>
-      <td>July 27, 2026</td>
-      <td>Return of Faculty</td>
-    </tr>
-    <tr>
-      <td>July 29, 2026</td>
-      <td>Start of Classes for SY 2026 - 2027</td>
-    </tr>
+    <thead><tr><th>Date</th><th>Events</th><th>Category</th></tr></thead>
+    <tbody id="midBody"><tr><td colspan="3" class="text-center p-4">Loading data...</td></tr></tbody>
   </table>
 </div>
 
-<script src="script.js"></script>
+<button id="adminAddBtn" onclick="openAdminModal()" 
+    class="hidden fixed bottom-8 right-8 p-4 rounded-full z-50 group transition-all duration-300
+           bg-[#3D0001]/60 hover:bg-[#8b0000]/80 
+           backdrop-blur-md border border-white/20 hover:border-red-400/50
+           text-white shadow-[0_4px_20px_rgba(0,0,0,0.5)] 
+           hover:shadow-[0_0_25px_rgba(220,38,38,0.6)] 
+           hover:-translate-y-1 hover:scale-105">
+    
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+    
+    <span style="font-family: 'Outfit', sans-serif;" 
+          class="absolute right-full mr-4 top-1/2 -translate-y-1/2 
+                 bg-[#1a0505]/90 backdrop-blur-md border border-white/10
+                 text-white text-sm font-semibold px-4 py-2 rounded-xl whitespace-nowrap 
+                 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
+                 shadow-xl transform origin-right scale-95 group-hover:scale-100">
+        Add Calendar Event
+    </span>
+</button>
+
+<div id="adminModal" class="hidden fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-slate-900 border border-white/20 p-8 rounded-xl w-full max-w-md relative">
+        <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-white/50 hover:text-white">✕</button>
+        <h2 class="text-white text-2xl font-bold mb-6" id="modalTitle">Add Calendar Event</h2>
+        
+        <form onsubmit="saveEvent(event)" class="space-y-4">
+            <input type="hidden" id="editEventId" value=""> 
+            
+            <div>
+                <label class="text-white/80 text-sm">Semester</label>
+                <select id="inpSem" class="w-full bg-slate-800 border border-white/20 rounded p-2 text-white">
+                    <option value="1st">First Semester</option>
+                    <option value="2nd">Second Semester</option>
+                    <option value="mid">Midyear</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-white/80 text-sm">Category (Color)</label>
+                <select id="inpCategory" class="w-full bg-slate-800 border border-white/20 rounded p-2 text-white">
+                    <option value="academic">Academic (Blue)</option>
+                    <option value="holiday">Holiday (Red)</option>
+                    <option value="exam">Exam (Purple)</option>
+                    <option value="break">Break (Orange)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-white/80 text-sm">Date String</label>
+                <input type="text" id="inpDate" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white" placeholder="e.g. Oct 28, 2025" required>
+                <p class="text-xs text-white/40 mt-1">Format: "Month Day, Year" works best for calendar view.</p>
+            </div>
+            <div>
+                <label class="text-white/80 text-sm">Event Name</label>
+                <input type="text" id="inpEvent" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white" placeholder="e.g. Midterm Examination" required>
+            </div>
+            
+            <button type="submit" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-2 rounded mt-4">Save Event</button>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script> 
+
+<script>
+const db = firebase.firestore();
+const ADMIN_EMAILS = [
+    "admin@tup.edu.ph", 
+    "registrar@tup.edu.ph",
+    "samanthaelaine.egar@tup.edu.ph"
+];
+let isAdminUser = false;
+
+// 1. Auth Check
+firebase.auth().onAuthStateChanged(user => {
+    if (user && ADMIN_EMAILS.includes(user.email)) {
+        isAdminUser = true;
+        
+        // SHOW ADMIN CONTROLS
+        document.getElementById('adminAddBtn').classList.remove('hidden');
+        document.getElementById('clearAllBtn').classList.remove('hidden'); // <--- THIS WAS MISSING
+        
+        checkIfDbEmpty();
+    }
+    fetchEvents();
+});
+
+async function checkIfDbEmpty() {
+    const snap = await db.collection('calendar').limit(1).get();
+    if (snap.empty) document.getElementById('initCalendarBtn').classList.remove('hidden');
+}
+
+async function fetchEvents() {
+    const snapshot = await db.collection('calendar').get();
+    
+    const sem1 = document.getElementById('sem1Body');
+    const sem2 = document.getElementById('sem2Body');
+    const mid = document.getElementById('midBody');
+    
+    sem1.innerHTML = ''; sem2.innerHTML = ''; mid.innerHTML = '';
+
+    // Reset Calendar Data
+    if(typeof window.events !== 'undefined') window.events = {}; 
+
+    let allEvents = [];
+
+    // 1. Process & Parse Dates
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        
+        // Smart Date Parsing
+        let sortDate = new Date(8640000000000000); // Default to end of time
+        try {
+            let datePart = data.date.split('-')[0].split('|')[0].trim();
+            const yearMatch = data.date.match(/\b20\d{2}\b/);
+            const year = yearMatch ? yearMatch[0] : new Date().getFullYear();
+            if (!datePart.includes(year)) datePart = `${datePart} ${year}`;
+            
+            const parsed = new Date(datePart);
+            if (!isNaN(parsed)) sortDate = parsed;
+        } catch (e) {}
+
+        allEvents.push({ id: doc.id, ...data, sortDate });
+    });
+
+    // 2. Sort Chronologically
+    allEvents.sort((a, b) => a.sortDate - b.sortDate);
+
+    // 3. Render Standard Rows
+    allEvents.forEach(data => {
+        const row = document.createElement('tr');
+        
+        let controls = '';
+        if (isAdminUser) {
+            const safeEvent = data.event.replace(/'/g, "\\'");
+            const safeDate = data.date.replace(/'/g, "\\'");
+            const safeCat = data.category || 'academic';
+            
+            // NEW GLASS BUTTON STYLE FOR TABLE ROWS
+            controls = `
+                <div class="flex items-center gap-2">
+                    <button onclick="openEditModal('${data.id}', '${safeDate}', '${safeEvent}', '${data.semester}', '${safeCat}')" 
+                        class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/30 text-blue-300 hover:text-white border border-blue-500/20 transition-all" title="Edit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
+                    <button onclick="deleteEvent('${data.id}')" 
+                        class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/30 text-red-300 hover:text-white border border-red-500/20 transition-all" title="Delete">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+            `;
+        }
+
+        row.innerHTML = `
+            <td>${data.date}</td>
+            <td>${data.event}</td>
+            <td class="flex justify-between items-center capitalize">
+                <span class="text-xs px-2 py-1 rounded bg-slate-800">${data.category || 'academic'}</span>
+                ${controls}
+            </td>
+        `;
+
+        if (data.semester === '1st') sem1.appendChild(row);
+        else if (data.semester === '2nd') sem2.appendChild(row);
+        else if (data.semester === 'mid') mid.appendChild(row);
+
+        // Populate Calendar Object
+        try {
+            const year = data.sortDate.getFullYear();
+            const month = data.sortDate.getMonth();
+            const day = data.sortDate.getDate();
+
+            if (!window.events[year]) window.events[year] = {};
+            if (!window.events[year][month]) window.events[year][month] = { holidays: {}, academic: {}, exam: {}, break: {} };
+
+            let catKey = 'academic';
+            if(data.category === 'holiday') catKey = 'holidays';
+            if(data.category === 'exam') catKey = 'exam';
+            if(data.category === 'break') catKey = 'break';
+
+            window.events[year][month][catKey][day] = data.event;
+        } catch (e) {}
+    });
+
+    if(typeof renderCalendar === 'function') renderCalendar();
+}
+
+// 3. Modal Logic
+function openAdminModal() { 
+    document.getElementById('modalTitle').textContent = "Add Event";
+    document.getElementById('editEventId').value = ""; 
+    document.querySelector('form').reset();
+    document.getElementById('adminModal').classList.remove('hidden'); 
+}
+
+function openEditModal(id, date, event, sem, category) {
+    document.getElementById('modalTitle').textContent = "Edit Event";
+    document.getElementById('editEventId').value = id; 
+    
+    document.getElementById('inpSem').value = sem;
+    document.getElementById('inpDate').value = date;
+    document.getElementById('inpEvent').value = event;
+    document.getElementById('inpCategory').value = category || 'academic';
+    
+    document.getElementById('adminModal').classList.remove('hidden');
+}
+
+function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+
+// 4. Save (Create or Update)
+async function saveEvent(e) {
+    e.preventDefault();
+    const editId = document.getElementById('editEventId').value;
+    
+    const data = {
+        semester: document.getElementById('inpSem').value,
+        date: document.getElementById('inpDate').value,
+        event: document.getElementById('inpEvent').value,
+        category: document.getElementById('inpCategory').value, // Save Category
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+        if(editId) {
+            // UPDATE
+            await db.collection('calendar').doc(editId).update(data);
+            alert("Event Updated!");
+        } else {
+            // CREATE
+            await db.collection('calendar').add(data);
+            alert("Event Added!");
+        }
+        
+        closeAdminModal();
+        e.target.reset();
+        fetchEvents(); // This will refresh List AND Calendar
+    } catch(err) {
+        alert("Error: " + err.message);
+    }
+}
+
+async function deleteEvent(id) {
+    if(!confirm("Are you sure you want to delete this event?")) return;
+    await db.collection('calendar').doc(id).delete();
+    fetchEvents();
+}
+
+async function clearAllEvents() {
+    if (!confirm("⚠️ DANGER: This will delete ALL events from the database permanently!\n\nAre you sure you want to proceed?")) return;
+    
+    // Safety double-check
+    if (!confirm("This action cannot be undone. Confirm clear all?")) return;
+
+    try {
+        const snapshot = await db.collection('calendar').get();
+        
+        if (snapshot.empty) {
+            alert("Calendar is already empty.");
+            return;
+        }
+
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        
+        alert("All events have been cleared.");
+        fetchEvents(); // Refresh UI
+        checkIfDbEmpty(); // Show the Initialize button again
+    } catch (err) {
+        console.error(err);
+        alert("Error clearing events: " + err.message);
+    }
+}
+
+async function uploadDefaultCalendar() {
+        if(!confirm("⚠️ This will upload the COMPLETE 2025-2026 Academic Calendar.\nProceed?")) return;
+
+        const batch = db.batch();
+        const eventsToAdd = [
+            // --- FIRST SEMESTER ---
+            { date: "June 2 - August 1, 2025", event: "Freshmen Enrollment", category: "academic", semester: "1st" },
+            { date: "July 14 - 26, 2025", event: "Graduate Programs (New Student) Enrollment", category: "academic", semester: "1st" },
+            { date: "July 28 - August 1, 2025", event: "Returning Students Enrollment", category: "academic", semester: "1st" },
+            { date: "July 21 - 26, 2025", event: "2nd - 5th year and GP Enrollment", category: "academic", semester: "1st" },
+            { date: "July 28 - August 2, 2025", event: "Adding/Changing of Subjects", category: "academic", semester: "1st" },
+            { date: "August 4 - 8, 2025", event: "Freshmen Orientation", category: "academic", semester: "1st" },
+            { date: "August 11, 2025", event: "Start of Classes", category: "academic", semester: "1st" },
+            { date: "September 16 - 19, 2025", event: "Preliminary Examination", category: "exam", semester: "1st" },
+            { date: "October 27, 2025", event: "Deadline of Dropping Subjects", category: "academic", semester: "1st" },
+            { date: "October 28 - 31, 2025", event: "Midterm Examination", category: "exam", semester: "1st" },
+            { date: "November 3 - 5, 2025", event: "Academic Break / Mental Health Break", category: "break", semester: "1st" },
+            { date: "November 10 - 14, 2025", event: "Faculty Evaluation", category: "academic", semester: "1st" },
+            { date: "December 2 - 4, 2025", event: "Final Examination (Graduating)", category: "exam", semester: "1st" },
+            { date: "December 4 - 10, 2025", event: "Application for Graduation", category: "academic", semester: "1st" },
+            { date: "December 10 - 14, 2025", event: "Final Examination (Non-Graduating)", category: "exam", semester: "1st" },
+            { date: "December 12, 2025", event: "Deadline for Submission of Grades", category: "academic", semester: "1st" },
+            { date: "December 14, 2025", event: "End of 1st Semester", category: "academic", semester: "1st" },
+            { date: "December 15 - 16, 2025", event: "ACSO Week", category: "academic", semester: "1st" },
+            { date: "December 17 - 20, 2025", event: "TUP Foundation Day", category: "holiday", semester: "1st" },
+            { date: "December 21, 2025", event: "Deadline for Submission of Grades (Non-Graduating)", category: "academic", semester: "1st" },
+            { date: "December 22, 2025", event: "Start of Christmas Vacation", category: "break", semester: "1st" },
+            { date: "January 12, 2026", event: "Return of Faculty", category: "academic", semester: "1st" },
+            { date: "January 13, 2026", event: "Academic Council Meeting", category: "academic", semester: "1st" },
+
+            // --- SECOND SEMESTER ---
+            { date: "January 5 - 10, 2026", event: "1st - 5th Year and GP Enrollment", category: "academic", semester: "2nd" },
+            { date: "January 12 - 13, 2026", event: "Adding/Changing of Subjects (Irregular)", category: "academic", semester: "2nd" },
+            { date: "January 14, 2026", event: "Start of Classes", category: "academic", semester: "2nd" },
+            { date: "February 18 - 20, 2026", event: "Preliminary Examination", category: "exam", semester: "2nd" },
+            { date: "March 25, 2026", event: "Deadline of Dropping Subjects", category: "academic", semester: "2nd" },
+            { date: "March 26 - 31, 2026", event: "Midterm Examination", category: "exam", semester: "2nd" },
+            { date: "April 6 - 8, 2026", event: "Academic Break / Mental Health Break", category: "break", semester: "2nd" },
+            { date: "April 13 - 17, 2026", event: "Faculty Evaluation", category: "academic", semester: "2nd" },
+            { date: "April 13 - May 9, 2026", event: "Application for Graduation", category: "academic", semester: "2nd" },
+            { date: "April 15 - 17, 2026", event: "Cultural and Sports Week", category: "academic", semester: "2nd" },
+            { date: "May 5 - 7, 2026", event: "Final Examination (Graduating)", category: "exam", semester: "2nd" },
+            { date: "May 9, 2026", event: "Moratorium for Final Defense", category: "academic", semester: "2nd" },
+            { date: "May 18 - 20, 2026", event: "Final Examination (Non-Graduating)", category: "exam", semester: "2nd" },
+            { date: "May 16, 2026", event: "Deadline for Submission of Grades (Graduating)", category: "academic", semester: "2nd" },
+            { date: "May 21, 2026", event: "End of 2nd Semester / Start of PVP", category: "academic", semester: "2nd" },
+            { date: "May 30, 2026", event: "Deadline of Submission of Grades (Non-Graduating)", category: "academic", semester: "2nd" },
+            { date: "June 3, 2026", event: "Academic Council Meeting", category: "academic", semester: "2nd" },
+            { date: "July 2026", event: "121st Commencement Exercises", category: "academic", semester: "2nd" },
+
+            // --- MIDYEAR ---
+            { date: "May 25 - 30, 2026", event: "1st - 5th Year and GP Enrollment", category: "academic", semester: "mid" },
+            { date: "June 1, 2026", event: "Start of Classes", category: "academic", semester: "mid" },
+            { date: "June 2, 2026", event: "Deadline of Dropping Subjects", category: "academic", semester: "mid" },
+            { date: "June 22 - July 10, 2026", event: "Application for Graduation", category: "academic", semester: "mid" },
+            { date: "July 1 - 2, 2026", event: "Final Examination (Graduating)", category: "exam", semester: "mid" },
+            { date: "July 9 - 11, 2026", event: "Final Examination (Non-Graduating)", category: "exam", semester: "mid" },
+            { date: "July 10, 2026", event: "Deadline for Submission of Grades (Graduating)", category: "academic", semester: "mid" },
+            { date: "July 11, 2026", event: "End of Midyear Class", category: "academic", semester: "mid" },
+            { date: "July 16, 2026", event: "Academic Council Meeting", category: "academic", semester: "mid" },
+            { date: "July 20, 2026", event: "Deadline of Submission of Grades (Non-Graduating)", category: "academic", semester: "mid" },
+            { date: "July 27, 2026", event: "Return of Faculty", category: "academic", semester: "mid" },
+            { date: "July 29, 2026", event: "Start of Classes for SY 2026 - 2027", category: "academic", semester: "mid" }
+        ];
+
+        try {
+            // Add each event to the batch
+            eventsToAdd.forEach((item) => {
+                const docRef = db.collection('calendar').doc(); // Create new auto-ID ref
+                batch.set(docRef, {
+                    ...item,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp() // Important for sorting
+                });
+            });
+
+            await batch.commit();
+            alert("✅ Academic Calendar uploaded successfully!");
+            
+            fetchEvents(); // Refresh the list
+            document.getElementById('initCalendarBtn').classList.add('hidden'); // Hide the button
+        } catch(err) {
+            console.error(err);
+            alert("Error uploading: " + err.message);
+        }
+    }
+    
+// View Toggling
+function toggleView(view) {
+    const calendarView = document.getElementById('calendarView');
+    const listView = document.getElementById('listView');
+    if (view === 'calendar') {
+        calendarView.classList.remove('hidden');
+        listView.classList.add('hidden');
+        document.getElementById('calendarBtn').classList.add('active');
+        document.getElementById('listBtn').classList.remove('active');
+        renderCalendar(); // ensure refresh
+    } else {
+        calendarView.classList.add('hidden');
+        listView.classList.remove('hidden');
+        document.getElementById('calendarBtn').classList.remove('active');
+        document.getElementById('listBtn').classList.add('active');
+    }
+}
+</script>
 </body>
 </html>
-
-

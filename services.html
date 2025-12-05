@@ -4,20 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Services</title>
+    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
+    
     <script src="firebase-config.js"></script>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="navbar.css">
     <link rel="stylesheet" href="layout.css">
     <script src="navbar.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+    .connection-line {
+            stroke: #cbd5e1; /* Light gray color */
+            stroke-width: 3;
+            stroke-dasharray: 10, 10; /* The dashed pattern */
+            opacity: 0.6;
+        }
+    </style>
+</style>
 </head>
 <body>
-   <nav class="navbar"> 
-    <section id="service-assistance" style="min-height: 100vh; padding: 4rem 2rem; position: relative;">
+   <section id="service-assistance" style="min-height: 100vh; padding: 4rem 2rem; position: relative;">
         <div class="service-video-background">
             <video autoplay muted loop playsinline>
                 <source src="bg.mp4" type="video/mp4">
@@ -26,1250 +37,1375 @@
         </div>
         
         <div style="max-width: 100%; margin: 0 auto; position: relative; z-index: 1;">
-    <div id="servicesHeader" class="mb-12">
-        <div class="text-left">
-            <!--title-->
-            <h1 class="text-[#ffffff] text-6xl mb-4" style="font-weight: 700; font-family: 'Outfit', sans-serif;">Student Services</h1>
-            <!--titlesub1-->        
-            <p class="text-white text-xl mb-2">Everything you need, all in one place</p>
-            <!--titlesub2-->
-            <p class="text-white text-base">Browse our services or select from the list to learn more about each process</p>
-        </div>
-    </div>
+            
+            <div id="servicesHeader" class="mb-12">
+                <div class="text-left">
+                    <h1 class="text-[#ffffff] text-6xl mb-4" style="font-weight: 700; font-family: 'Outfit', sans-serif;">Student Services</h1>
+                    <p class="text-white text-xl mb-2">Everything you need, all in one place</p>
+                    <p class="text-white text-base">Browse our services or select from the list to learn more about each process</p>
+                    
+                    <div class="flex flex-wrap gap-4 mt-6">
+                        <button id="initDbBtn" onclick="uploadDefaultData()" style="font-family: 'Outfit', sans-serif;" class="hidden bg-yellow-600 hover:bg-yellow-500 text-white px-5 py-2.5 rounded-lg shadow-lg font-bold flex items-center gap-2 transition-colors font-['Outfit', sans-serif]">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Initialize Database
+                        </button>
 
-            <!-- Main Container with Carousel and List -->
+                        <button id="deleteAllBtn" onclick="deleteAllServices()" style="font-family: 'Outfit', sans-serif;" class="hidden bg-red-900/80 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg shadow-lg font-bold flex items-center gap-2 transition-colors border border-red-500/30 backdrop-blur-sm font-['Outfit', sans-serif]">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="14" y2="15"></line><line x1="14" y1="11" x2="10" y2="15"></line></svg>
+                            Reset / Delete All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex gap-8 items-start -mt-44">
-                <!-- Left Side - Carousel -->
                 <div class="flex-1 relative overflow-hidden mt-44">
-                    <div id="serviceMenu" class="flex gap-6 service-carousel"></div>
+                    <div id="serviceMenu" class="flex gap-6 service-carousel">
+                        <div class="text-white p-8">Loading Services...</div>
+                    </div>
                 </div>
                 
-                <!-- Right Side - Services List -->
                 <div class="w-80 bg-[#290001]/25 backdrop-blur-md rounded-xl border border-white/25 p-6 overflow-y-auto self-start shadow-lg" style="max-height: 600px;">
-                    <!--allservices-->
                     <h3 class="text-[#f5f5dc] text-xl mb-4 font-semibold" style="font-family: 'Outfit', sans-serif;">All Services</h3>
                     <div id="servicesList" class="space-y-2"></div>
                 </div>
             </div>
 
-            <!-- Pinboard View Container -->
-            <div id="pinboardView" class="hidden fade-in"></div>
-            <!-- Detail View Container -->
             <div id="detailView" class="hidden fade-in"></div>
         </div>
     </section>
-<script>
-        // Services Data with Real Information
-        const servicesData = {
-            ctc: {
-                title: 'Certified True Copy (CTC)',
-                subtitle: 'Request certified true copies of your documents',
-                type: 'pinboard',
-                fee: '₱100',
-                processing: '3-5 working days',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Visit Registrar\'s Office',
-                        description: 'Proceed to the Office of the Registrar and present the document that needs to be certified true copy (CTC).',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 20, y: 20 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '02',
-                        title: 'Accomplish the Form',
-                        description: 'Secure and accomplish the form provided by the registrar. Fill out all required information accurately.',
-                        color: 'lavender',
-                        rotation: 2,
-                        position: { x: 50, y: 15 },
-                        pinColor: 'purple'
-                    },
-                    {
-                        number: '03',
-                        title: 'Pay Processing Fee',
-                        description: 'Go to the Cashier\'s Office at the Administration Building and pay the fee of ₱100 for the CTC.',
-                        color: 'peach',
-                        rotation: -3,
-                        position: { x: 75, y: 20 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '04',
-                        title: 'Submit & Get Claim Slip',
-                        description: 'Return to the Office of the Registrar and submit the accomplished form together with the official receipt. You will be issued a claim slip indicating the date when you may claim your CTC.',
-                        color: 'green',
-                        rotation: 2,
-                        position: { x: 40, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            goodmoral: {
-                title: 'Certificate of Good Moral',
-                subtitle: 'Obtain your certificate of good moral character',
-                type: 'pinboard',
-                fee: '₱100',
-                processing: '3-5 working days',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Visit OSA',
-                        description: 'Proceed to the Office of Student Affairs (OSA) and request for the Certificate of Good Moral.',
-                        color: 'pink',
-                        rotation: 2,
-                        position: { x: 20, y: 20 },
-                        pinColor: 'red'
-                    },
-                    {
-                        number: '02',
-                        title: 'Fill Out Form',
-                        description: 'Secure and accomplish the form provided by the OSA. Ensure all information is complete and accurate.',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 50, y: 15 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '03',
-                        title: 'Payment at Cashier',
-                        description: 'Go to the Cashier\'s Office at the Administration Building and pay the fee of ₱100 for the Certificate of Good Moral.',
-                        color: 'yellow',
-                        rotation: 3,
-                        position: { x: 75, y: 20 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '04',
-                        title: 'Submit & Claim',
-                        description: 'Return to the OSA and submit the accomplished form together with the official receipt. You will be issued a claim slip with the claiming date.',
-                        color: 'green',
-                        rotation: -2,
-                        position: { x: 40, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            ratingslip: {
-                title: 'Rating Slip Request',
-                subtitle: 'Get your rating slip without faculty evaluation',
-                type: 'pinboard',
-                fee: 'No fee',
-                processing: 'Same day after community service',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Request from Department Head',
-                        description: 'Proceed to the Department Head of your College and request your rating slip, stating that you were unable to complete the faculty evaluation.',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 30, y: 25 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '02',
-                        title: 'Complete Community Service',
-                        description: 'Complete the required community service for one to two hours as assigned by the department.',
-                        color: 'peach',
-                        rotation: 2,
-                        position: { x: 55, y: 20 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '03',
-                        title: 'Receive Rating Slip',
-                        description: 'After completing the community service, return to the Department Head of your College to receive the printed copy of your rating slip.',
-                        color: 'green',
-                        rotation: -3,
-                        position: { x: 45, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            enrollment: {
-                title: 'Enrollment Process',
-                subtitle: 'Complete guide for first year and continuing students',
-                type: 'accordion',
-                sections: [
-                    {
-                        title: 'First Year Students',
-                        icon: '👤',
-                        steps: [
-                            {
-                                title: 'Secure Notice of Admission',
-                                description: 'Present the following documents to the Office of Admissions:',
-                                details: [
-                                    'High School Card (Form 138) - Original',
-                                    'Transcript of Records for Transferees - Original',
-                                    'Certificate of Good Moral',
-                                    'Test Permit'
-                                ]
-                            },
-                            {
-                                title: 'Student Profiling',
-                                description: 'With your Notice of Admission and Medical Certificate, proceed to the Office of Admission for profiling.',
-                                details: []
-                            },
-                            {
-                                title: 'Course Adviser Enlistment',
-                                description: 'Proceed to your course adviser for subject enlistment and approval.',
-                                details: []
-                            },
-                            {
-                                title: 'Scholarship Notation (If Applicable)',
-                                description: 'Students availing scholarship must report to the Office of Student Affairs for scholarship notation.',
-                                details: []
-                            },
-                            {
-                                title: 'Assessment of Fees',
-                                description: 'Proceed to the Accounting Office for assessment and secure registration form.',
-                                details: []
-                            },
-                            {
-                                title: 'Confirmation at Registrar',
-                                description: 'With your Registration Form, present original requirements to the Registrar\'s Office for confirmation.',
-                                details: []
-                            },
-                            {
-                                title: 'Medical Certificate',
-                                description: 'Report to the University Clinic and secure Medical Certificate.',
-                                details: []
-                            },
-                            {
-                                title: 'ID Processing',
-                                description: 'Proceed to the Office of Student Affairs for Identification Card (ID) processing.',
-                                details: []
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Old Students - Online Enrollment (Regular)',
-                        icon: '💻',
-                        steps: [
-                            {
-                                title: 'Submit Rating Slips',
-                                description: 'Students shall send online their last semester rating slips to their department heads.',
-                                details: []
-                            },
-                            {
-                                title: 'Enlistment & Assessment',
-                                description: 'Department Head is responsible for enlistment and assessment of fees.',
-                                details: []
-                            },
-                            {
-                                title: 'Enrollment Confirmation',
-                                description: 'Registrar confirms enrollment through the system.',
-                                details: []
-                            },
-                            {
-                                title: 'Access COR',
-                                description: 'First Semester Certificate of Registration (COR) can be accessed through the ERS.',
-                                details: []
-                            },
-                            {
-                                title: 'Receive COR',
-                                description: 'All COR\'s will be forwarded to the respective Department Heads by Second Week of Classes.',
-                                details: []
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Old Students - Onsite Enrollment',
-                        icon: '🏫',
-                        info: 'Required for: Graduate Students (New & Old), Returning Students, All Irregular Students (2nd to 5th year)',
-                        steps: [
-                            {
-                                title: 'Special Requirements',
-                                description: 'Additional requirements based on student category:',
-                                details: [
-                                    'Returning Students: Report to Registrar to secure checklist and to Guidance Office for clearance',
-                                    'Students under probation: Warning Agreement required',
-                                    'Irregular Students: Face-to-face compliance of enrollment requirements'
-                                ]
-                            },
-                            {
-                                title: 'Present Rating Slips',
-                                description: 'Student presents rating slips to Department Heads/Enlistment Adviser.',
-                                details: []
-                            },
-                            {
-                                title: 'Warning Agreements',
-                                description: 'Completion of Warning Agreements if necessary (for probationary students).',
-                                details: []
-                            },
-                            {
-                                title: 'Enlistment & Assessment',
-                                description: 'Department Head is responsible for enlistment and assessment of fees.',
-                                details: []
-                            },
-                            {
-                                title: 'Confirmation & COR',
-                                description: 'Registrar confirms and issues Certificate of Registration (COR) through the Department Heads.',
-                                details: []
-                            }
-                        ]
-                    }
-                ]
-            },
-            transfer: {
-                title: 'Transfer of Students',
-                subtitle: 'Transferring in or out of TUP',
-                type: 'list',
-                sections: [
-                    {
-                        title: 'Transferring Within TUP Campuses',
-                        icon: '🔄',
-                        content: 'A student from a campus of the University is allowed to transfer to another TUP campus; provided that he satisfies the admission requirements of the program in the college concerned.'
-                    },
-                    {
-                        title: 'Transfer from Other SUCs',
-                        icon: '🏛️',
-                        content: 'A transfer student from other State Universities and Colleges (SUCs) may be admitted provided that he has no failed/dropped mark and he satisfies the admission requirements of the program in the college concerned.'
-                    },
-                    {
-                        title: 'Transfer from Private Institutions',
-                        icon: '🎓',
-                        content: 'A transfer student from private institutions may be admitted to any three-year program of the University provided that he has no failed/dropped mark and he satisfies the admission requirements of the program in the college concerned.'
-                    },
-                    {
-                        title: 'Transferring Out Requirements',
-                        icon: '📋',
-                        content: 'Any student who intends to transfer to another school, college or university must be cleared of all liabilities and responsibilities (administrative, academic, and financial) in the University. The necessary documents for transfer could be secured from the Office of the Registrar.'
-                    }
-                ]
-            },
-            addsubject: {
-                title: 'Adding of Subject',
-                subtitle: 'Conditions and requirements for adding subjects',
-                type: 'list',
-                intro: 'A student may add a subject upon the recommendation of the Department Head and approved by the Dean under the following conditions:',
-                sections: [
-                    {
-                        title: 'Maximum Unit Load',
-                        icon: '📊',
-                        content: 'The student is not carrying the maximum unit load per semester/term prescribed in the curriculum.'
-                    },
-                    {
-                        title: 'Probationary Students',
-                        icon: '⚠️',
-                        content: 'The student has not met the authorized load for probationary students.'
-                    },
-                    {
-                        title: 'Graduating Students',
-                        icon: '🎓',
-                        content: 'For graduating undergraduate students, they may be allowed to add subject(s) not more than six (6) units on top of the semester/term load.'
-                    }
-                ]
-            },
-            dropsubject: {
-                title: 'Dropping of Subject',
-                subtitle: 'Process for officially dropping subjects',
-                type: 'pinboard',
-                fee: 'May incur fees for late dropping',
-                processing: 'Must be done before midterm',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Write a Letter',
-                        description: 'A student must write a letter noted (whenever applicable) by the parent/guardian specifying the reason(s) for dropping. The Dean of the college must approve the dropping of the subject(s).',
-                        color: 'pink',
-                        rotation: 2,
-                        position: { x: 25, y: 20 },
-                        pinColor: 'red'
-                    },
-                    {
-                        number: '02',
-                        title: 'Consult Guidance',
-                        description: 'The approved letter must be presented to the guidance personnel and a dropping form must be secured.',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 55, y: 15 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '03',
-                        title: 'Get Required Signatures',
-                        description: 'The dropping form must be accomplished and the subject professor and the Dean of the college must sign it.',
-                        color: 'peach',
-                        rotation: 3,
-                        position: { x: 75, y: 25 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '04',
-                        title: 'Submit to Offices',
-                        description: 'Copies of the dropping form must be presented to the offices concerned (Registrar, Accounting, Department).',
-                        color: 'green',
-                        rotation: -2,
-                        position: { x: 45, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            scholastic: {
-                title: 'Scholastic Delinquency',
-                subtitle: 'Academic probation and dismissal policies',
-                type: 'accordion',
-                sections: [
-                    {
-                        title: 'Probationary Status',
-                        icon: '⚠️',
-                        intro: 'A student is placed on probationary status under any of the following circumstances:',
-                        steps: [
-                            {
-                                title: 'Failed Grades',
-                                description: 'Obtains a rating of 5.0 in two subjects in a semester/term.',
-                                details: []
-                            },
-                            {
-                                title: 'Unofficial Dropping',
-                                description: 'Drops unofficially three or more or all subjects without written consent from the parents.',
-                                details: []
-                            },
-                            {
-                                title: 'Load Requirements',
-                                description: 'Fails to pass at least 75% of the load for the term.',
-                                details: []
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Dismissal Policy',
-                        icon: '🚫',
-                        intro: 'A student who is not in the last two years of a five-year course or in the last year of a four (4) or three (3) year course is considered dismissed from the official roll of the university under any of the following conditions:',
-                        steps: [
-                            {
-                                title: 'Multiple Failures',
-                                description: 'Obtains a rating of 5.0 in three (3) subjects.',
-                                details: []
-                            },
-                            {
-                                title: 'While Under Probation',
-                                description: 'Obtains a dropped or failing grade in one subject while under probation.',
-                                details: []
-                            }
-                        ]
-                    }
-                ]
-            },
-            honors: {
-                title: 'Academic Honors',
-                subtitle: 'Honor qualifications and requirements',
-                type: 'accordion',
-                intro: 'A student who completes his course as prescribed by his curriculum shall be rewarded with the corresponding honors provided that he has no grade lower than 2.75 in any of the subjects and has not been found guilty of any major offense.',
-                sections: [
-                    {
-                        title: 'Baccalaureate Programs',
-                        icon: '🎓',
-                        steps: [
-                            {
-                                title: 'Summa Cum Laude',
-                                description: 'General Weighted Average (GWA): 1.00 - 1.20',
-                                details: []
-                            },
-                            {
-                                title: 'Magna Cum Laude',
-                                description: 'General Weighted Average (GWA): 1.21 - 1.45',
-                                details: []
-                            },
-                            {
-                                title: 'Cum Laude',
-                                description: 'General Weighted Average (GWA): 1.46 - 1.75',
-                                details: []
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Pre-Baccalaureate Programs',
-                        icon: '📜',
-                        steps: [
-                            {
-                                title: 'With Highest Honors',
-                                description: 'General Weighted Average (GWA): 1.00 - 1.20',
-                                details: []
-                            },
-                            {
-                                title: 'With High Honors',
-                                description: 'General Weighted Average (GWA): 1.21 - 1.45',
-                                details: []
-                            },
-                            {
-                                title: 'With Honors',
-                                description: 'General Weighted Average (GWA): 1.46 - 1.75',
-                                details: []
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Transfer Students',
-                        icon: '🔄',
-                        steps: [
-                            {
-                                title: 'Residency Requirement',
-                                description: 'A transfer student vying for honors must have completed at least 75% of the total number of academic units of the curriculum in the University.',
-                                details: []
-                            }
-                        ]
-                    }
-                ]
-            },
-            idvalidation: {
-                title: 'ID Validation Process',
-                subtitle: 'Validate your ID for the current school year',
-                type: 'pinboard',
-                fee: 'No fee for validation',
-                processing: 'Same day',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Present COR and ID',
-                        description: 'Present the Certificate of Registration (COR) together with your school ID. Ensure the old sticker has been removed.',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 30, y: 25 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '02',
-                        title: 'Sign Logbook',
-                        description: 'Accomplish the logbook for proper recording of your ID validation.',
-                        color: 'peach',
-                        rotation: 2,
-                        position: { x: 55, y: 20 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '03',
-                        title: 'Receive Validated ID',
-                        description: 'Claim your school ID affixed with the new sticker for the current school year.',
-                        color: 'green',
-                        rotation: -3,
-                        position: { x: 45, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            idlost: {
-                title: 'Lost ID Replacement',
-                subtitle: 'Get a replacement ID if lost or damaged',
-                type: 'pinboard',
-                fee: 'Varies (check with OSA)',
-                processing: '7-10 working days',
-                steps: [
-                    {
-                        number: '01',
-                        title: 'Affidavit of Loss',
-                        description: 'Secure an affidavit of loss of ID from a notary public or barangay.',
-                        color: 'pink',
-                        rotation: 2,
-                        position: { x: 20, y: 20 },
-                        pinColor: 'red'
-                    },
-                    {
-                        number: '02',
-                        title: 'Get Application Form',
-                        description: 'Get an application form at the Office of Student Affairs (OSA).',
-                        color: 'blue',
-                        rotation: -2,
-                        position: { x: 50, y: 15 },
-                        pinColor: 'blue'
-                    },
-                    {
-                        number: '03',
-                        title: 'Pay ID Fee',
-                        description: 'Pay the required ID fee at the Cashier\'s Office in the Administration Building.',
-                        color: 'yellow',
-                        rotation: 3,
-                        position: { x: 75, y: 20 },
-                        pinColor: 'orange'
-                    },
-                    {
-                        number: '04',
-                        title: 'Photo & Signature',
-                        description: 'Proceed to the ID room for photo and signature capturing. Bring the official receipt.',
-                        color: 'green',
-                        rotation: -2,
-                        position: { x: 40, y: 60 },
-                        pinColor: 'green'
-                    }
-                ]
-            },
-            scholarship: {
-                title: 'Scholarship Application',
-                subtitle: 'Apply for various scholarship programs',
-                type: 'accordion',
-                sections: [
-                    {
-                        title: 'Scholarship Categories',
-                        icon: '🏆',
-                        intro: 'Scholarship and educational grants offered by the University are categorized as follows:',
-                        steps: [
-                            {
-                                title: 'Institutionally Funded / Internal Grants',
-                                description: 'Scholarships funded directly by TUP.',
-                                details: []
-                            },
-                            {
-                                title: 'TUP Employees / Legal Dependents',
-                                description: 'Under the Collective Negotiation Agreement (CNA) for employees and their dependents.',
-                                details: []
-                            },
-                            {
-                                title: 'External Grants',
-                                description: 'Scholarships from various sources:',
-                                details: [
-                                    'Industry partnerships',
-                                    'Non-Government Organizations (NGOs)',
-                                    'Government Agencies/Organizations'
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Application Process',
-                        icon: '📝',
-                        steps: [
-                            {
-                                title: 'Fill Up Application Form',
-                                description: 'Students fill up the application form available at the Office of Student Affairs (OSA). Attach one ID picture.',
-                                details: []
-                            },
-                            {
-                                title: 'Submit Requirements',
-                                description: 'Present the following requirements together with the duly accomplished application form:',
-                                details: [
-                                    'Photocopy of high school card (for freshmen applicants)',
-                                    'Rating slip from the Office of the Registrar (for sophomore to senior students)',
-                                    'Photocopy of Registration Form',
-                                    'Income Tax Return (ITR) of parents/guardian',
-                                    'Notice of Admission',
-                                    'Certification of good moral character',
-                                    'Essay - "My Autobiography"'
-                                ]
-                            },
-                            {
-                                title: 'Interview',
-                                description: 'Attend the scholarship interview as scheduled by the OSA.',
-                                details: []
-                            }
-                        ]
-                    }
-                ]
-            },
-            loa: {
-                title: 'Leave of Absence (LOA)',
-                subtitle: 'Request temporary leave from studies',
-                type: 'accordion',
-                sections: [
-                    {
-                        title: 'Filing Process',
-                        icon: '📄',
-                        steps: [
-                            {
-                                title: 'Submit Written Request',
-                                description: 'A student may take a leave of absence by submitting a written request addressed to the Dean/Assistant to the Director of Academic Affairs (ADAA) indicating the reasons and duration for the leave of absence which must not exceed one academic year (2 semesters or 3 terms).',
-                                details: [
-                                    'The intention shall be presented to the faculty adviser/department head',
-                                    'Subject to approval of the Dean/ADAA'
-                                ]
-                            },
-                            {
-                                title: 'Filing Deadline',
-                                description: 'No leave of absence shall be granted two weeks before the last day of classes of a semester/term.',
-                                details: [
-                                    'If inability to continue is for health or similar justifiable cause, the absence shall be considered "excused"',
-                                    'Student must present a letter of excuse to faculty members',
-                                    'Required to make up for lessons/work missed'
-                                ]
-                            },
-                            {
-                                title: 'Returning Students',
-                                description: 'Returning students who did not apply for a leave of absence and have been out of the campus beyond the allowable maximum period of one (1) academic year shall be readmitted on probationary basis within the maximum residency rule.',
-                                details: []
-                            }
-                        ]
-                    }
-                ]
-            }
-        };
 
-        // Service Icons
-        const icons = {
-            ctc: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg>',
-            goodmoral: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>',
-            ratingslip: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
-            enrollment: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>',
-            transfer: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 21 7 17 3"></polyline><line x1="21" y1="7" x2="9" y2="7"></line><polyline points="7 21 3 17 7 13"></polyline><line x1="15" y1="17" x2="3" y2="17"></line></svg>',
-            addsubject: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="12" y1="9" x2="12" y2="15"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>',
-            dropsubject: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="12" x2="15" y2="12"></line></svg>',
-            scholastic: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
-            honors: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>',
-            idvalidation: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line><path d="m15 14 2 2 4-4"></path></svg>',
-            idlost: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line><circle cx="12" cy="14" r="2"></circle></svg>',
-            scholarship: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>',
-            loa: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
-        };
-
-        const services = [
-            { id: 'ctc', icon: 'ctc', title: 'Certified True Copy (CTC)', description: 'Request certified true copies - ₱100' },
-            { id: 'goodmoral', icon: 'goodmoral', title: 'Certificate of Good Moral', description: 'Get your good moral certificate - ₱100' },
-            { id: 'ratingslip', icon: 'ratingslip', title: 'Rating Slip Request', description: 'Request rating slip without faculty evaluation' },
-            { id: 'enrollment', icon: 'enrollment', title: 'Enrollment Process', description: 'Complete enrollment guide for all students' },
-            { id: 'transfer', icon: 'transfer', title: 'Transfer of Students', description: 'Transfer in or out of TUP' },
-            { id: 'addsubject', icon: 'addsubject', title: 'Adding of Subject', description: 'Add subjects to your enrollment' },
-            { id: 'dropsubject', icon: 'dropsubject', title: 'Dropping of Subject', description: 'Officially drop subjects from your load' },
-            { id: 'scholastic', icon: 'scholastic', title: 'Scholastic Delinquency', description: 'Probation and dismissal policies' },
-            { id: 'honors', icon: 'honors', title: 'Academic Honors', description: 'Latin honors and award qualifications' },
-            { id: 'idvalidation', icon: 'idvalidation', title: 'ID Validation', description: 'Validate your ID for the school year' },
-            { id: 'idlost', icon: 'idlost', title: 'Lost ID Replacement', description: 'Get a replacement for lost ID' },
-            { id: 'scholarship', icon: 'scholarship', title: 'Scholarship Application', description: 'Apply for various scholarship programs' },
-            { id: 'loa', icon: 'loa', title: 'Leave of Absence', description: 'File for temporary leave from studies' }
-        ];
-
-        // Color map for sticky notes
-        const colorMap = {
-            peach: 'bg-orange-50',
-            blue: 'bg-blue-50',
-            lavender: 'bg-purple-50',
-            pink: 'bg-pink-50',
-            yellow: 'bg-yellow-50',
-            green: 'bg-green-50'
-        };
-
-        // Pin color map
-        const pinColorMap = {
-            red: { main: '#991b1b', shadow: '#7f1d1d' },
-            orange: { main: '#ea580c', shadow: '#c2410c' },
-            blue: { main: '#1e40af', shadow: '#1e3a8a' },
-            purple: { main: '#7e22ce', shadow: '#6b21a8' },
-            green: { main: '#15803d', shadow: '#166534' }
-        };
-
-        // Create Pushpin SVG
-        function createPushpin(color) {
-            const colors = pinColorMap[color] || pinColorMap.red;
-            return `
-                <div class="relative w-8 h-8" style="animation: zoomIn 0.3s ease-out 0.2s both;">
-                    <div class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-6 rounded-full opacity-30" style="background-color: ${colors.shadow}"></div>
-                    <div class="absolute top-2 left-1/2 -translate-x-1/2 w-0.5 h-6 rounded-full" style="background-color: #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.2)"></div>
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2">
-                        <div class="w-6 h-3 rounded-t-full" style="background: linear-gradient(to bottom, ${colors.main}, ${colors.shadow}); box-shadow: 0 2px 6px rgba(0,0,0,0.3)"></div>
-                        <div class="w-6 h-2 rounded-b-full -mt-0.5" style="background-color: ${colors.shadow}; box-shadow: 0 3px 6px rgba(0,0,0,0.3)"></div>
-                        <div class="absolute top-0.5 left-1 w-2 h-1.5 rounded-full opacity-40" style="background-color: white"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-function renderServiceMenu() {
-    const menuContainer = document.getElementById('serviceMenu');
-    const listContainer = document.getElementById('servicesList');
-    menuContainer.innerHTML = '';
-    listContainer.innerHTML = '';
-    
-    // Duplicate services for infinite loop effect
-    const duplicatedServices = [...services, ...services, ...services];
-    
-    duplicatedServices.forEach((service, index) => {
-        // Create carousel card
-        const card = document.createElement('div');
-        card.className = 'group relative cursor-pointer transition-all duration-500 service-card flex-shrink-0';
-        card.style.width = '400px';
-        card.onclick = () => showDetail(service.id);
+    <button id="adminAddBtn" onclick="openAdminModal()" 
+        class="hidden fixed bottom-8 right-8 p-4 rounded-full z-50 group transition-all duration-300
+               bg-[#3D0001]/60 hover:bg-[#8b0000]/80 
+               backdrop-blur-md border border-white/20 hover:border-red-400/50
+               text-white shadow-2xl hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] hover:scale-110">
         
-        card.innerHTML = `
-            <div class="relative bg-[#290001]/35 backdrop-blur-md rounded-xl p-8 border border-white/25 hover:border-white/40 transition-all duration-500 h-full flex flex-col overflow-hidden shadow-lg">
-                <!--num1-->
-                <div class="text-6xl font-bold mb-6 bg-[#ffffff] bg-clip-text text-transparent" style="font-family: 'Outfit', sans-serif;">
-                    ${String((index % services.length) + 1).padStart(2, '0')}
-                </div>
-                
-                <!-- Icon -->
-                <div class="w-12 h-12 rounded-lg bg-[#FF8589]/10 flex items-center justify-center mb-6 text-[#ffffff] group-hover:bg-[#8b0000]/20 transition-all duration-300">
-                    ${icons[service.icon]}
-                </div>
-                
-                <!--descrp1-->
-                <h3 class="text-[#f5f5dc] text-xl mb-3 group-hover:text-[#FF474E] transition-colors duration-300" style="font-family: 'Outfit', sans-serif; font-weight: 600;">
-                    ${service.title}
-                </h3>
-                
-                <!--subdescrip1-->
-                <p class="text-[#f5f5dc]/80 text-sm leading-relaxed flex-grow" style="font-family: 'Outfit', sans-serif;">
-                    ${service.description}
-                </p>
-                
-                <!-- Hover Arrow -->
-                <div class="mt-6 flex items-center gap-2 text-[#FF474E] opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300">
-                    <span class="text-sm font-semibold">Learn More</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </div>
-                
-                <!-- Background Glow Effect -->
-                <div class="absolute inset-0 bg-gradient-to-br from-[#FF474E]/0 via-[#660000]/0 to-[#8b0000]/0 group-hover:from-[#8b0000]/10 group-hover:via-[#660000]/10 group-hover:to-[#8b0000]/10 transition-all duration-500 rounded-xl pointer-events-none"></div>
-            </div>
-        `;
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
         
-        menuContainer.appendChild(card);
-    });
-    
-    // Create list items (only original services, not duplicated)
-    services.forEach((service, index) => {
-        const listItem = document.createElement('div');
-        // Changed hover:border-[#3D0001]/40 to hover:border-white/50
-listItem.className = 'flex items-center gap-3 p-3 rounded-lg hover:bg-[#3D0001]/10 cursor-pointer transition-all duration-300 border border-transparent hover:border-white/25 backdrop-blur-sm';
-        listItem.onclick = () => {
-            showDetail(service.id);
-        };
-        
-        listItem.innerHTML = `
-            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#FF474E]/10 flex items-center justify-center text-[#ffffff]">
-                ${icons[service.icon]}
-            </div>
-            <div class="flex-1">
-                <!--titles-->
-                <h4 class="text-[#f5f5dc] text-sm font-semibold" style="font-family: 'Outfit', sans-serif;">${service.title}</h4>
-            </div>
-            <!--num2-->
-            <div class="text-[#ffffff]/60 font-bold" style="font-family: 'Outfit', sans-serif;">
-                ${String(index + 1).padStart(2, '0')}
-            </div>
-        `;
-        
-        listContainer.appendChild(listItem);
-    });
-    
-    // Setup navigation controls
-    setupCarouselControls();
-    
-    // Start auto-scroll after initial positioning
-    setTimeout(() => {
-    const menuContainer = document.getElementById('serviceMenu');
-    const cardWidth = 400 + 24;
-    menuContainer.style.scrollBehavior = 'auto';
-    menuContainer.scrollLeft = services.length * cardWidth;
-    menuContainer.style.scrollBehavior = 'smooth';
-    startAutoScroll();
-}, 100);
-}
+        <span class="absolute right-full mr-4 top-1/2 -translate-y-1/2 
+                     bg-black/60 backdrop-blur-md border border-white/10
+                     text-white text-sm px-3 py-1.5 rounded-lg whitespace-nowrap 
+                     opacity-0 group-hover:opacity-100 transition-opacity font-['Outfit, sans-serif']">
+            Add New Service
+        </span>
+    </button>
 
-// Carousel Controls with Auto-Scroll
-let currentIndex = 0;
-let autoScrollInterval;
-let isUserInteracting = false;
-let interactionTimeout = null;
-
-function startAutoScroll() {
-    const menuContainer = document.getElementById('serviceMenu');
-    const cardWidth = 400 + 24;
-    
-    autoScrollInterval = setInterval(() => {
-        if (!isUserInteracting) {
-            const currentScroll = menuContainer.scrollLeft;
-            const maxScroll = menuContainer.scrollWidth - menuContainer.clientWidth;
-            const middlePoint = services.length * cardWidth;
+    <div id="adminModal" class="hidden fixed inset-0 bg-black/90 z-[9999] overflow-y-auto">
+        <div class="flex items-start justify-center min-h-screen pt-32 pb-20 px-4">
             
-            // Smooth reset without visible jump
-            if (currentScroll >= middlePoint * 2 - cardWidth * 2) {
-                // Reset to middle section
-                menuContainer.style.scrollBehavior = 'auto';
-                menuContainer.scrollLeft = middlePoint;
-                menuContainer.style.scrollBehavior = 'smooth';
-            } else if (currentScroll <= cardWidth) {
-                // Reset from beginning to middle
-                menuContainer.style.scrollBehavior = 'auto';
-                menuContainer.scrollLeft = middlePoint;
-                menuContainer.style.scrollBehavior = 'smooth';
-            } else {
-                // Normal scroll
-                menuContainer.scrollLeft += 3;
-            }
-        }
-    }, 20);
-}
-
-function stopAutoScroll() {
-    if (autoScrollInterval) {
-        clearInterval(autoScrollInterval);
-    }
-}
-
-function setupCarouselControls() {
-    const menuContainer = document.getElementById('serviceMenu');
-    
-    // Enable mouse drag to scroll
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    
-    menuContainer.addEventListener('mousedown', (e) => {
-        isDown = true;
-        isUserInteracting = true;
-        if (interactionTimeout) clearTimeout(interactionTimeout);
-        menuContainer.style.cursor = 'grabbing';
-        startX = e.pageX - menuContainer.offsetLeft;
-        scrollLeft = menuContainer.scrollLeft;
-    });
-    
-    menuContainer.addEventListener('mouseleave', () => {
-        isDown = false;
-        menuContainer.style.cursor = 'grab';
-        if (interactionTimeout) clearTimeout(interactionTimeout);
-        interactionTimeout = setTimeout(() => { 
-            isUserInteracting = false; 
-        }, 500);
-    });
-    
-    menuContainer.addEventListener('mouseup', () => {
-        isDown = false;
-        menuContainer.style.cursor = 'grab';
-        if (interactionTimeout) clearTimeout(interactionTimeout);
-        interactionTimeout = setTimeout(() => { 
-            isUserInteracting = false; 
-        }, 500);
-    });
-    
-    menuContainer.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - menuContainer.offsetLeft;
-        const walk = (x - startX) * 2;
-        menuContainer.scrollLeft = scrollLeft - walk;
-    });
-    
-    // Pause on hover
-    menuContainer.addEventListener('mouseenter', () => {
-        isUserInteracting = true;
-        if (interactionTimeout) clearTimeout(interactionTimeout);
-    });
-    
-    menuContainer.addEventListener('mouseleave', () => {
-        if (!isDown) {
-            if (interactionTimeout) clearTimeout(interactionTimeout);
-            interactionTimeout = setTimeout(() => { 
-                isUserInteracting = false; 
-            }, 500);
-        }
-    });
-}
-
-function scrollToCard(index) {
-    const menuContainer = document.getElementById('serviceMenu');
-    const cardWidth = 400 + 24;
-    const scrollPosition = index * cardWidth;
-    
-    menuContainer.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-    });
-    
-    currentIndex = index;
-}
-
-// Carousel Animation
-function startCarousel() {
-    const menuContainer = document.getElementById('serviceMenu');
-    let scrollPosition = 0;
-    const scrollSpeed = 1; // Adjust speed (pixels per frame)
-    
-    function animate() {
-        scrollPosition += scrollSpeed;
-        
-        // Reset position for seamless loop
-        const cardWidth = 350 + 24; // card width + gap
-        const totalWidth = cardWidth * services.length;
-        
-        if (scrollPosition >= totalWidth) {
-            scrollPosition = 0;
-        }
-        
-        menuContainer.style.transform = `translateX(-${scrollPosition}px)`;
-        requestAnimationFrame(animate);
-    }
-    
-    // Pause on hover
-    menuContainer.addEventListener('mouseenter', () => {
-        menuContainer.style.animationPlayState = 'paused';
-    });
-    
-    menuContainer.addEventListener('mouseleave', () => {
-        menuContainer.style.animationPlayState = 'running';
-    });
-    
-    animate();
-}
-
-        // Show Detail View
-        function showDetail(serviceId) {
-            const service = servicesData[serviceId];
-            if (!service) return;
-
-            const menuContainer = document.getElementById('serviceMenu');
-            const detailContainer = document.getElementById('detailView');
-
-            menuContainer.classList.add('hidden');
-            detailContainer.classList.remove('hidden');
-
-            document.querySelector('.w-80').style.display = 'none';
-            document.getElementById('servicesHeader').style.display = 'none';
-
-            // Create back button
-            const backButton = document.createElement('button');
-            backButton.className = 'mb-8 flex items-center gap-2 text-white hover:text-red-400 transition-colors duration-200 group';
-            backButton.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-1 transition-transform duration-200">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                <span>Back to Services</span>
-            `;
-            backButton.onclick = showServiceMenu;
-
-            // Create title section
-            const titleSection = document.createElement('div');
-            titleSection.className = 'text-center mb-8';
-            titleSection.innerHTML = `
-    <!--1title-->
-    <h2 class="text-white text-4xl mb-3 font-bold">${service.title}</h2>
-    <!--1titlesub-->
-    <p class="text-white text-lg">${service.subtitle}</p>
-    ${service.fee ? `
-        <div class="flex justify-center gap-6 mt-4">
-            <div class="bg-white/10 px-4 py-2 rounded-lg border border-white/20">
-                <!--fee-->
-                <span class="text-white text-sm">Fee: </span>
-                <!--feevalue-->
-                <span class="text-white font-bold">${service.fee}</span>
-            </div>
-            <div class="bg-white/10 px-4 py-2 rounded-lg border border-white/20">
-                <!--process-->
-                <span class="text-white text-sm">Processing: </span>
-                <!--processvalue-->
-                <span class="text-white font-bold">${service.processing}</span>
-            </div>
-        </div>
-    ` : ''}
-`;
-
-            detailContainer.innerHTML = '';
-            detailContainer.appendChild(backButton);
-            detailContainer.appendChild(titleSection);
-
-            // Render based on type
-            if (service.type === 'pinboard') {
-                detailContainer.appendChild(renderPinboard(service));
-            } else if (service.type === 'accordion') {
-                detailContainer.appendChild(renderAccordion(service));
-            } else if (service.type === 'list') {
-                detailContainer.appendChild(renderList(service));
-            }
-        }
-
-        // Render Pinboard View
-        function renderPinboard(service) {
-            const pinboard = document.createElement('div');
-            pinboard.className = 'relative min-h-[600px] pb-20';
-
-            // Create SVG for connection lines
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('class', 'absolute inset-0 w-full h-full pointer-events-none');
-            svg.style.zIndex = '0';
-
-            service.steps.forEach((step, index) => {
-                if (index < service.steps.length - 1) {
-                    const fromPos = service.steps[index].position;
-                    const toPos = service.steps[index + 1].position;
-                    
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', `${fromPos.x}%`);
-                    line.setAttribute('y1', `${fromPos.y}%`);
-                    line.setAttribute('x2', `${toPos.x}%`);
-                    line.setAttribute('y2', `${toPos.y}%`);
-                    line.setAttribute('class', 'connection-line');
-                    
-                    svg.appendChild(line);
-                }
-            });
-
-            pinboard.appendChild(svg);
-
-            // Create sticky notes
-            service.steps.forEach((step, index) => {
-                const noteContainer = document.createElement('div');
-                noteContainer.className = 'sticky-note absolute transition-all duration-300 cursor-pointer group';
-                noteContainer.style.left = `${step.position.x}%`;
-                noteContainer.style.top = `${step.position.y}%`;
-                noteContainer.style.transform = `translate(-50%, -50%) rotate(${step.rotation}deg)`;
-                noteContainer.style.zIndex = '1';
-
-                const pushpinDiv = document.createElement('div');
-                pushpinDiv.className = 'absolute -top-4 left-1/2 -translate-x-1/2 z-10';
-                pushpinDiv.innerHTML = createPushpin(step.pinColor);
-
-                const noteCard = document.createElement('div');
-                noteCard.className = `${colorMap[step.color] || 'bg-white'} rounded-lg p-6 w-64 shadow-lg group-hover:shadow-2xl transition-shadow duration-300`;
-                noteCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.15)';
-                noteCard.innerHTML = `
-                    <div class="inline-block px-3 py-1 rounded-full bg-white/60 mb-3">
-                        <!--num3-->
-                        <span class="text-slate-600">${step.number}</span>
-                    </div>
-                    <!--pintitle-->
-                    <h3 class="text-slate-900 text-lg mb-2">${step.title}</h3>
-                    <!--pininfo-->
-                    <p class="text-slate-600 text-sm leading-relaxed">${step.description}</p>
-                `;
-
-                noteContainer.appendChild(pushpinDiv);
-                noteContainer.appendChild(noteCard);
-                pinboard.appendChild(noteContainer);
-            });
-
-            return pinboard;
-        }
-
-        // Render Accordion View
-        function renderAccordion(service) {
-            const container = document.createElement('div');
-            container.className = 'max-w-4xl mx-auto';
-
-            if (service.intro) {
-                const introBox = document.createElement('div');
-                introBox.className = 'info-box p-6 rounded-lg mb-6';
-                introBox.innerHTML = `<p class="text-white">${service.intro}</p>`;
-                container.appendChild(introBox);
-            }
-
-            service.sections.forEach((section, sectionIndex) => {
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'mb-4';
-
-                const accordionHeader = document.createElement('button');
-                accordionHeader.className = 'w-full bg-[#290001]/10 hover:bg-white/10 border border-white/10 rounded-lg p-6 text-left transition-all duration-300 flex items-center justify-between';
-                accordionHeader.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <!--titledrop-->
-                        <span class="text-white text-xl">${section.title}</span>
-                    </div>
-                    <svg class="w-6 h-6 text-red-400 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                `;
-
-                const accordionContent = document.createElement('div');
-                accordionContent.className = 'accordion-content bg-white/5 border border-white/10 rounded-b-lg overflow-hidden';
-            
-                let contentHTML = '<div class="p-6 space-y-4">';
+            <div class="bg-slate-900 border border-white/20 p-8 rounded-xl w-full max-w-3xl relative shadow-2xl">
                 
-                if (section.intro) {
-                    contentHTML += `<p class="text-white mb-4">${section.intro}</p>`;
-                }
-
-                if (section.info) {
-                    contentHTML += `<div class="info-box p-4 rounded-lg mb-4"><p class="text-white text-sm">${section.info}</p></div>`;
-                }
-
-                section.steps.forEach((step, stepIndex) => {
-                    contentHTML += `
-                        <div class="process-card bg-white/5 p-5 rounded-lg">
-                            <div class="flex items-start gap-4">
-                                <div class="step-number flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm">
-                                    ${stepIndex + 1}
-                                </div>
-                                <div class="flex-1">
-                                    <!--label-->
-                                    <h4 class="text-white text-lg mb-2 font-bold">${step.title}</h4>
-                                    <!--labeltxt-->
-                                    <p class="text-white text-sm mb-2">${step.description}</p>
-                                    ${step.details && step.details.length > 0 ? `
-                                        <ul class="list-disc list-inside text-white text-sm space-y-1 mt-3 ml-2">
-                                            ${step.details.map(detail => `<li>${detail}</li>`).join('')}
-                                        </ul>
-                                    ` : ''}
-                                </div>
+                <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+        
+                <h2 id="modalTitle" class="text-white text-2xl font-bold mb-4">Manage Service</h2>
+                <p class="text-gray-400 text-sm mb-6">Fill out the form below. The system will format it automatically.</p>
+                
+                <form id="serviceBuilderForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10 space-y-4">
+                        <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Basic Information</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-white/80 text-sm mb-1">Service Title</label>
+                                <input type="text" id="buildTitle" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500 focus:border-red-500 outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-white/80 text-sm mb-1">Unique ID (lowercase, no spaces)</label>
+                                <input type="text" id="buildId" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500 focus:border-red-500 outline-none" required>
                             </div>
                         </div>
-                    `;
-                });
+        
+                        <div>
+                            <label class="block text-white/80 text-sm mb-1">Subtitle</label>
+                            <input type="text" id="buildDesc" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500 focus:border-red-500 outline-none" required>
+                        </div>
 
-                contentHTML += '</div>';
-                accordionContent.innerHTML = contentHTML;
+                    <div>
+                        <label class="block text-white/80 text-sm mb-1">Introduction / Important Note (Optional)</label>
+                        <textarea id="buildIntro" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500 focus:border-red-500 outline-none" rows="2" placeholder="e.g. A student may add a subject upon recommendation..."></textarea>
+                    </div>
+        
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-white/80 text-sm mb-1">View Style</label>
+                                <select id="buildType" onchange="updateStepVisibility()" class="w-full bg-slate-800 border border-white/20 rounded p-2 text-white outline-none focus:border-red-500">
+                                    <option value="pinboard">Pinboard (Process Steps)</option>
+                                    <option value="accordion">Accordion (Dropdown)</option>
+                                    <option value="list">Simple List</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-white/80 text-sm mb-1">Fee</label>
+                                <input type="text" id="buildFee" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500" placeholder="e.g. ₱100">
+                            </div>
+                            <div>
+                                <label class="block text-white/80 text-sm mb-1">Processing Time</label>
+                                <input type="text" id="buildTime" class="w-full bg-black/40 border border-white/20 rounded p-2 text-white placeholder-gray-500" placeholder="e.g. 3-5 Days">
+                            </div>
+                        </div>
 
-                accordionHeader.onclick = () => {
-                    const isActive = accordionContent.classList.contains('active');
-                    // Close all accordions
-                    document.querySelectorAll('.accordion-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.querySelectorAll('.accordion-content').forEach((content, idx) => {
-                        const header = content.previousElementSibling;
-                        const svg = header.querySelector('svg');
-                        svg.classList.remove('rotate-180');
-                    });
-                    
-                    // Open clicked accordion if it wasn't active
-                    if (!isActive) {
-                        accordionContent.classList.add('active');
-                        accordionHeader.querySelector('svg').classList.add('rotate-180');
-                    }
-                };
+                        <div>
+                             <label class="block text-white/80 text-sm mb-1">Select General Icon</label>
+                             <div class="flex gap-3 items-center">
+                                 <select id="buildIcon" onchange="updateIconPreview()" class="flex-1 bg-slate-800 border border-white/20 rounded p-2 text-white outline-none">
+                                    <option value="doc_check">Document with Checkmark</option>
+                                    <option value="doc_edit">Document with Pen (Form)</option>
+                                    <option value="id_card">ID Card</option>
+                                    <option value="money">Money / Payment</option>
+                                    <option value="user">User / Student</option>
+                                    <option value="grad_cap">Graduation / Academics</option>
+                                    <option value="warning">Warning / Alert</option>
+                                    <option value="schedule">Calendar / Schedule</option>
+                                    <option value="arrow_right">Transfer / Arrow</option>
+                                </select>
+                                <div id="iconPreview" class="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-white border border-white/20 shrink-0">
+                                    </div>
+                             </div>
+                        </div>
+                    </div>
+        
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-red-400 font-bold uppercase text-xs tracking-wider">Process Steps</h3>
+                            <button type="button" onclick="addVisualStep()" class="bg-green-700 hover:bg-green-600 text-white text-xs px-3 py-1 rounded flex items-center gap-1 transition-colors">
+                                <span class="text-lg font-bold">+</span> Add Step
+                            </button>
+                        </div>
+        
+                        <div id="stepsContainer" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            </div>
+                    </div>
+        
+                    <div class="pt-4 border-t border-white/10 flex justify-end gap-3">
+                        <button type="button" onclick="closeAdminModal()" class="px-6 py-2 text-gray-300 hover:bg-white/10 rounded transition-colors">Cancel</button>
+                        <button type="submit" class="px-8 py-2 bg-gradient-to-r from-red-700 to-red-900 text-white font-bold rounded shadow-lg hover:from-red-600 hover:to-red-800 transition-all transform hover:scale-105">
+                            Save & Publish
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                accordionItem.appendChild(accordionHeader);
-                accordionItem.appendChild(accordionContent);
-                container.appendChild(accordionItem);
-            });
+<script>
+    // ------------------------------------------------------------------
+    // 1. CONFIGURATION & DATA STORAGE
+    // ------------------------------------------------------------------
+    const db = firebase.firestore();
+let servicesData = {};
+let services = [];
 
-            return container;
+// YOUR ADMIN EMAILS
+const ADMIN_EMAILS = [
+    "admin@tup.edu.ph",
+    "registrar@tup.edu.ph",
+    "samanthaelaine.egar@tup.edu.ph"
+];
+
+// 2. NEW GENERAL ICONS
+const icons = {
+    doc_check: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="m9 15 3 3 3-3"></path></svg>',
+    doc_edit: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>',
+    id_card: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>',
+    money: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>',
+    user: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
+    grad_cap: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+    warning: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>',
+    schedule: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
+    arrow_right: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
+    default: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+};
+
+// UPDATED DEFAULT DATA (Using Generic Icons)
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+    // UPDATED DEFAULT DATA
+    // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // UPDATED DEFAULT DATA (EXACT TEXT FROM DOCUMENT)
+    // ------------------------------------------------------------------
+    const defaultServicesData = {
+        ctc: {
+            title: 'Certified True Copy (CTC)',
+            subtitle: 'Request certified true copies',
+            type: 'pinboard',
+            fee: '₱100',
+            processing: '3–5 working days',
+            icon: 'doc_check',
+            steps: [
+                { number: '01', title: 'Visit Registrar', description: 'Proceed to the Office of the Registrar and present the document that needs to be certified true copy (CTC).', color: 'blue' },
+                { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the registrar.', color: 'lavender' },
+                { number: '03', title: 'Pay Fee', description: 'Go to the Cashier’s Office at the Administration Building and pay the fee of ₱100 for the CTC.', color: 'peach' },
+                { number: '04', title: 'Submit & Claim', description: 'Return to the Office of the Registrar and submit the accomplished form together with the official receipt. You will then be issued a claim slip indicating the date when you may claim your CTC (processing usually takes 3–5 working days, depending on the volume of requests).', color: 'green' }
+            ]
+        },
+        goodmoral: {
+            title: 'Certificate of Good Moral',
+            subtitle: 'Request for the Certificate of Good Moral',
+            type: 'pinboard',
+            fee: '₱100',
+            processing: '3–5 working days',
+            icon: 'doc_check',
+            steps: [
+                { number: '01', title: 'Visit OSA', description: 'Proceed to the Office of Students Affairs (OSA) and request for the Certificate of Good Moral', color: 'pink' },
+                { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the OSA.', color: 'blue' },
+                { number: '03', title: 'Pay Fee', description: 'Go to the Cashier’s Office at the Administration Building and pay the fee of ₱100 for the Certificate of Good Moral.', color: 'yellow' },
+                { number: '04', title: 'Submit & Claim', description: 'Return to the OSA and submit the accomplished form together with the official receipt. You will then be issued a claim slip indicating the date when you may claim your Certificate of Good Moral (processing usually takes 3–5 working days, depending on the volume of requests).', color: 'green' }
+            ]
+        },
+        ratingslip: {
+            title: 'Rating Slip Request',
+            subtitle: 'How to request for rating slip if was not able to complete Faculty Evaluation',
+            type: 'pinboard',
+            fee: 'None',
+            processing: 'Same day',
+            icon: 'doc_edit',
+            steps: [
+                { number: '01', title: 'Request from Dept Head', description: 'Proceed to the Department Head of your College and request your rating slip, stating that you were unable to complete the faculty evaluation.', color: 'blue' },
+                { number: '02', title: 'Community Service', description: 'Complete the required community service for one to two hours.', color: 'peach' },
+                { number: '03', title: 'Receive Slip', description: 'After completing the community service, return to the Department Head of your College to receive the printed copy of your rating slip.', color: 'green' }
+            ]
+        },
+        enrollment: {
+            title: 'Process of Enrollment',
+            subtitle: 'Guide for all students',
+            type: 'accordion',
+            icon: 'user',
+            sections: [
+                {
+                    title: 'For First Year Students',
+                    icon: '👤',
+                    steps: [
+                        { title: 'Secure Notice of Admission', description: 'Secure Notice of Admission from the Office of the Admissions upon presentations of the following documents:', details: ['High School Card (Form 138) and Transcript of Records for Transferees (original)', 'Certificate of Good Moral', 'Test Permit'] },
+                        { title: 'Student Profiling', description: 'With your Notice of Admission and Medical Certificate, proceed to the Office of Admission for profiling' },
+                        { title: 'Enlistment', description: 'Proceed to your course adviser for enlistment' },
+                        { title: 'Scholarship Notation', description: 'Students availing scholarship, report to the Office of Student Affairs for scholarship notation' },
+                        { title: 'Assessment', description: 'Proceed to the Accounting office for assessment and secure registration form' },
+                        { title: 'Confirmation', description: 'With your Registration Form, present original requirements stated in step #1 to the Registrar’s Office for confirmation' },
+                        { title: 'Medical Certificate', description: 'Report to the University Clinic and Secure Medical Certificate' },
+                        { title: 'ID Processing', description: 'Proceed to the Office of Student Affairs for Identification card (ID) processing' }
+                    ]
+                },
+                {
+                    title: 'For Old Students (2nd year - Fifth year & Graduate Students)',
+                    icon: '💻',
+                    intro: 'Online Enrollment for Regular Students:',
+                    steps: [
+                        { title: 'Send Rating Slips', description: 'Students shall send online their last semester rating slips to their department heads' },
+                        { title: 'Enlistment & Assessment', description: 'Department Head is responsible for enlistment and assessment of fees' },
+                        { title: 'Confirmation', description: 'Registrar confirms enrollment' },
+                        { title: 'Access COR', description: 'First Semester Certificate of Registration (COR) can be accessed thru the ERS' },
+                        { title: 'Receive COR', description: 'All COR\'S will be forwarded to the respective Department Heads by Second Week of Classes' }
+                    ]
+                },
+                {
+                    title: 'Onsite Enrollment',
+                    icon: '🏫',
+                    intro: 'Graduate Students (New & Old) | Returning Students (Report to Registrar to Secure Checklist and to Guidance Office for Clearance for Returning Student, Warning Agreement for students under probation) | All Irregular Students (2nd to 5th year) for face to face compliance of Enrollment Requirements. (Warning Agreement if necessary)',
+                    steps: [
+                        { title: 'Present Rating Slips', description: 'Student presents rating slips to Department Heads/Enlistment Adviser' },
+                        { title: 'Warning Agreements', description: 'Completion of Warning Agreements if necessary' },
+                        { title: 'Enlistment & Assessment', description: 'Department Head is responsible for enlistment and assessment of fees' },
+                        { title: 'Confirmation', description: 'Registrar confirms and issues Certificate of Registration (COR) thru the Department Heads' }
+                    ]
+                }
+            ]
+        },
+        transfer: {
+            title: 'Transfer of Students',
+            subtitle: 'Transferring in or out of TUP',
+            type: 'list',
+            icon: 'arrow_right',
+            sections: [
+                { title: 'Transfer Within TUP', icon: '🔄', content: 'A Student from a campus of a University is allowed to transfer to another TUP campus; provided that he satisfies the admission requirements of the program in the college concerned.' },
+                { title: 'Transfer from SUCs', icon: '🏛️', content: 'A transfer student from other SUCs may be admitted provided that he has no failed / dropped mark and he satisfies the admission requirements of the program in the college concerned.' },
+                { title: 'Transfer from Private', icon: '🎓', content: 'A transfer student from private institutions may be admitted to any three-year program of the University provided that he has no failed / dropped mark and he satisfies the admission requirements of the program in the college concerned' },
+                { title: 'Clearance Requirement', icon: '📋', content: 'Any student who intends to transfer to another school, college or university must be cleared of all liabilities and responsibilities (administrative, academic, and financial) in the University. The necessary documents for transfer could be secured from the Office of the Registrar.' }
+            ]
+        },
+        addsubject: {
+            title: 'Adding of Subject',
+            subtitle: 'Conditions for adding subjects',
+            type: 'list',
+            icon: 'doc_edit',
+            intro: 'A student may add a subject upon the recommendation of the Department Head and approved by the Dean under the following conditions:',
+            sections: [
+                { title: 'Maximum Load', icon: '📊', content: 'The student is not carrying the maximum unit load per semester/term prescribed in the curriculum' },
+                { title: 'Probationary Status', icon: '⚠️', content: 'He has not met the authorized load for probationary students' },
+                { title: 'Graduating Students', icon: '🎓', content: 'For graduating undergraduate student, he may be allowed to add subject/s not more than six(6) units on top of the semester/term load' }
+            ]
+        },
+        dropsubject: {
+            title: 'Dropping of Subject',
+            subtitle: 'Procedure for dropping subjects',
+            type: 'pinboard',
+            fee: 'None stated',
+            processing: 'Before midterm',
+            icon: 'doc_edit',
+            intro: 'A student may drop a subject or subjects anytime before the midterm following the procedure below:',
+            steps: [
+                { number: '01', title: 'Write Letter', description: 'A student must write a letter noted (whenever applicable) by the parent/guardian (specifying the reason/s for dropping). The Dean of the college must approve the dropping of the subject/s', color: 'pink' },
+                { number: '02', title: 'Secure Form', description: 'The approved letter must be presented to the guidance personnel and a dropping form must be secured', color: 'blue' },
+                { number: '03', title: 'Signatures', description: 'The dropping form must be accomplished and the subject professor and the Dean of the college must sign it.', color: 'peach' },
+                { number: '04', title: 'Submit', description: 'Copies of the dropping form must be presented to the offices concerned', color: 'green' }
+            ]
+        },
+        scholastic: {
+            title: 'Scholastic Delinquency',
+            subtitle: 'Probation and Dismissal Policies',
+            type: 'accordion',
+            icon: 'warning',
+            sections: [
+                {
+                    title: 'Probationary Status',
+                    icon: '⚠️',
+                    intro: 'A student is placed on probationary status under any of the following circumstances:',
+                    steps: [
+                        { title: 'Failed Grades', description: 'He obtains a rating of 5.0% in two subjects in a semester/term' },
+                        { title: 'Unofficial Dropping', description: 'He drops unofficially three or more or all of a subjects without a written consent from the parents' },
+                        { title: 'Load Requirement', description: 'He fails to pass at least 75% of the load for the term' }
+                    ]
+                },
+                {
+                    title: 'Dismissal',
+                    icon: '🚫',
+                    intro: 'A student who is not in the last two years of a five year course or in the last year of a four (4) or three (3) year course is considered dismissed from the official roll of the university under any of the following conditions:',
+                    steps: [
+                        { title: 'Multiple Failures', description: 'He obtains a rating of 5.0 in three (3) subjects' },
+                        { title: 'Probation Failure', description: 'He obtains a dropped or failing grade in one subject while under probation' }
+                    ]
+                }
+            ]
+        },
+        honors: {
+            title: 'Academic Honors',
+            subtitle: 'Honor qualifications',
+            type: 'accordion',
+            icon: 'grad_cap',
+            intro: 'A student who completes his course as prescribed by his curriculum shall be rewarded with the corresponding honors provided that he has no grade lower than 2.75 in any of the subject and has not been found guilty of any major offense:',
+            sections: [
+                {
+                    title: 'Baccalaureate Programs',
+                    icon: '🎓',
+                    steps: [
+                        { title: 'Summa cum laude', description: '1.00 - 1.20' },
+                        { title: 'Magna cum laude', description: '1.21 - 1.45' },
+                        { title: 'Cum laude', description: '1.46 - 1.75' }
+                    ]
+                },
+                {
+                    title: 'Pre-Baccalaureate Programs',
+                    icon: '📜',
+                    steps: [
+                        { title: 'With Highest Honors', description: '1.00 - 1.20' },
+                        { title: 'With High Honors', description: '1.21 - 1.45' },
+                        { title: 'With Honors', description: '1.46 - 1.75' }
+                    ]
+                },
+                {
+                    title: 'Note',
+                    icon: 'ℹ️',
+                    steps: [{ title: 'Transfer Students', description: 'A transfer student vying for honors must have completed at least 75% of the total number of academic units of the curriculum in the University' }]
+                }
+            ]
+        },
+        idvalidation: {
+            title: 'ID Validation Process',
+            subtitle: 'Validate for current school year',
+            type: 'pinboard',
+            fee: 'None',
+            processing: 'Same day',
+            icon: 'id_card',
+            steps: [
+                { number: '01', title: 'Present COR & ID', description: 'Present the Certificate of Registration (COR) together with your school ID (ensure the old sticker has been removed).', color: 'blue' },
+                { number: '02', title: 'Sign Logbook', description: 'Accomplish the logbook for proper recording.', color: 'peach' },
+                { number: '03', title: 'Claim ID', description: 'Claim your school ID affixed with the new sticker for the current school year', color: 'green' }
+            ]
+        },
+        idlost: {
+            title: 'How to request for ID if lost',
+            subtitle: 'Get a replacement ID',
+            type: 'pinboard',
+            fee: 'Required Fee',
+            processing: 'Varies',
+            icon: 'id_card',
+            steps: [
+                { number: '01', title: 'Affidavit', description: 'He secures an affidavit of loss of ID.', color: 'pink' },
+                { number: '02', title: 'Application Form', description: 'He gets an application form at the Office of Student Affairs.', color: 'blue' },
+                { number: '03', title: 'Pay Fee', description: 'He pays the required ID fee at the Cashier’s office.', color: 'yellow' },
+                { number: '04', title: 'Photo & Signature', description: 'He proceeds to the ID room for photo and signature capturing', color: 'green' }
+            ]
+        },
+        scholarship: {
+            title: 'Scholarship',
+            subtitle: 'Grants and Application Process',
+            type: 'accordion',
+            icon: 'money',
+            sections: [
+                {
+                    title: 'Scholarship Categories',
+                    icon: '🏆',
+                    intro: 'Scholarship and educational grants offered by the University are categorized as follows:',
+                    steps: [
+                        { title: 'Internal', description: 'Institutionally funded / Internal grants' },
+                        { title: 'Employees', description: 'TUP Employees / Legal Dependents under the Collective Negotiation Agreement (CNA)' },
+                        { title: 'External Grants', description: 'Industry, Non-Government Organization, Government, Agencies / Organization' }
+                    ]
+                },
+                {
+                    title: 'How to Apply for Scholarship',
+                    icon: '📝',
+                    steps: [
+                        { title: 'Fill Form', description: 'The students fill-up the application form available at the Office of Student Affairs (OSA). Attach one ID picture.' },
+                        { title: 'Requirements', description: 'Present the following requirements together with the duly accomplished application form:', details: ['A photocopy of a high school card (for freshmen applicants) or the rating slip from the Office of the Registrar (for sophomore to senior students)', 'A photocopy of a Registration Form', 'The Income Tax Return (ITR) of the parents/guardian', 'The Notice of Admission', 'A certification of good moral character', 'An essay - My Autobiography'] },
+                        { title: 'Interview', description: 'Interview' }
+                    ]
+                }
+            ]
+        },
+        loa: {
+            title: 'Process of Requesting Leave of Absence (LOA)',
+            subtitle: 'Request temporary leave',
+            type: 'list',
+            icon: 'doc_edit',
+            sections: [
+                { title: 'Step 1', icon: '1️⃣', content: 'A student may take a leave of absence by submitting a written request addressed to the Dean/ Assistant to the Director of Academic Affairs (ADAA) indicating the reasons and duration for the leave of absence which must not exceed one academic year (2 semesters or 3 terms). The intention of the leave of absence shall be presented to the faculty adviser/ department head concerned for appropriate action and shall be subject to the approval of the Dean/ Assistant to the Director of Academic Affairs (ADAA).' },
+                { title: 'Step 2', icon: '2️⃣', content: 'No leave of absence shall be granted two weeks before the last day of classes of a semester/ term. If the inability of the student to continue attending classes within the above period is for reasons of health or similar justifiable cause, the absence shall be considered “excused”. The student shall then be required to present to the faculty members concerned a letter of excuse and to make up for lessons/work missed.' },
+                { title: 'Step 3', icon: '3️⃣', content: 'Returning students who did not apply for a leave of absence and have been out of the campus beyond the allowable maximum period of one (1) academic year shall be readmitted on probationary basis within the maximum residency rule.' }
+            ]
+        },
+        organizations: {
+            title: 'List of Organizations',
+            subtitle: 'Inside TUP',
+            type: 'accordion',
+            icon: 'user',
+            sections: [
+                {
+                    title: 'College of Architecture and Fine Arts',
+                    icon: '🎨',
+                    steps: [
+                        { title: 'ASIA', description: 'Architectural Students’ Association of the Philippines' },
+                        { title: 'THREADS', description: 'Technology Hoist Related Excellent Alliance of Drafting Students' },
+                        { title: 'UAPSA', description: 'United Architects of the Philippines - Students’ Auxiliary - TUP Chapter' }
+                    ]
+                },
+                {
+                    title: 'College of Industrial Education',
+                    icon: '📚',
+                    steps: [
+                        { title: 'ASIA', description: 'Association of Students in Industrial Arts' },
+                        { title: 'FHEBSA', description: 'Food Services Management, Home Economics and Beauty Care and Wellness Student Association (formerly ASHEFSM)' },
+                        { title: 'INTEL', description: 'Information Technology Educators League' },
+                        { title: 'PRESA', description: 'Professional Education Students Association' },
+                        { title: 'ICT Club', description: '(TUP B-CIE Extn Program) - Information and Communications Technology Club' },
+                        { title: 'HE Club', description: '(TUP B-CIE Extn Program) - Home Economics Club' },
+                        { title: 'IA Club', description: '(TUP B-CIE Extn Program) - Industrial Arts Club' }
+                    ]
+                },
+                {
+                    title: 'College of Industrial Technology',
+                    icon: '⚙️',
+                    steps: [
+                        { title: 'ACETS', description: 'Association of Civil Engineering Technology Students' },
+                        { title: 'ACTS', description: 'Association of Culinary Technology Students (Formerly NAFTA)' },
+                        { title: 'GAPTSA', description: 'Graphic Arts and Painting Technology Students Association' },
+                        { title: 'ICETSA', description: 'Institute of Computer Engineering Technologist Student Association' },
+                        { title: 'TUP - ISET', description: 'TUP Innovative Society for Electronics Technologist' },
+                        { title: 'JDC', description: 'Junior Designer’s Club' },
+                        { title: 'METALS', description: 'Mechanical Technologists and Leader’s Society' },
+                        { title: 'PAFT - OMEGA', description: 'Philippine Association of Food Technologist-Omega' },
+                        { title: 'RACS', description: 'Radio Amateurs Communication Society' },
+                        { title: 'RETRACKS', description: 'Railway Engineering Technology Recognize Alliance of Competent and Keen Students' },
+                        { title: 'SAFHYR', description: 'Student Association of Future Young Hotelier and Restaurateur' },
+                        { title: 'USSAT', description: 'Unified Student Society of Automation Technology' }
+                    ]
+                },
+                {
+                    title: 'College of Liberal Arts',
+                    icon: '🎭',
+                    steps: [
+                        { title: 'CPAG', description: 'College of Liberal Arts Performing Arts Group' },
+                        { title: 'FUMAS', description: 'Future Managers’ Society' },
+                        { title: 'PE Club', description: 'Physical Education Club' },
+                        { title: 'SSO', description: 'Social Science Organization' }
+                    ]
+                },
+                {
+                    title: 'College of Engineering',
+                    icon: '👷',
+                    steps: [
+                        { title: 'TUP EES', description: 'TUP Electrical Engineering Society' },
+                        { title: 'TUPCES', description: 'TUP Civil Engineering Society' },
+                        { title: 'OECES', description: 'Organization of Electronics Engineering Students' },
+                        { title: 'PSME TUPSU', description: 'Philippine Society of Mechanical Engineers-TUP Student Unit' }
+                    ]
+                },
+                {
+                    title: 'College of Science',
+                    icon: '🧪',
+                    steps: [
+                        { title: 'CHEMSOC', description: 'TUP Chemical Society' },
+                        { title: 'COMPASS', description: 'TUP Computer Students’ Association' },
+                        { title: 'GREEN SOC', description: 'TUP Green Society' },
+                        { title: 'AWSLC', description: 'Amazon Web Services Learning Club - TUP Manila' },
+                        { title: 'GDGoC', description: 'Google Developer Groups on Campus - TUP Manila' },
+                        { title: 'Artisan', description: 'Artisan' }
+                    ]
+                },
+                {
+                    title: 'Non College-Based',
+                    icon: '🤝',
+                    steps: [
+                        { title: 'BOLTUP', description: 'Boluntaryong TUPians' },
+                        { title: 'CYC', description: 'College Y Club' },
+                        { title: 'TUP Debate Society', description: 'TUP Debate Society' },
+                        { title: 'DOST Scholar’s Club', description: 'DOST Scholar’s Club' },
+                        { title: 'TUP Dugong Bughaw', description: 'TUP Dugong Bughaw' },
+                        { title: 'TUP GRABOTS', description: 'Grayhawks Robotics' },
+                        { title: 'GDSC TUP', description: 'Google Developer Students Club' },
+                        { title: 'TUP GEAR', description: 'TUP Gaming Enthusiast Association Ring' },
+                        { title: 'TUP-IVC', description: 'TUP Institute for Visual Communication' },
+                        { title: 'LALI', description: 'Life Coaching and Leadership Initiative' },
+                        { title: 'TUP MathSoc', description: 'TUP Math Society' },
+                        { title: 'TUPM-RCY', description: 'TUP Manila Red Cross Youth' },
+                        { title: 'SMERS', description: 'Students’ Multimedia Event Reporters Society' },
+                        { title: 'TUP TG', description: 'TUP Tech Guild' },
+                        { title: 'OSESH', description: 'Organization of Students for Environmental Safety and Health' },
+                        { title: 'TUP UIC', description: 'University Integrity Crusaders' }
+                    ]
+                },
+                {
+                    title: 'Religious',
+                    icon: '🕊️',
+                    steps: [
+                        { title: 'TUP SONS', description: 'Seeds of the Nations' }
+                    ]
+                }
+            ]
         }
+    };
+    const colorMap = { peach: 'bg-orange-50', blue: 'bg-blue-50', lavender: 'bg-purple-50', pink: 'bg-pink-50', yellow: 'bg-yellow-50', green: 'bg-green-50', red: 'bg-red-50' };
+    const pinColorMap = {
+        red: { main: '#991b1b', shadow: '#7f1d1d' }, orange: { main: '#ea580c', shadow: '#c2410c' }, blue: { main: '#1e40af', shadow: '#1e3a8a' },
+        purple: { main: '#7e22ce', shadow: '#6b21a8' }, green: { main: '#15803d', shadow: '#166534' }
+    };
 
-        // Render List View
-        function renderList(service) {
-            const container = document.createElement('div');
-            container.className = 'max-w-4xl mx-auto';
+    function createPushpin(color) {
+    const colors = pinColorMap[color] || pinColorMap.red;
+    return `
+        <div class="relative w-8 h-8" style="animation: zoomIn 0.3s ease-out 0.2s both;">
+            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-6 rounded-full opacity-30" style="background-color: ${colors.shadow}"></div>
+            <div class="absolute top-2 left-1/2 -translate-x-1/2 w-0.5 h-6 rounded-full" style="background-color: #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.2)"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2">
+                <div class="w-6 h-3 rounded-t-full" style="background: linear-gradient(to bottom, ${colors.main}, ${colors.shadow}); box-shadow: 0 2px 6px rgba(0,0,0,0.3)"></div>
+                <div class="w-6 h-2 rounded-b-full -mt-0.5" style="background-color: ${colors.shadow}; box-shadow: 0 3px 6px rgba(0,0,0,0.3)"></div>
+                <div class="absolute top-0.5 left-1 w-2 h-1.5 rounded-full opacity-40" style="background-color: white"></div>
+            </div>
+        </div>
+    `;
+}
 
-            if (service.intro) {
-                const introBox = document.createElement('div');
-                introBox.className = 'info-box p-6 rounded-lg mb-6';
-                introBox.innerHTML = `<p class="text-white">${service.intro}</p>`;
-                container.appendChild(introBox);
+    // ------------------------------------------------------------------
+    // 3. CORE FUNCTIONS
+    // ------------------------------------------------------------------
+    
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const currentEmail = user.email.toLowerCase();
+            const admins = ADMIN_EMAILS.map(e => e.toLowerCase());
+            
+            if (admins.includes(currentEmail)) {
+                isAdminUser = true; 
+                
+                // Show Floating Add Button
+                const btn = document.getElementById('adminAddBtn');
+                if (btn) {
+                    btn.classList.remove('hidden');
+                    btn.style.display = 'block'; 
+                }
+
+                // Show Delete All Button (NEW)
+                const deleteBtn = document.getElementById('deleteAllBtn');
+                if (deleteBtn) {
+                    deleteBtn.classList.remove('hidden');
+                }
+
+                checkIfDbEmpty(); 
+            }
+        }
+    });
+
+    async function checkIfDbEmpty() {
+        const snap = await db.collection('services').get();
+        if (snap.empty) {
+            document.getElementById('initDbBtn').classList.remove('hidden');
+        }
+    }
+
+    async function uploadDefaultData() {
+        if(!confirm("Initialize database with new generic icons?")) return;
+        const batch = db.batch();
+        for (const [key, value] of Object.entries(defaultServicesData)) {
+            const ref = db.collection('services').doc(key);
+            batch.set(ref, value);
+        }
+        await batch.commit();
+        alert("Database Initialized!");
+        window.location.reload();
+    }
+
+    async function deleteAllServices() {
+        // Double Confirmation for safety
+        if (!confirm("⚠️ DANGER ZONE: This will delete ALL services from the database.\n\nThis is usually done to reset the system. Are you sure?")) return;
+        if (!confirm("‼️ FINAL WARNING: This action cannot be undone. \n\nClick OK to wipe all service data.")) return;
+
+        try {
+            const snapshot = await db.collection('services').get();
+            
+            if (snapshot.empty) {
+                alert("Database is already empty.");
+                return;
             }
 
-            service.sections.forEach((section, index) => {
-                const card = document.createElement('div');
-                card.className = 'process-card bg-white/10 border border-white/20 rounded-lg p-6 mb-4';
-                card.innerHTML = `
-                    <div class="flex items-start gap-4">
-                        <div class="text-4xl flex-shrink-0">${section.icon}</div>
-                        <div class="flex-1">
-                            <h3 class="text-white text-xl mb-3 font-bold">${section.title}</h3>
-                            <p class="text-white leading-relaxed">${section.content}</p>
+            // Delete in a batch (efficient)
+            const batch = db.batch();
+            snapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+
+            await batch.commit();
+            
+            alert("🗑️ System Reset: All services have been deleted.");
+            window.location.reload(); // Reload to show empty state/init button
+
+        } catch (error) {
+            console.error("Error clearing database:", error);
+            alert("❌ Error: " + error.message);
+        }
+    }
+
+    async function fetchServices() {
+        try {
+            const snapshot = await db.collection('services').get();
+            
+            // 1. Get Containers
+            const menuContainer = document.getElementById('serviceMenu');
+            const listContainer = document.getElementById('servicesList');
+
+            // 2. CHECK EMPTY STATE
+            if (snapshot.empty) {
+                // Fix: Clear BOTH containers
+                menuContainer.innerHTML = '<div class="text-white p-8 opacity-70">No services found. Admin please initialize database.</div>';
+                listContainer.innerHTML = ''; // <--- THIS WAS MISSING
+                
+                // Show Initialize Button if Admin
+                if (isAdminUser) {
+                    document.getElementById('initDbBtn').classList.remove('hidden');
+                }
+                return; 
+            }
+
+            // 3. Process Data if not empty
+            services = [];
+            servicesData = {};
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                services.push({
+                    id: doc.id,
+                    icon: data.icon || 'default',
+                    title: data.title,
+                    description: data.subtitle || data.description
+                });
+                servicesData[doc.id] = data;
+            });
+            
+            renderServiceMenu();
+            
+        } catch (error) {
+            console.error("Error fetching services:", error);
+        }
+    }
+
+    async function refreshServiceUI(serviceId) {
+    await fetchServices();
+    
+    // If we're viewing a service detail, refresh that view
+    const detailView = document.getElementById('detailView');
+    if (!detailView.classList.contains('hidden') && serviceId) {
+        showDetail(serviceId);
+    }
+}
+
+    function renderServiceMenu() {
+        const menuContainer = document.getElementById('serviceMenu');
+        const listContainer = document.getElementById('servicesList');
+        menuContainer.innerHTML = '';
+        listContainer.innerHTML = '';
+        
+        const duplicatedServices = [...services, ...services, ...services];
+        
+        duplicatedServices.forEach((service, index) => {
+            const card = document.createElement('div');
+            card.className = 'group relative cursor-pointer transition-all duration-500 service-card flex-shrink-0';
+            card.style.width = '400px';
+            card.onclick = () => showDetail(service.id);
+            
+            const iconSvg = icons[service.icon] || icons['default'];
+
+            card.innerHTML = `
+    <div class="relative bg-[#290001]/35 backdrop-blur-md rounded-xl p-8 border border-white/25 hover:border-white/40 transition-all duration-500 h-full flex flex-col overflow-hidden shadow-lg">
+        
+        <div class="text-5xl font-bold mb-6 bg-[#ffffff] bg-clip-text text-transparent" style="font-family: 'Outfit', sans-serif;">
+            ${String((index % services.length) + 1).padStart(2, '0')}
+        </div>
+        
+        <div class="w-10 h-10 rounded-lg bg-[#FF8589]/10 flex items-center justify-center mb-6 text-[#ffffff] group-hover:bg-[#8b0000]/20 transition-all duration-300">
+            ${iconSvg}
+        </div>
+        
+        <h3 class="text-[#f5f5dc] text-xl mb-2 group-hover:text-[#FF474E] transition-colors duration-300" style="font-family: 'Outfit', sans-serif; font-weight: 600;">
+            ${service.title}
+        </h3>
+        
+        <p class="text-[#f5f5dc]/80 text-sm leading-relaxed flex-grow" style="font-family: 'Outfit', sans-serif;">
+            ${service.description}
+        </p>
+
+        <div class="mt-4 flex items-center gap-2 text-[#FF474E] opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300">
+            <span class="text-sm font-semibold" style="font-family: 'Outfit', sans-serif;">Learn More</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+    </div>
+`;
+            menuContainer.appendChild(card);
+        });
+        
+        // List Items (Sidebar)
+        services.forEach((service, index) => {
+            const iconSvg = icons[service.icon] || icons['default'];
+            const listItem = document.createElement('div');
+            listItem.className = 'flex items-center gap-3 p-3 rounded-lg hover:bg-[#3D0001]/10 cursor-pointer transition-all duration-300 border border-transparent hover:border-white/25 backdrop-blur-sm';
+            listItem.onclick = () => showDetail(service.id);
+            
+            listItem.innerHTML = `
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#FF474E]/10 flex items-center justify-center text-[#ffffff]">
+                    ${iconSvg}
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-[#f5f5dc] text-sm font-semibold" style="font-family: 'Outfit', sans-serif;">${service.title}</h4>
+                </div>
+            `;
+            listContainer.appendChild(listItem);
+        });
+        
+        setupCarouselControls();
+        setTimeout(() => {
+            const cardWidth = 400 + 24;
+            menuContainer.scrollLeft = services.length * cardWidth;
+            startAutoScroll();
+        }, 100);
+    }
+    // ------------------------------------------------------------------
+    // 4. ADMIN BUILDER (UPDATED LOGIC)
+    // ------------------------------------------------------------------
+
+    function openAdminModal() {
+        document.getElementById('modalTitle').textContent = 'Manage Service';
+        document.getElementById('adminModal').classList.remove('hidden');
+        document.getElementById('stepsContainer').innerHTML = '';
+        addVisualStep(); 
+        updateIconPreview(); // Show default icon
+        toggleStepColors();  // Hide colors if not pinboard
+    }
+
+    function closeAdminModal() {
+    document.getElementById('adminModal').classList.add('hidden');
+    document.getElementById('serviceBuilderForm').reset();
+    document.getElementById('buildId').disabled = false; // Re-enable ID field
+}
+
+    function updateIconPreview() {
+        const select = document.getElementById('buildIcon');
+        const preview = document.getElementById('iconPreview');
+        preview.innerHTML = icons[select.value] || icons['default'];
+    }
+
+    function toggleStepColors() {
+        const type = document.getElementById('buildType').value;
+        const colorSelectors = document.querySelectorAll('.step-color-container');
+        colorSelectors.forEach(div => {
+            if (type === 'pinboard') div.classList.remove('hidden');
+            else div.classList.add('hidden');
+        });
+    }
+
+    function addVisualStep() {
+        const container = document.getElementById('stepsContainer');
+        const stepCount = container.children.length + 1;
+        
+        const type = document.getElementById('buildType').value;
+        const isAccordion = type === 'accordion';
+        const isPinboard = type === 'pinboard';
+
+        const stepHTML = `
+            <div class="step-item bg-black/20 p-4 rounded border border-white/5 relative group animate-fade-in mb-4">
+                <div class="flex gap-4">
+                    <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center font-bold text-white shrink-0 text-sm mt-1">
+                        ${stepCount}
+                    </div>
+                    <div class="flex-1 space-y-3">
+                        
+                        <div class="section-group ${!isAccordion ? 'hidden' : ''}">
+                            <label class="text-[10px] uppercase text-white/50 font-bold tracking-wider">Section / Group Name</label>
+                            <input type="text" class="step-section-input w-full bg-slate-800/50 border border-white/10 rounded p-1.5 text-white text-xs placeholder-gray-500 focus:border-blue-500 outline-none" placeholder="e.g. First Year Students">
+                        </div>
+
+                        <div class="section-group ${!isAccordion ? 'hidden' : ''}">
+                            <textarea class="step-intro-input w-full bg-slate-800/50 text-white text-xs p-2 rounded border border-white/10 focus:border-blue-500 outline-none" rows="2" placeholder="Optional Note for this Section (e.g. 'A student who is not in the last two years...')"></textarea>
+                        </div>
+
+                        <div>
+                            <input type="text" class="step-title-input w-full bg-transparent border-b border-white/20 text-white placeholder-gray-500 focus:border-red-500 outline-none pb-1 text-sm font-semibold" placeholder="Step Title" required>
+                        </div>
+                        
+                        <textarea class="step-desc-input w-full bg-black/20 text-white text-xs p-2 rounded border border-transparent focus:border-white/20 outline-none" rows="2" placeholder="Description..."></textarea>
+                        
+                        <div class="details-group ${!isAccordion ? 'hidden' : ''}">
+                            <textarea class="step-details-input w-full bg-black/20 text-white text-xs p-2 rounded border border-transparent focus:border-white/20 outline-none" rows="3" placeholder="• Requirement 1 (Press Enter for new line)"></textarea>
+                        </div>
+
+                        <div class="color-group ${!isPinboard ? 'hidden' : ''}">
+                             <select class="step-color-input bg-slate-800 text-xs text-white p-1 rounded border border-white/10 outline-none">
+                                <option value="blue">Color: Blue</option>
+                                <option value="pink">Color: Pink</option>
+                                <option value="green">Color: Green</option>
+                                <option value="peach">Color: Peach</option>
+                                <option value="yellow">Color: Yellow</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="this.closest('.step-item').remove()" class="absolute top-2 right-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity text-xs hover:text-red-400">
+                    ✕
+                </button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', stepHTML);
+    }
+
+   async function handleFormSubmit(e) {
+        e.preventDefault();
+        const serviceId = document.getElementById('buildId').value.trim().toLowerCase();
+        const type = document.getElementById('buildType').value;
+        
+        const serviceData = {
+            title: document.getElementById('buildTitle').value,
+            subtitle: document.getElementById('buildDesc').value,
+            intro: document.getElementById('buildIntro').value, 
+            type: type,
+            fee: document.getElementById('buildFee').value || "None",
+            processing: document.getElementById('buildTime').value || "N/A",
+            icon: document.getElementById('buildIcon').value
+        };
+
+        const stepElements = document.querySelectorAll('.step-item');
+        const rawItems = [];
+        
+        stepElements.forEach((el, index) => {
+            const detailsText = el.querySelector('.step-details-input').value;
+            const detailsArray = detailsText.split('\n').filter(line => line.trim() !== '');
+
+            rawItems.push({
+                section: el.querySelector('.step-section-input').value.trim() || "General Steps",
+                
+                // CAPTURE SECTION INTRO HERE
+                sectionIntro: el.querySelector('.step-intro-input').value.trim(), 
+                
+                number: String(index + 1).padStart(2, '0'),
+                title: el.querySelector('.step-title-input').value,
+                description: el.querySelector('.step-desc-input').value,
+                details: detailsArray,
+                color: el.querySelector('.step-color-input').value
+            });
+        });
+
+        if (type === 'pinboard') {
+            serviceData.steps = rawItems.map(item => ({
+                number: item.number,
+                title: item.title,
+                description: item.description,
+                color: item.color
+            }));
+        } 
+        else {
+            // GROUP BY SECTION
+            const groupedSections = new Map();
+            
+            rawItems.forEach(item => {
+                if (!groupedSections.has(item.section)) {
+                    // Initialize group
+                    groupedSections.set(item.section, {
+                        steps: [],
+                        intro: item.sectionIntro // Take intro from first item found
+                    });
+                }
+                
+                // Add step to group
+                groupedSections.get(item.section).steps.push({
+                    title: item.title,
+                    description: item.description,
+                    details: item.details
+                });
+            });
+
+            // Convert Map to Array structure
+            serviceData.sections = Array.from(groupedSections, ([name, data]) => ({
+                title: name,
+                intro: data.intro, // SAVE IT TO FIREBASE
+                icon: '📌', 
+                steps: data.steps,
+                content: data.steps[0].description 
+            }));
+        }
+
+        try {
+            await db.collection('services').doc(serviceId).set(serviceData);
+            document.getElementById('buildId').disabled = false;
+            alert("✅ Service Published Successfully!");
+            closeAdminModal();
+            await refreshServiceUI(serviceId);
+        } catch (error) {
+            alert("❌ Error: " + error.message);
+        }
+    }
+
+    async function editService(serviceId) {
+        const service = servicesData[serviceId];
+        if (!service) return;
+        
+        openAdminModal();
+        document.querySelector('#adminModal h2').textContent = "Edit Service";
+        
+        // Basic Info
+        document.getElementById('buildTitle').value = service.title;
+        document.getElementById('buildIntro').value = service.intro || '';
+        document.getElementById('buildId').value = service.id;
+        document.getElementById('buildId').disabled = true;
+        document.getElementById('buildDesc').value = service.subtitle;
+        document.getElementById('buildType').value = service.type;
+        document.getElementById('buildFee').value = service.fee || '';
+        document.getElementById('buildTime').value = service.processing || '';
+        document.getElementById('buildIcon').value = service.icon || 'default';
+        updateIconPreview();
+        
+        document.getElementById('stepsContainer').innerHTML = '';
+        
+        // LOAD STEPS INTO FORM
+        if (service.type === 'pinboard' && service.steps) {
+            service.steps.forEach(step => {
+                addVisualStep();
+                const lastStep = document.querySelector('.step-item:last-child');
+                lastStep.querySelector('.step-title-input').value = step.title;
+                lastStep.querySelector('.step-desc-input').value = step.description;
+                lastStep.querySelector('.step-color-input').value = step.color || 'blue';
+            });
+        } 
+        else if ((service.type === 'accordion' || service.type === 'list') && service.sections) {
+            // Loop through SECTIONS (e.g., First Year, Old Students)
+            service.sections.forEach(section => {
+                const sectionName = section.title;
+                
+                // Loop through STEPS inside that section
+                // If 'steps' array exists use it, otherwise treat the section itself as 1 step (for List view)
+                const stepsToLoad = section.steps || [{ title: section.title, description: section.content }];
+
+                stepsToLoad.forEach(step => {
+                    addVisualStep();
+                    const lastStep = document.querySelector('.step-item:last-child');
+                    
+                    // Fill Fields
+                    lastStep.querySelector('.step-section-input').value = sectionName; // Auto-fill the section name
+                    lastStep.querySelector('.step-title-input').value = step.title;
+                    lastStep.querySelector('.step-desc-input').value = step.description || "";
+                    
+                    // Join array back to text for editing
+                    if (step.details && Array.isArray(step.details)) {
+                        lastStep.querySelector('.step-details-input').value = step.details.join('\n');
+                    }
+                });
+            });
+        }
+        
+        // Show/Hide fields based on type
+        const typeDropdown = document.getElementById('buildType');
+        if(typeDropdown.onchange) typeDropdown.onchange(); 
+
+        updateStepVisibility();
+    }
+    async function deleteService(serviceId) {
+    if (!confirm(`Are you sure you want to delete "${servicesData[serviceId]?.title}"?\n\nThis action cannot be undone.`)) {
+        return;
+    }
+    
+    try {
+        await db.collection('services').doc(serviceId).delete();
+        alert("✅ Service deleted successfully!");
+        showServiceMenu(); // Return to menu first
+        await refreshServiceUI(); // Then refresh without serviceId
+    } catch (error) {
+        alert("❌ Error deleting service: " + error.message);
+    }
+}
+
+function updateStepVisibility() {
+        const type = document.getElementById('buildType').value;
+
+        // 1. SECTION & DETAILS (Only show for Accordion)
+        const isAccordion = type === 'accordion';
+        const sectionGroups = document.querySelectorAll('.section-group');
+        const detailsGroups = document.querySelectorAll('.details-group');
+        
+        sectionGroups.forEach(el => isAccordion ? el.classList.remove('hidden') : el.classList.add('hidden'));
+        detailsGroups.forEach(el => isAccordion ? el.classList.remove('hidden') : el.classList.add('hidden'));
+
+        // 2. COLOR PICKER (Only show for Pinboard)
+        const isPinboard = type === 'pinboard';
+        const colorGroups = document.querySelectorAll('.color-group');
+        
+        colorGroups.forEach(el => isPinboard ? el.classList.remove('hidden') : el.classList.add('hidden'));
+    }
+    // ------------------------------------------------------------------
+    // 5. CAROUSEL & DETAIL VIEW (Existing)
+    // ------------------------------------------------------------------
+    let autoScrollInterval;
+    let isUserInteracting = false;
+
+    function startAutoScroll() {
+        const menuContainer = document.getElementById('serviceMenu');
+        const cardWidth = 400 + 24;
+        autoScrollInterval = setInterval(() => {
+            if (!isUserInteracting) {
+                const currentScroll = menuContainer.scrollLeft;
+                const middlePoint = services.length * cardWidth;
+                if (currentScroll >= middlePoint * 2 - cardWidth * 2) {
+                    menuContainer.style.scrollBehavior = 'auto';
+                    menuContainer.scrollLeft = middlePoint;
+                    menuContainer.style.scrollBehavior = 'smooth';
+                } else {
+                    menuContainer.scrollLeft += 1; 
+                }
+            }
+        }, 20);
+    }
+
+    function setupCarouselControls() {
+        const menuContainer = document.getElementById('serviceMenu');
+        menuContainer.addEventListener('mouseenter', () => isUserInteracting = true);
+        menuContainer.addEventListener('mouseleave', () => isUserInteracting = false);
+    }
+
+    function showDetail(serviceId) {
+        const service = servicesData[serviceId];
+        if (!service) return;
+        
+        document.getElementById('servicesHeader').classList.add('hidden');
+        document.querySelector('.flex.gap-8').classList.add('hidden');
+        const detailContainer = document.getElementById('detailView');
+        detailContainer.classList.remove('hidden');
+
+        const user = firebase.auth().currentUser;
+        const isAdmin = user && ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email.toLowerCase());
+
+        // --- GLASS BUTTONS ---
+        let adminButtonsHtml = '';
+        if (isAdmin) {
+            adminButtonsHtml = `
+                <div class="flex gap-3">
+                    <button onclick="editService('${serviceId}')" 
+                        style="font-family: 'Outfit', sans-serif;"
+                        class="group flex items-center gap-2 px-5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 backdrop-blur-md transition-all duration-300 text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:scale-110"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        <span class="font-medium">Edit</span>
+                    </button>
+                    <button onclick="deleteService('${serviceId}')" 
+                        style="font-family: 'Outfit', sans-serif;"
+                        class="group flex items-center gap-2 px-5 py-2 rounded-xl bg-[#3D0001]/40 hover:bg-[#8b0000]/60 border border-red-500/30 hover:border-red-400/60 backdrop-blur-md transition-all duration-300 text-red-200 hover:text-white hover:shadow-[0_0_20px_rgba(185,28,28,0.4)]">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-hover:scale-110"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        <span class="font-medium">Delete</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        // --- RENDER INTRO BOX (Fixed Spacing) ---
+        let introHtml = '';
+        if (service.intro) {
+            // Added 'relative z-20' to force stacking order
+            // Added 'mb-44' to push the pinboard down
+            const containerWidth = service.type === 'pinboard' ? 'max-w-[1200px]' : 'max-w-4xl';
+            introHtml = `
+                <div class="${containerWidth} w-full mx-auto mb-20 relative z-20 p-8 rounded-xl border-l-4 border-red-600 bg-gradient-to-r from-red-950/40 to-transparent backdrop-blur-sm shadow-lg">
+                    <p class="text-white/100 text-base leading-relaxed font-['Outfit', sans-serif]">${service.intro}</p>
+                </div>
+            `;
+        }
+
+        detailContainer.innerHTML = `
+            <div class="flex justify-between items-start mb-8">
+                <button onclick="showServiceMenu()" 
+                    style="font-family: 'Outfit', sans-serif;"
+                    class="flex items-center gap-2 text-white/80 hover:text-white hover:translate-x-[-5px] transition-all duration-300">
+                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    </div>
+                    <span class="font-medium">Back to Services</span>
+                </button>
+                ${adminButtonsHtml}
+            </div>
+
+            <div class="text-center mb-12 relative z-20">
+                <h2 class="text-white text-5xl mb-3 font-bold tracking-tight" style="font-family: 'Outfit', sans-serif;">${service.title}</h2>
+                <p class="text-white/80 text-xl mt-4 font-light" style="font-family: 'Montserrat', sans-serif;">${service.subtitle}</p>
+                
+                ${service.fee && service.fee !== "None" ? `
+                <div class="mt-6 inline-flex gap-4">
+                    <div class="bg-white/5 px-5 py-2 rounded-full border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                        <span class="text-white/60 text-sm uppercase tracking-wider text-[10px]" style="font-family: 'Montserrat', sans-serif;">Fee</span>
+                        <span class="text-white font-bold" style="font-family: 'Outfit', sans-serif;">${service.fee}</span>
+                    </div>
+                    <div class="bg-white/5 px-5 py-2 rounded-full border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                        <span class="text-white/60 text-sm uppercase tracking-wider text-[10px]" style="font-family: 'Montserrat', sans-serif;">Time</span>
+                        <span class="text-white font-bold" style="font-family: 'Outfit', sans-serif;">${service.processing}</span>
+                    </div>
+                </div>` : ''}
+            </div>
+
+            ${introHtml}
+        `;
+        
+        if (service.type === 'pinboard') detailContainer.appendChild(renderPinboard(service));
+        else if (service.type === 'accordion') detailContainer.appendChild(renderAccordion(service));
+        else if (service.type === 'list') detailContainer.appendChild(renderList(service));
+    }
+
+    function showServiceMenu() {
+        document.getElementById('detailView').classList.add('hidden');
+        document.getElementById('servicesHeader').classList.remove('hidden');
+        document.querySelector('.flex.gap-8').classList.remove('hidden');
+    }
+
+    // ------------------------------------------------------------------
+    // 6. RENDERERS (NEW ZIGZAG PINBOARD)
+    // ------------------------------------------------------------------
+
+   function renderPinboard(service) {
+        const columns = 3;
+        const rowHeight = 320; 
+        const rows = Math.ceil(service.steps.length / columns);
+        const totalHeight = Math.max(600, (rows * rowHeight) + 150); // Added height for spacing
+        
+        const pinboard = document.createElement('div');
+        pinboard.className = 'relative w-full mx-auto mt-24'; // Added margin-top
+        pinboard.style.height = `${totalHeight}px`;
+        pinboard.style.maxWidth = '1200px';
+
+        const paperToPinMap = {
+            'pink': 'red', 'peach': 'orange', 'blue': 'blue', 'lavender': 'purple', 'green': 'green'
+        };
+
+        const positions = service.steps.map((_, index) => {
+            const col = index % columns; 
+            const row = Math.floor(index / columns);
+            const xCoords = [20, 50, 80]; 
+            
+            // INCREASED TOP PADDING (from 50 to 80)
+            const yPx = 80 + (row * rowHeight) + (col * 15); 
+            
+            const yPercent = (yPx / totalHeight) * 100;
+            return { x: xCoords[col], y: yPercent };
+        });
+
+        // ... (Rest of the function remains the same: SVG drawing, Card creation) ...
+        // Just copy the rest of your existing renderPinboard logic here
+        // ...
+        
+        // 4. Draw Lines
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'absolute inset-0 w-full h-full pointer-events-none');
+        svg.style.zIndex = '0';
+
+        service.steps.forEach((step, index) => {
+            if (index < service.steps.length - 1) {
+                const fromPos = positions[index];
+                const toPos = positions[index + 1];
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', `${fromPos.x + 8}%`);
+                line.setAttribute('y1', `${fromPos.y + 5}%`);
+                line.setAttribute('x2', `${toPos.x + 8}%`);
+                line.setAttribute('y2', `${toPos.y + 5}%`);
+                line.setAttribute('class', 'connection-line');
+                svg.appendChild(line);
+            }
+        });
+        pinboard.appendChild(svg);
+
+        // 5. Draw Cards
+        service.steps.forEach((step, index) => {
+            const pos = positions[index];
+            const noteContainer = document.createElement('div');
+            noteContainer.className = 'sticky-note absolute transition-all duration-300 cursor-pointer group';
+            noteContainer.style.left = `${pos.x}%`;
+            noteContainer.style.top = `${pos.y}%`;
+            
+            const rotation = (index % 2 === 0 ? -2 : 2);
+            noteContainer.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+            noteContainer.style.zIndex = '1';
+
+            const correctPinColor = paperToPinMap[step.color] || 'red';
+            const pushpinDiv = document.createElement('div');
+            pushpinDiv.className = 'absolute -top-4 left-1/2 -translate-x-1/2 z-10';
+            pushpinDiv.innerHTML = createPushpin(correctPinColor);
+
+            const noteCard = document.createElement('div');
+            noteCard.className = `${colorMap[step.color] || 'bg-white'} rounded-lg p-6 w-64 shadow-lg group-hover:shadow-2xl transition-shadow duration-300`;
+            noteCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.15)';
+            
+            noteCard.innerHTML = `
+                <div class="inline-block px-3 py-1 rounded-full bg-white/60 mb-3">
+                    <span class="text-slate-600 font-bold">${step.number}</span>
+                </div>
+                <h3 class="text-slate-900 text-lg mb-2 font-bold">${step.title}</h3>
+                <p class="text-slate-600 text-sm leading-relaxed">${step.description}</p>
+            `;
+
+            noteContainer.appendChild(pushpinDiv);
+            noteContainer.appendChild(noteCard);
+            pinboard.appendChild(noteContainer);
+        });
+
+        return pinboard;
+    }
+
+    function renderAccordion(service) {
+        const container = document.createElement('div');
+        container.className = 'max-w-4xl mx-auto';
+
+        // GLOBAL INTRO (Red Box) is handled by showDetail, skipped here.
+
+        service.sections.forEach((section) => {
+            const item = document.createElement('div');
+            item.className = 'mb-4';
+
+            const header = document.createElement('button');
+            header.className = 'w-full bg-[#290001]/10 hover:bg-white/10 border border-white/10 rounded-lg p-6 text-left transition-all duration-300 flex items-center justify-between';
+            header.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <span class="text-white text-xl font-['Outfit', san-serif]">${section.title}</span>
+                </div>
+                <svg class="w-6 h-6 text-red-400 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            `;
+
+            const accordionContent = document.createElement('div');
+            accordionContent.className = 'accordion-content bg-white/5 border border-white/10 rounded-b-lg overflow-hidden';
+        
+            let contentHTML = '<div class="p-6 space-y-4">';
+            
+            // --- NEW: SECTION SPECIFIC INTRO ---
+            if (section.intro) {
+                contentHTML += `<p class="text-white/80 mb-6 text-sm font-['Montserrat', sans-serif] leading-relaxed">${section.intro}</p>`;
+            }
+
+            section.steps.forEach((step, stepIndex) => {
+                let detailsListHtml = '';
+                if (step.details && step.details.length > 0) {
+                    detailsListHtml = `
+                        <ul class="list-disc list-inside mt-3 space-y-1 ml-1">
+                            ${step.details.map(detail => `
+                                <li class="text-white/70 text-sm font-['Montserrat', sans-serif] pl-2 marker:text-white/40">${detail}</li>
+                            `).join('')}
+                        </ul>
+                    `;
+                }
+
+                contentHTML += `
+                    <div class="process-card bg-white/5 p-5 rounded-lg border-l-4 border-transparent hover:border-[#b91c1c] hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-4">
+                            ${service.title.includes('Organization') ? '' : `
+                            <div class="step-number flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d] shadow-lg flex items-center justify-center text-white text-sm font-['Outfit', san-serif]">
+                                ${stepIndex + 1}
+                            </div>`}
+                            <div class="flex-1">
+                                <h4 class="text-white text-lg mb-2 font-bold font-['Outfit', san-serif]">${step.title}</h4>
+                                <p class="text-white text-sm mb-2 font-['Montserrat', sans-serif]">${step.description}</p>
+                                ${detailsListHtml}
+                            </div>
                         </div>
                     </div>
                 `;
-                container.appendChild(card);
             });
 
-            return container;
-        }
+            contentHTML += '</div>';
+            accordionContent.innerHTML = contentHTML;
 
-        // Show Service Menu
-        function showServiceMenu() {
-            const menuContainer = document.getElementById('serviceMenu');
-            const detailContainer = document.getElementById('detailView');
+            // Accordion Toggle
+            header.onclick = () => {
+                const isActive = accordionContent.classList.contains('active');
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.classList.remove('active');
+                    content.style.maxHeight = null;
+                });
+                document.querySelectorAll('.accordion-content').forEach((content) => {
+                    const h = content.previousElementSibling;
+                    h.querySelector('svg').classList.remove('rotate-180');
+                });
+                if (!isActive) {
+                    accordionContent.classList.add('active');
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+                    header.querySelector('svg').classList.add('rotate-180');
+                }
+            };
 
-            detailContainer.classList.add('hidden');
-            menuContainer.classList.remove('hidden');
+            item.appendChild(header);
+            item.appendChild(accordionContent);
+            container.appendChild(item);
+        });
 
-            document.querySelector('.w-80').style.display = 'block';
-            document.getElementById('servicesHeader').style.display = 'block';
-        }
+        return container;
+    }
 
-        // Initialize
-        renderServiceMenu();
-    </script>
+    function renderList(service) {
+        const container = document.createElement('div');
+        container.className = 'max-w-4xl mx-auto space-y-4';
+
+        service.sections.forEach(section => {
+            const card = document.createElement('div');
+            // Kept exact card styles, removed 'flex' since icon is gone
+            card.className = 'bg-white/10 border border-white/20 rounded-lg p-6 hover:bg-white/15 transition-colors';
+            
+            card.innerHTML = `
+                <div>
+                    <h3 class="text-white text-xl font-bold mb-2 font-['Outfit', sans-serif]">${section.title}</h3>
+                    <p class="text-white/80 font-['Montserrat', sans-serif] leading-relaxed">${section.content}</p>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        return container;
+    }
+
+    fetchServices();
+</script>
 </body>
 </html>

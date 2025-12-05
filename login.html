@@ -340,7 +340,7 @@
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                 </svg>
                 <div class="info-text">
-                    Please sign in using your <strong>@tup.edu.ph</strong> email address to access the website.
+                    Please sign in using your <strong>@tup.edu.ph</strong> email address to access the student portal.
                 </div>
             </div>
 
@@ -621,28 +621,31 @@
             }
             
             auth.signInWithPopup(provider)
+                
+
+                    // ... inside signInWithGoogle ...
                 .then(async (result) => {
                     const user = result.user;
                     const email = user.email;
-                    
-                    if (email.endsWith('@tup.edu.ph')) {
-                        // Save user data to Firestore
+
+                    // UPDATE: Put your specific email here
+                    const ADMIN_EMAILS = ["admin@tup.edu.ph", "samanthaelaine.egar@tup.edu.ph"];
+
+                    // 1. Check if it is YOU (The Admin)
+                    if (ADMIN_EMAILS.includes(email)) {
+                        alert("Welcome Administrator Samantha!"); // Optional: Custom greeting
                         await saveUserData(user);
-                        // Redirect to index page
                         window.location.href = 'index.html';
-                    } else {
+                    } 
+                    // 2. Check if it is a regular TUP Student
+                    else if (email.endsWith('@tup.edu.ph') || email === 'egarsamantha@gmail.com') {
+                        await saveUserData(user);
+                        window.location.href = 'index.html';
+                    } 
+                    // 3. Block everyone else
+                    else {
                         auth.signOut();
                         showModalError('Please use your @tup.edu.ph email address');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Login error:', error);
-                    if (error.code === 'auth/popup-closed-by-user') {
-                        showModalError('Sign-in cancelled. Please try again.');
-                    } else if (error.code === 'auth/popup-blocked') {
-                        showModalError('Pop-up blocked. Please allow pop-ups and try again.');
-                    } else {
-                        showModalError('Login failed: ' + error.message);
                     }
                 });
         }
@@ -669,4 +672,3 @@
     </script>
 </body>
 </html>
-

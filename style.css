@@ -481,7 +481,7 @@ body {
 .search-icon {
   position: absolute;
   left: 0.75rem;
-  top: 50%;
+  top: 21px;
   transform: translateY(-50%);
   color: #ffffff; /* Dark icon */
   pointer-events: none;

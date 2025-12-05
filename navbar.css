@@ -162,7 +162,7 @@
 .dropdown-header {
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.5);
 }
 
 .user-name {

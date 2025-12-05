@@ -41,6 +41,7 @@
 
       <div class="panel-content">
         <div class="search-box">
+          <div class="input-wrapper">
           <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.35-4.35"></path>
@@ -54,6 +55,7 @@
             maxlength="50">
           <span class="error-message" id="search-filter-error"></span>
         </div>
+        </div>
 
         <div class="category" id="mainBuildingCategory">
           <div class="category-title">
@@ -63,7 +65,7 @@
             Main Building / Offices
           </div>
           
-          <div class="location-item active" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f8fa43b0c0b0405f9159b', this)" data-name="Main Entrance">
+          <div class="location-item active" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f8fa43b0c0b0405f9159b', this)" data-name="Main Entrance Gate">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="18" height="18" rx="2"></rect>
               <path d="M9 3v18"></path>
@@ -95,7 +97,7 @@
             Office of Admissions
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9cfc405625049f12e7d3', this)" data-name="OSA Office">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9cfc405625049f12e7d3', this)" data-name="Office of Student Affairs, OSA Office">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
@@ -117,7 +119,7 @@
             </svg>
             TPA Office
           </div>
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9d7a3b0c0b7397f91641', this)" data-name="USG Office">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9d7a3b0c0b7397f91641', this)" data-name="USG Office University Student Government">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
@@ -127,14 +129,14 @@
             USG Office
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9e48405625feb612e803', this)" data-name="Guidance & Testing">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692f9e48405625feb612e803', this)" data-name="Guidance & Testing Office">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
             Guidance & Testing
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fa1409ddbb57da5eb987f', this)" data-name="Medical Clinic">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692fa1409ddbb57da5eb987f', this)" data-name="Medical Clinic Health">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
               <path d="M12 6v4"></path>
@@ -168,6 +170,48 @@
             </svg>
             NSTP Office
           </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fd475a1dddb453e9fb4fb', this)" data-name="TUP CIT Dean's Office College of Industrial Technology">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle>
+            </svg>
+            TUP CIT Dean's Office
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930d376dc5be4555395893f', this)" data-name="CLA Dean's Office College of Liberal Arts">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            CLA Dean's Office
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930d5fa8b6f439c1b5b3a03', this)" data-name="COS Dean's Office College of Science">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            COS Dean's Office
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930dfd7dc5be4f216958995', this)" data-name="Accreditation Room">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            Accreditation Room
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930de04dc5be47d9795898e', this)" data-name="DOST LRC Office Learning Resource">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            DOST LRC Office
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930de048b6f4305535b3a3a', this)" data-name="Research Extension Office">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            Research Extension Office
+          </div>
         </div>
 
         <div class="category" id="buildingsCategory">
@@ -179,14 +223,14 @@
             Campus Buildings
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fb7829ddbb51adbeb9a3b', this)" data-name="CLA Building">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fb7829ddbb51adbeb9a3b', this)" data-name="College of Liberal arts, CLA Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             </svg>
             CLA Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fa3943b0c0b9c94f9169a', this)" data-name="COS Building">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fa3943b0c0b9c94f9169a', this)" data-name="College of Science, COS Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             </svg>
@@ -201,21 +245,21 @@
             Library
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930708dad415e497e0974a9', this)" data-name="College of Engineering">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930708dad415e497e0974a9', this)" data-name="College of Engineering, COE Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
             </svg>
             COE Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fc5c69ddbb5579ceb9b13', this)" data-name="College of Industrial Technology">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fc5c69ddbb5579ceb9b13', this)" data-name="College of Industrial Technology, CIT Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
             </svg>
             CIT Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fbd089ddbb56976eb9a7f', this)" data-name="CIE Building">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fbd089ddbb56976eb9a7f', this)" data-name="College of Industrial Education, CIE Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="4" y="2" width="16" height="20" rx="2"></rect>
               <path d="M12 18v-6"></path>
@@ -223,14 +267,14 @@
             CIE Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fda9ca1dddb0dea9fb551', this)" data-name="College of Architecture and Fine Arts">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692fda9ca1dddb0dea9fb551', this)" data-name="College of Architecture and Fine Arts, CAFA Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
             </svg>
             CAFA Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/69306cdfad415eae7f09743e', this)" data-name="Integrated Research & Training Center">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/69306cdfad415eae7f09743e', this)" data-name="Integrated Research & Training Center, IRTC Building">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 2v17.5A2.5 2.5 0 0 1 6.5 22v0A2.5 2.5 0 0 1 4 19.5V2"></path>
               <path d="M20 2v17.5a2.5 2.5 0 0 1-2.5 2.5v0a2.5 2.5 0 0 1-2.5-2.5V2"></path>
@@ -245,7 +289,7 @@
             Administration Building
           </div>
 
-          <div class="location-item" onclick="loadTour('https://tour.panoee.net/69259215dd16a9ffc839419c/6926cd057487c8efd988a00c', this)" data-name="Ripalda Hall">
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6932597502074e88bfa2d92a', this)" data-name="Ripalda Hall">
             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="4" y="2" width="16" height="20" rx="2"></rect>
             </svg>
@@ -253,7 +297,114 @@
           </div>
         </div>
 
-        <div class="category" id="facilitiesCategory">
+        <div class="category" id="acadDepartments">
+          <div class="category-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 10v6M2 10v6M12 2v6M12 18v2M5 21v-4M19 21v-4"></path>
+            </svg>
+            Academic Departments
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fa15a3b0c0b6665f91672', this)" data-name="Dept. of Hospitality Management DHM">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Dept. of Hospitality Management
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fd06da1dddb0a9c9fb48a', this)" data-name="MET CAD/CAM Lab Mechanical Engineering">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            MET CAD/CAM Lab
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/69318eb4fda6af412ea53699', this)" data-name="Fine Arts Dept Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle>
+            </svg>
+            Fine Arts Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6931971f320d95e90de8d15d', this)" data-name="Graphics Dept Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+            </svg>
+            Graphics Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fc1f3b2765fc26e415325', this)" data-name="PE Dept Department Physical Education">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line>
+            </svg>
+            PE Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930dfd7dc5be46282958996', this)" data-name="Physics Dept Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 2v7.31"></path><path d="M14 9.3V1.99"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            </svg>
+            Physics Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930e291dc5be4b8ac9589bd', this)" data-name="Chem Dept Chemistry Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 2v7.31L6 14v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5l-4-4.69V2"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            </svg>
+            Chemistry Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930dfd78b6f4320155b3a44', this)" data-name="Computer Studies Dept Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            Computer Studies Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930dfd7dc5be427c4958997', this)" data-name="Math Dept Department Mathematics">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>
+            </svg>
+            Math Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930cf76dc5be46f009588f3', this)" data-name="Entrep & Management Dept Entrepreneurship">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Entrep & Management Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930ffb0d529dc56392d421b', this)" data-name="Home Economics Dept Department HE">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home Economics Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6931bb2bcb6559defb8c0c46', this)" data-name="Technical Arts Dept Department">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            Technical Arts Department
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6931bbd731a1dea09eecc84c', this)" data-name="Faculty Lounge CIE 104">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Faculty Lounge
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6931bbd731a1dea09eecc84c', this)" data-name="Agriculture Laboratory Lab CIE 104">
+             <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 22h20"></path><path d="M12 2v20"></path><path d="M12 12H7a5 5 0 0 0-5 5v5"></path><path d="M12 12h5a5 5 0 0 1 5 5v5"></path>
+            </svg>
+            Agriculture Laboratory
+          </div>
+
+
+        <div class="category" id="facilitiesCategory" style="margin-top: 25px;">
           <div class="category-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
@@ -296,6 +447,34 @@
             </svg>
             Campus Grounds
           </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/692fd62913d24da970f30f8f', this)" data-name="CIT Learning Resource Center LRC">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            Learning Resource Center
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/69318e06fda6af2c98a53676', this)" data-name="Exercise Center Gym">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+               <path d="M18 6l-3.3 8.3L12 11l-3 7-2-5"></path><circle cx="12" cy="5" r="2"></circle>
+            </svg>
+            Exercise Center
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/6930fed199aed93a89a47252', this)" data-name="Multimedia Center">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line>
+            </svg>
+            Multimedia Center
+          </div>
+
+          <div class="location-item" onclick="loadTour('https://tour.panoee.net/692f8f863b0c0b7687f91593/69310088f1eae08429e865be', this)" data-name="Student Teaching Hall">
+            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            Student Teaching Hall
+          </div>
         </div>
       </div>
     </div>
@@ -330,6 +509,7 @@
     }
 
     function loadTour(url, element) {
+      if (!url) return;
       document.getElementById('tourFrame').src = url;
       
       document.querySelectorAll('.location-item').forEach(item => {
@@ -345,7 +525,6 @@
       const searchTermRaw = searchInput.value;
       const errorHookId = 'search-filter-error';
 
-      
       displayError(errorHookId, ''); 
 
       const checkAttackChars = (value) => value.includes('<') || value.includes('>') || value.includes(';');

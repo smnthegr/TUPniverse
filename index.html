@@ -25,10 +25,24 @@
       z-index: 9999;
       transition: opacity 0.5s ease;
     }
+
+    /* Animation for Welcome Modal */
+    @keyframes modalPop {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+        animation: modalPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    /* Ensure modal stays on top */
+    #welcomeModal {
+        z-index: 10000;
+    }
   </style>
 </head>
 <body class="homepage">
-  <!-- Loading Screen -->
+  
   <div id="loadingScreen">
     <div class="text-center">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
@@ -36,7 +50,24 @@
     </div>
   </div>
 
-  <!-- Main Content -->
+  <div id="welcomeModal" class="fixed inset-0 flex items-center justify-center" style="display: none;">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+    
+    <div class="relative bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center mx-4 animate-pop">
+        
+        <div id="welcomeIconBg" class="mx-auto mb-6 w-24 h-24 rounded-full flex items-center justify-center shadow-lg border border-white/30 bg-gradient-to-br from-white/20 to-white/5">
+             <svg id="welcomeIconSvg" class="w-12 h-12 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+        </div>
+        
+        <h2 id="welcomeTitle" class="text-3xl font-bold text-white mb-2 tracking-wide drop-shadow-lg font-sans"></h2>
+        <p id="welcomeMsg" class="text-gray-100 text-lg mb-8 leading-relaxed font-light drop-shadow-md"></p>
+        
+        <button onclick="closeWelcomeModal()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-900 to-red-700 text-white font-semibold shadow-lg hover:shadow-red-900/50 hover:scale-[1.02] transition-all duration-300 border border-white/10">
+            Enter Website
+        </button>
+    </div>
+  </div>
+
   <div class="container" id="mainContent" style="display: none; transition: opacity 0.8s ease;">
     <div class="background-image">
       <img 
@@ -80,29 +111,73 @@
     </div>
   </div>
 
-  <!-- Firebase Scripts - Load FIRST before any code that uses Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   
-  <!-- Navbar Script - Load AFTER Firebase -->
   <script src="navbar.js"></script>
 
   <script>
-    // Wait for Firebase to be fully loaded
+    // --- Welcome Modal Logic ---
+    function closeWelcomeModal() {
+        const modal = document.getElementById('welcomeModal');
+        modal.style.transition = 'opacity 0.3s ease';
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    function triggerWelcome(user) {
+        console.log("Triggering Welcome Modal..."); // Debug check
+        
+        // I REMOVED the sessionStorage check so you can test it repeatedly.
+        // Uncomment the line below when you are done testing to make it show only once per session:
+        // if (sessionStorage.getItem('welcomeShown')) return;
+
+        const modal = document.getElementById('welcomeModal');
+        const title = document.getElementById('welcomeTitle');
+        const msg = document.getElementById('welcomeMsg');
+        const iconSvg = document.getElementById('welcomeIconSvg');
+        const iconBg = document.getElementById('welcomeIconBg');
+
+        const ADMIN_EMAIL = "samanthaelaine.egar@tup.edu.ph";
+
+        if (user.email === ADMIN_EMAIL) {
+            // ADMIN STYLE
+            title.innerText = "Welcome, Admin Samantha!";
+            msg.innerText = "Administrative View Confirmed."
+            // Crown Icon
+            iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />';
+            iconBg.classList.add('shadow-red-500/50'); 
+            // Optional: Add reddish tint to icon bg for admin
+            iconBg.classList.remove('from-white/20');
+            iconBg.classList.add('from-red-500/20');
+        } else {
+            // STUDENT STYLE
+            const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Student';
+            title.innerText = `Welcome Back, ${firstName}!`;
+            msg.innerText = "Ready to explore the TUPniverse today?";
+            // Student Icon
+            iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />';
+        }
+
+        // Force display flex to override any hidden states
+        modal.style.display = 'flex';
+        
+        // Mark as shown (still useful for session, but code above ignores it for now)
+        sessionStorage.setItem('welcomeShown', 'true');
+    }
+
+    // --- Main Init ---
     function initializeApp() {
         console.log('Initializing app...');
         
-        // Check if Firebase is available
         if (typeof firebase === 'undefined') {
-            console.error('Firebase not loaded yet, retrying...');
             setTimeout(initializeApp, 100);
             return;
         }
 
-        console.log('Firebase loaded successfully');
-
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
             authDomain: "tupniverse-login-2ab22.firebaseapp.com",
@@ -112,32 +187,29 @@
             appId: "1:223789253678:web:80c828a9c2d695a720cbbf"
         };
 
-        // Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
-            console.log('Firebase initialized');
         }
         const auth = firebase.auth();
         
-        // SECURITY: Check authentication - MUST be logged in to see page
         auth.onAuthStateChanged((user) => {
-            console.log('Auth state changed:', user ? 'User logged in' : 'No user');
-            
-            // If NO user is logged in, redirect to login page
             if (!user) {
-                console.log('No user detected - redirecting to login');
                 window.location.replace('login.html');
-                return; // Stop execution
+                return; 
             }
 
-            // If user IS logged in, show the page
-            console.log('User authenticated:', user.email);
+            console.log('User authenticated, loading content...');
             
-            // Hide loading screen and show content
+            // 1. Hide Loading Screen
             document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
             
-            // Animate hero content in
+            // 2. Show Main Content
+            document.getElementById('mainContent').style.display = 'block';
+
+            // 3. Trigger Welcome Modal
+            triggerWelcome(user);
+            
+            // Animate hero content
             setTimeout(() => {
                 document.getElementById('heroContent').style.opacity = '1';
             }, 100);
@@ -156,7 +228,6 @@
         });
     }
 
-    // Start initialization when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeApp);
     } else {

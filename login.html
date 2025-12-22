@@ -12,122 +12,40 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
-        /* --- RESTORING FULL ORIGINAL STYLES --- */
         .modal-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;
         }
-
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            animation: fadeIn 0.3s ease;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999; animation: fadeIn 0.3s ease;
         }
-                
-        .modal-overlay.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
+        .modal-overlay.active { display: flex; align-items: center; justify-content: center; padding: 20px; }
         .modal-content {
-            background: rgba(240, 240, 240, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 254, 254, 0.3);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            position: relative;
-            animation: slideUp 0.3s ease;
+            background: rgba(240, 240, 240, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 254, 254, 0.3); border-radius: 24px; padding: 40px; 
+            max-width: 450px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); position: relative; animation: slideUp 0.3s ease;
         }
-
         .secondary-modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: slideUp 0.3s ease;
+            background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 100%; 
+            max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); animation: slideUp 0.3s ease;
         }
-
-        .privacy-text p {
-            margin-bottom: 12px;
-            color: #4b5563;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
+        .privacy-text p { margin-bottom: 12px; color: #4b5563; font-size: 14px; line-height: 1.6; }
         .form-group { margin-bottom: 16px; }
-        
-        .form-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 6px;
-        }
-
+        .form-label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
         .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.2s;
-            outline: none;
-            color: #1f2937;
+            width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px; 
+            font-size: 14px; transition: all 0.2s; outline: none; color: #1f2937;
         }
-
-        .form-input:focus {
-            border-color: #991b1b;
-            background: #fffafa;
-        }
-
+        .form-input:focus { border-color: #991b1b; background: #fffafa; }
         .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            min-height: 100px;
-            resize: vertical;
-            outline: none;
+            width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px; 
+            font-size: 14px; min-height: 100px; resize: vertical; outline: none;
         }
-
         .privacy-checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: white;
-            font-size: 14px;
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 8px;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 20px; color: white; 
+            font-size: 14px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;
         }
-
         .step-hidden { display: none !important; }
-
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -149,30 +67,31 @@
             </div>
 
             <div id="step1">
-                <div class="form-group">
-                    <label class="form-label text-white/80">Email Address</label>
-                    <input type="email" id="email" class="form-input" placeholder="student@tup.edu.ph or gmail.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label text-white/80">Password</label>
-                    <input type="password" id="password" class="form-input" placeholder="••••••••">
-                </div>
+                <div class="space-y-6 text-center">
+                    <p class="text-sm text-gray-300">Authorize your account using Google to receive your security code.</p>
+                    
+                    <button onclick="signInWithGoogle()" id="nextBtn" class="w-full bg-white text-black py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-gray-100 transition-all active:scale-95 shadow-xl">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
 
-                <div class="privacy-checkbox-container">
-                    <input type="checkbox" id="privacyCheck" class="w-4 h-4 accent-red-700">
-                    <label for="privacyCheck" class="cursor-pointer">
-                        I agree to the <span onclick="openPrivacyModal()" class="text-yellow-400 underline font-semibold">Privacy Policy</span>
-                    </label>
+                    <div class="privacy-checkbox-container">
+                        <input type="checkbox" id="privacyCheck" class="w-4 h-4 accent-red-700">
+                        <label for="privacyCheck" class="cursor-pointer">
+                            I agree to the <span onclick="openPrivacyModal()" class="text-yellow-400 underline font-semibold">Privacy Policy</span>
+                        </label>
+                    </div>
                 </div>
-
-                <button onclick="handleStep1()" id="nextBtn" class="w-full py-3.5 rounded-xl bg-red-800 hover:bg-red-700 text-white font-bold shadow-lg transition-all active:scale-95">
-                    Verify Credentials
-                </button>
             </div>
 
             <div id="step2" class="step-hidden">
-                <div class="text-center mb-6">
-                    <p class="text-sm text-white/90">A 6-digit security code has been sent to your inbox. Please enter it below to proceed.</p>
+                <div class="text-center mb-6 text-white/90">
+                    <p class="text-sm">We sent a 6-digit code to your inbox. Enter it below to complete your login.</p>
                 </div>
                 <div class="form-group">
                     <input type="text" id="otpInput" maxlength="6" class="w-full p-4 text-center text-3xl tracking-[0.7rem] font-black rounded-xl border-none focus:ring-2 focus:ring-red-500" placeholder="000000">
@@ -180,15 +99,15 @@
                 <button onclick="handleStep2()" class="w-full py-3.5 rounded-xl bg-green-700 hover:bg-green-600 text-white font-bold shadow-lg transition-all active:scale-95">
                     Complete 2FA Login
                 </button>
-                <button onclick="location.reload()" class="w-full text-xs text-gray-300 mt-6 underline hover:text-white transition-colors">
-                    Back to Login
+                <button onclick="location.reload()" class="w-full text-xs text-gray-300 mt-6 underline hover:text-white">
+                    Back to Sign In
                 </button>
             </div>
 
             <div id="errorBox" class="hidden mt-6 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-xs text-red-200 text-center animate-pulse"></div>
 
             <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                <a onclick="openContactModal()" class="text-gray-300 text-xs hover:text-white hover:underline cursor-pointer transition-colors">
+                <a onclick="openContactModal()" class="text-gray-300 text-xs hover:text-white hover:underline cursor-pointer">
                     Need help? Contact Support
                 </a>
             </div>
@@ -199,48 +118,28 @@
         <div class="secondary-modal-content">
             <div class="flex justify-between items-center mb-6 border-b pb-3">
                 <h3 class="text-xl font-bold text-gray-800">Privacy Policy & Terms</h3>
-                <button onclick="closePrivacyModal()" class="text-gray-400 hover:text-red-600 transition-colors text-2xl">&times;</button>
+                <button onclick="closePrivacyModal()" class="text-gray-400 hover:text-red-600 text-2xl">&times;</button>
             </div>
             <div class="privacy-text">
-                <p><strong>1. Data Collection:</strong> We collect your email address and basic profile information provided by Firebase solely for authentication purposes within TUPniverse.</p>
-                <p><strong>2. Two-Factor Authentication:</strong> For enhanced security, we use your email to send temporary security codes (OTP). These codes are generated randomly and are not stored permanently.</p>
-                <p><strong>3. Usage:</strong> Your data is used to verify your identity and maintain your specific user profile/settings.</p>
-                <p><strong>4. Security:</strong> We implement standard encryption and Firebase security rules to protect your data. We never share your personal information with third parties.</p>
-                <p><strong>5. Contact Information:</strong> If you use our support forms, we collect your name and email only to communicate with you regarding your specific inquiry.</p>
-                <p><strong>6. Consent:</strong> By proceeding and using this service, you explicitly consent to the processing of your data as described in this policy.</p>
+                <p><strong>1. Data Collection:</strong> We collect your email and profile info via Google for authentication.</p>
+                <p><strong>2. 2FA:</strong> We use your email to send temporary security codes (OTP) to verify ownership.</p>
+                <p><strong>3. Security:</strong> We use Firebase security rules to protect your data. We never share info with 3rd parties.</p>
             </div>
-            <button onclick="closePrivacyModal()" class="w-full mt-6 bg-red-900 text-white py-3 rounded-xl font-semibold hover:bg-red-800 transition-colors">
-                I Understand & Agree
-            </button>
+            <button onclick="closePrivacyModal()" class="w-full mt-6 bg-red-900 text-white py-3 rounded-xl font-semibold">I Agree</button>
         </div>
     </div>
 
     <div id="contactModal" class="modal-overlay">
         <div class="secondary-modal-content">
-            <div class="flex justify-between items-center mb-6 border-b pb-3">
-                <h3 class="text-xl font-bold text-gray-800">Contact Support</h3>
-                <button onclick="closeContactModal()" class="text-gray-400 hover:text-red-600 transition-colors text-2xl">&times;</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" id="contactName" class="form-input" placeholder="Juan Dela Cruz">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Email Address</label>
-                <input type="email" id="contactEmail" class="form-input" placeholder="juan@gmail.com">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Message/Issue</label>
-                <textarea id="contactMsg" class="form-textarea" placeholder="Describe the problem you are experiencing..."></textarea>
-            </div>
-            <button onclick="handleContactSubmit()" id="sendContactBtn" class="w-full bg-red-900 text-white py-3 rounded-xl font-semibold hover:bg-red-800 transition-colors">
-                Send Message
-            </button>
+            <h3 class="text-xl font-bold text-gray-800 mb-6">Contact Support</h3>
+            <div class="form-group"><input type="text" id="contactName" class="form-input" placeholder="Full Name"></div>
+            <div class="form-group"><input type="email" id="contactEmail" class="form-input" placeholder="Email Address"></div>
+            <div class="form-group"><textarea id="contactMsg" class="form-textarea" placeholder="Describe your issue..."></textarea></div>
+            <button onclick="handleContactSubmit()" id="sendContactBtn" class="w-full bg-red-900 text-white py-3 rounded-xl font-semibold">Send Message</button>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyCBet8G3HOy8_kOSA_KPT9hUZrICsvCpUQ",
             authDomain: "tupniverse-login-2ab22.firebaseapp.com",
@@ -254,119 +153,75 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // --- EMAILJS INITIALIZATION ---
-        (function() {
-            emailjs.init("9Cj0UVz34GknWb5Y1"); 
-        })();
+        (function() { emailjs.init("9Cj0UVz34GknWb5Y1"); })();
 
         let generatedOTP = null;
         let userEmail = "";
 
-        // --- AUTHENTICATION LOGIC ---
-
-        async function handleStep1() {
-            userEmail = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            const btn = document.getElementById('nextBtn');
+        // --- OPTION 2: GOOGLE SIGN IN ---
+        async function signInWithGoogle() {
             const privacy = document.getElementById('privacyCheck').checked;
-
-            if (!userEmail || !pass) return showError("Please fill in all fields.");
             if (!privacy) return showError("Please agree to the Privacy Policy.");
-            
-            if (!userEmail.endsWith('@tup.edu.ph') && !userEmail.endsWith('@gmail.com')) {
-                return showError("Authorized users: @tup.edu.ph or @gmail.com only.");
-            }
 
-            btn.disabled = true;
-            btn.innerText = "Verifying...";
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
 
             try {
-                // First: Check Credentials
-                await auth.signInWithEmailAndPassword(userEmail, pass);
-                // Second: Trigger OTP
+                const result = await auth.signInWithPopup(provider);
+                userEmail = result.user.email;
+
+                // Domain Validation
+                if (!userEmail.endsWith('@tup.edu.ph') && !userEmail.endsWith('@gmail.com')) {
+                    await auth.signOut();
+                    return showError("Access denied. Use @tup.edu.ph or @gmail.com accounts.");
+                }
+
                 sendOTP();
             } catch (error) {
-                btn.disabled = false;
-                btn.innerText = "Verify Credentials";
-                showError("The email or password you entered is incorrect.");
+                showError("Google authentication failed.");
             }
         }
 
         async function sendOTP() {
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            const params = {
-                to_email: userEmail,
-                otp_code: generatedOTP,
-                app_name: "TUPniverse"
-            };
+            const params = { to_email: userEmail, otp_code: generatedOTP, app_name: "TUPniverse" };
 
             try {
                 await emailjs.send("service_8n6be4c", "template_gsmqq62", params);
-                
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
-                showError("Failed to send verification code. Please try again later.");
+                showError("OTP delivery failed. Check your internet.");
             }
         }
 
         async function handleStep2() {
-            const typedOTP = document.getElementById('otpInput').value;
-
-            if (typedOTP === generatedOTP) {
-                const user = auth.currentUser;
-                
-                // UNLOCK ACCESS IN FIRESTORE
-                await db.collection('users').doc(user.uid).set({
-                    email: user.email,
+            if (document.getElementById('otpInput').value === generatedOTP) {
+                await db.collection('users').doc(auth.currentUser.uid).set({
+                    email: auth.currentUser.email,
+                    displayName: auth.currentUser.displayName,
                     is2FAVerified: true, 
                     lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
-
                 window.location.href = 'index.html';
-            } else {
-                showError("The security code is incorrect. Please check your inbox.");
-            }
+            } else { showError("Incorrect security code."); }
         }
 
-        // --- SUPPORT FORM LOGIC ---
+        // Support logic
         async function handleContactSubmit() {
-            const btn = document.getElementById('sendContactBtn');
             const name = document.getElementById('contactName').value;
             const email = document.getElementById('contactEmail').value;
             const msg = document.getElementById('contactMsg').value;
-
-            if(!name || !email || !msg) return alert("Please fill all contact fields.");
-
-            btn.innerText = "Sending...";
-            btn.disabled = true;
-
+            if(!name || !email || !msg) return alert("Fill all fields.");
             try {
-                await db.collection('contact_messages').add({
-                    name: name,
-                    email: email,
-                    message: msg,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                alert("Message sent! Support will contact you shortly.");
-                closeContactModal();
-            } catch (e) {
-                alert("Failed to send message.");
-            } finally {
-                btn.innerText = "Send Message";
-                btn.disabled = false;
-            }
+                await db.collection('contact_messages').add({ name, email, message: msg, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                alert("Sent!"); closeContactModal();
+            } catch (e) { alert("Error sending."); }
         }
 
-        // --- MODAL HELPERS ---
-        function showError(m) { 
-            const b = document.getElementById('errorBox'); 
-            b.innerText = m; 
-            b.classList.remove('hidden'); 
-        }
+        function showError(m) { const b = document.getElementById('errorBox'); b.innerText = m; b.classList.remove('hidden'); }
         function openPrivacyModal() { document.getElementById('privacyModal').classList.add('active'); }
         function closePrivacyModal() { document.getElementById('privacyModal').classList.remove('active'); }
         function openContactModal() { document.getElementById('contactModal').classList.add('active'); }
@@ -374,4 +229,3 @@
     </script>
 </body>
 </html>
-

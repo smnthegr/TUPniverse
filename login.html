@@ -183,27 +183,32 @@
         }
 
         async function sendOTP() {
-            // Generate 6-digit code
+            // 1. Generate the 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // CRITICAL: These keys must match the {{braces}} in your EmailJS dashboard
+        
+            const now = new Date();
+            const expiration = new Date(now.getTime() + 15 * 60000);
+            const timeString = expiration.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+            // 3. Prepare parameters to match your EmailJS Template EXACTLY
             const params = {
-                email: userEmail,       // Changed from 'to_email' to 'email' to match your template
-                otp_code: generatedOTP, // Matches {{otp_code}}
-                time: "15 minutes"      // Fills the {{time}} placeholder in your template
+                email: userEmail,       // Matches {{email}} in your template
+                otp_code: generatedOTP, // Matches {{otp_code}} in your template
+                time: timeString        // Fills the {{time}} placeholder
             };
         
             try {
-                // Double-check these IDs match your dashboard exactly
-                await emailjs.send("service_8n6be4c", "template_gsmqq62", params); 
+                // Use the Template ID from your screenshot: template_b1zz1ik
+                await emailjs.send("service_8n6be4c", "template_b1zz1ik", params);
                 
+                // UI Transitions
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                showError("OTP delivery failed. Please check your EmailJS Public Key.");
+                showError("OTP delivery failed.");
             }
         }
 
@@ -239,4 +244,5 @@
     </script>
 </body>
 </html>
+
 

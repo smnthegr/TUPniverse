@@ -70,18 +70,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 const emailTxt = document.getElementById('dropdownEmail');
                 const roleBadge = document.getElementById('userRoleBadge');
 
+                // Update Basic Info immediately from Auth Provider
                 if (navImg && user.photoURL) navImg.src = user.photoURL;
                 if (nameTxt) nameTxt.textContent = user.displayName || "User";
                 if (emailTxt) emailTxt.textContent = user.email;
 
+                // Update Role from Firestore
                 db.collection('users').doc(user.uid).get().then((doc) => {
                     if (doc.exists && roleBadge) {
                         const role = doc.data().role || 'User';
                         roleBadge.textContent = role;
-                        roleBadge.classList.add(role.toLowerCase() === 'admin' ? 'admin-role' : 'user-role');
+                        
+                        // FIX: Remove both classes first to ensure only one is active
+                        roleBadge.classList.remove('admin-role', 'user-role');
+                        
+                        if (role.toLowerCase() === 'admin') {
+                            roleBadge.classList.add('admin-role');
+                        } else {
+                            roleBadge.classList.add('user-role');
+                        }
                     }
-                }).catch(() => {
-                    if(roleBadge) roleBadge.textContent = "User"; 
+                }).catch((error) => {
+                    console.error("Error fetching role:", error);
+                    if(roleBadge) {
+                        roleBadge.textContent = "User";
+                        roleBadge.classList.add('user-role');
+                    }
                 });
             }
         });

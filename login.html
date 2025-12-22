@@ -186,14 +186,22 @@
             // 1. Generate the 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
             
+            const now = new Date();
+            const expiration = new Date(now.getTime() + 5 * 60000); // 60000ms = 1 minute
+            
+            const timeString = expiration.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        
             const params = {
-                email: userEmail,       // Matches {{email}} in your template
-                otp_code: generatedOTP, // Matches {{otp_code}} in your template
-                time: "15 minutes"      // Matches {{time}} in your template
+                email: userEmail,      
+                otp_code: generatedOTP, 
+                time: timeString        
             };
         
             try {
-                // Updated Service ID from your successful log
+                // Use your verified Service ID from successful logs
                 await emailjs.send("service_zcnxli8", "template_96kbbou", params);
                 
                 // UI Transitions
@@ -201,12 +209,9 @@
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
-                
-                console.log("OTP Sent Successfully to:", userEmail);
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                // This will show you if the Template ID is the problem
-                showError("OTP Error: Check if template_b1zz1ik is still correct.");
+                showError("OTP delivery failed. Please try again.");
             }
         }
 
@@ -242,6 +247,7 @@
     </script>
 </body>
 </html>
+
 
 
 

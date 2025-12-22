@@ -96,8 +96,8 @@
                 <div class="form-group">
                     <input type="text" id="otpInput" maxlength="6" class="w-full p-4 text-center text-3xl tracking-[0.7rem] font-black rounded-xl border-none focus:ring-2 focus:ring-red-500" placeholder="000000">
                 </div>
-                <button onclick="handleStep2()" class="w-full py-3.5 rounded-xl bg-red-900 hover:bg-red-800 text-white font-bold shadow-lg transition-all active:scale-95">
-                    Verify OTP
+                <button onclick="handleStep2()" class="w-full py-3.5 rounded-xl bg-green-700 hover:bg-green-600 text-white font-bold shadow-lg transition-all active:scale-95">
+                    Complete 2FA Login
                 </button>
                 <button onclick="location.reload()" class="w-full text-xs text-gray-300 mt-6 underline hover:text-white">
                     Back to Sign In
@@ -183,29 +183,33 @@
         }
 
         async function sendOTP() {
-            // 1. Generate the code
+            // 1. Generate the 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
         
-            // 2. Prepare parameters to match your EmailJS Template EXACTLY
+            const now = new Date();
+            const expiration = new Date(now.getTime() + 15 * 60000);
+            const timeString = expiration.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+            // 3. Prepare parameters to match your EmailJS Template EXACTLY
             const params = {
-                email: userEmail,       // Matches {{email}}
-                otp_code: generatedOTP, // Matches {{otp_code}}
-                time: "15 minutes"      // Matches {{time}}
+                email: userEmail,       // Matches {{email}} in your template
+                otp_code: generatedOTP, // Matches {{otp_code}} in your template
+                time: timeString        // Fills the {{time}} placeholder
             };
         
             try {
-                // Use the active Template ID from your dashboard: template_b1zz1ik
+                // Use the Template ID from your screenshot: template_b1zz1ik
                 await emailjs.send("service_8n6be4c", "template_b1zz1ik", params);
                 
+                // UI Transitions
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                showError("OTP delivery failed. Please check your variable names.");
+                showError("OTP delivery failed.");
             }
-        }
         }
 
         async function handleStep2() {
@@ -240,8 +244,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-

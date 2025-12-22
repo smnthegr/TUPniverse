@@ -185,30 +185,28 @@
         async function sendOTP() {
             // 1. Generate the 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-        
-            const now = new Date();
-            const expiration = new Date(now.getTime() + 15 * 60000);
-            const timeString = expiration.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-            // 3. Prepare parameters to match your EmailJS Template EXACTLY
+            
             const params = {
                 email: userEmail,       // Matches {{email}} in your template
                 otp_code: generatedOTP, // Matches {{otp_code}} in your template
-                time: timeString        // Fills the {{time}} placeholder
+                time: "15 minutes"      // Matches {{time}} in your template
             };
         
             try {
-                // Use the Template ID from your screenshot: template_b1zz1ik
-                await emailjs.send("service_zcnxli8", "template_b1zz1ik", params);
+                // Updated Service ID from your successful log
+                await emailjs.send("service_zcnxli8", "template_96kbbou", params);
                 
                 // UI Transitions
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
+                
+                console.log("OTP Sent Successfully to:", userEmail);
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                showError("OTP delivery failed.");
+                // This will show you if the Template ID is the problem
+                showError("OTP Error: Check if template_b1zz1ik is still correct.");
             }
         }
 
@@ -244,6 +242,7 @@
     </script>
 </body>
 </html>
+
 
 
 

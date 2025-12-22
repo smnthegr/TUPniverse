@@ -205,15 +205,6 @@
 
                     setTimeout(() => { document.getElementById('heroContent').style.opacity = '1'; }, 100);
 
-                    // Update Navbar UI using Google Profile Data
-                    const navImg = document.getElementById('navProfileImg');
-                    if (navImg && user.photoURL) navImg.src = user.photoURL;
-
-                    const nameTxt = document.getElementById('dropdownName');
-                    const emailTxt = document.getElementById('dropdownEmail');
-                    if (nameTxt) nameTxt.textContent = user.displayName || "TUP Student";
-                    if (emailTxt) emailTxt.textContent = user.email;
-
                 } catch (error) {
                     console.error("Database Error:", error);
                     window.location.replace('login.html');

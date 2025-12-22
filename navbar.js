@@ -91,8 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 }).catch(() => {
-                    if(roleBadge) roleBadge.textContent = "User";
-                    }
+                    if(roleBadge) roleBadge.textContent = "User"; 
                 });
             }
         });

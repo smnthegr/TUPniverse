@@ -227,7 +227,13 @@
                 await db.collection('contact_messages').add({ name, email, message: msg, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                 alert("Sent!"); closeContactModal();
             } catch (e) { alert("Error sending."); }
+        
         }
+        document.getElementById('privacyCheck').addEventListener('change', function() {
+            if (this.checked) {
+                openPrivacyModal();
+            }
+        });
 
         function showError(m) { const b = document.getElementById('errorBox'); b.innerText = m; b.classList.remove('hidden'); }
         function openPrivacyModal() { document.getElementById('privacyModal').classList.add('active'); }
@@ -237,6 +243,7 @@
     </script>
 </body>
 </html>
+
 
 
 

@@ -90,11 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             roleBadge.classList.add('user-role');
                         }
                     }
-                }).catch((error) => {
-                    console.error("Error fetching role:", error);
-                    if(roleBadge) {
-                        roleBadge.textContent = "User";
-                        roleBadge.classList.add('user-role');
+                }).catch(() => {
+                    if(roleBadge) roleBadge.textContent = "User";
                     }
                 });
             }

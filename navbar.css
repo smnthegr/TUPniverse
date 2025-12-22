@@ -210,6 +210,42 @@
     color: #ff474e;
 }
 
+/* Role Badge Styles */
+.name-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.2rem;
+}
+
+.role-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    font-family: 'Montserrat', sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-role {
+    background: rgba(239, 68, 68, 0.2); /* Soft transparent red */
+    color: #ff8589;
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.user-role {
+    background: rgba(255, 255, 255, 0.1); /* Neutral glass */
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+}
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {

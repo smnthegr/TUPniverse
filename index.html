@@ -117,7 +117,7 @@
   
   <script src="navbar.js"></script>
 
-  <script>
+<script>
     // --- Welcome Modal Logic ---
     function closeWelcomeModal() {
         const modal = document.getElementById('welcomeModal');
@@ -132,53 +132,35 @@
         const ADMIN_EMAIL = "samanthaelaine.egar@tup.edu.ph";
         const POPUP_SEEN_KEY = 'welcomeShown';
 
-        // Check if the user is the Admin
         if (user.email === ADMIN_EMAIL) {
-            
-            // ⭐️ CRITICAL STEP 1: Check if the flag is already set ⭐️
             if (sessionStorage.getItem(POPUP_SEEN_KEY) === 'true') {
-                console.log("Admin previously welcomed in this session. Hiding modal.");
-                // Ensure the modal is hidden if the flag is set (e.g., when navigating back)
                 document.getElementById('welcomeModal').style.display = 'none';
                 return; 
             }
             
-            // If the code reaches here, it means: (1) User is Admin AND (2) Flag is NOT set.
-            
-            console.log("Triggering Welcome Modal for Admin (first time this session)..."); 
-
             const modal = document.getElementById('welcomeModal');
             const title = document.getElementById('welcomeTitle');
             const msg = document.getElementById('welcomeMsg');
             const iconSvg = document.getElementById('welcomeIconSvg');
             const iconBg = document.getElementById('welcomeIconBg');
 
-            // ADMIN STYLE
             title.innerText = "Welcome, Admin Samantha!";
             msg.innerText = "Administrative View Confirmed."; 
-            // Crown Icon
             iconSvg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />';
             iconBg.classList.add('shadow-red-500/50'); 
             iconBg.classList.remove('from-white/20');
             iconBg.classList.add('from-red-500/20');
 
-            // Force display flex to show the modal
             modal.style.display = 'flex';
-            
-            // ⭐️ CRITICAL STEP 2: Set the flag AFTER the modal is shown ⭐️
             sessionStorage.setItem(POPUP_SEEN_KEY, 'true');
 
         } else {
-            // Regular user: Do nothing, skip the modal
-            console.log("Regular user detected. Skipping welcome modal.");
             document.getElementById('welcomeModal').style.display = 'none';
         }
     }
 
     // --- Main Init ---
     function initializeApp() {
-        console.log('Initializing app...');
-        
         if (typeof firebase === 'undefined') {
             setTimeout(initializeApp, 100);
             return;
@@ -196,34 +178,42 @@
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
-        const auth = firebase.auth();
         
-        auth.onAuthStateChanged((user) => {
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        auth.onAuthStateChanged(async (user) => {
             if (!user) {
-                // If user logs out or session expires, clean up the flag
                 sessionStorage.removeItem('welcomeShown');
                 window.location.replace('login.html');
                 return; 
             }
 
-            console.log('User authenticated, loading content...');
-            
-            // 1. Hide Loading Screen
-            document.getElementById('loadingScreen').style.display = 'none';
-            
-            // 2. Show Main Content
-            document.getElementById('mainContent').style.display = 'block';
+            try {
+                // ⭐️ 2FA GATEKEEPER CHECK ⭐️
+                // Fetch user data from Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
 
-            // 3. Trigger Welcome Modal (logic inside function handles the sessionStorage check)
-            triggerWelcome(user);
-            
-            // Animate hero content
-            setTimeout(() => {
-                document.getElementById('heroContent').style.opacity = '1';
-            }, 100);
+                // If document doesn't exist OR 2FA flag is false, redirect to login
+                if (!userDoc.exists || !userDoc.data().is2FAVerified) {
+                    console.log("2FA not verified. Redirecting...");
+                    window.location.replace('login.html');
+                    return;
+                }
 
-            // Update profile info
-            setTimeout(() => {
+                // If 2FA is verified, proceed to show content
+                console.log('2FA Verified. Loading content...');
+                
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+                triggerWelcome(user);
+                
+                setTimeout(() => {
+                    document.getElementById('heroContent').style.opacity = '1';
+                }, 100);
+
+                // Update UI Profile
                 const navImg = document.getElementById('navProfileImg');
                 if (navImg && user.photoURL) navImg.src = user.photoURL;
 
@@ -232,7 +222,12 @@
                 
                 if (nameTxt) nameTxt.textContent = user.displayName || "TUP Student";
                 if (emailTxt) emailTxt.textContent = user.email;
-            }, 500);
+
+            } catch (error) {
+                console.error("Error checking 2FA status:", error);
+                // If there's an error (like permission denied), go back to login
+                window.location.replace('login.html');
+            }
         });
     }
 
@@ -241,6 +236,4 @@
     } else {
         initializeApp();
     }
-  </script>
-</body>
-</html>
+</script>

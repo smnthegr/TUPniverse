@@ -183,17 +183,27 @@
         }
 
         async function sendOTP() {
+            // Generate 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            const params = { to_email: userEmail, otp_code: generatedOTP, app_name: "TUPniverse" };
-
+            
+            // CRITICAL: These keys must match the {{braces}} in your EmailJS dashboard
+            const params = {
+                email: userEmail,       // Changed from 'to_email' to 'email' to match your template
+                otp_code: generatedOTP, // Matches {{otp_code}}
+                time: "15 minutes"      // Fills the {{time}} placeholder in your template
+            };
+        
             try {
-                await emailjs.send("service_8n6be4c", "template_gsmqq62", params);
+                // Double-check these IDs match your dashboard exactly
+                await emailjs.send("service_8n6be4c", "template_gsmqq62", params); 
+                
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
-                showError("OTP delivery failed. Check your internet.");
+                console.error("EmailJS Error:", error);
+                showError("OTP delivery failed. Please check your EmailJS Public Key.");
             }
         }
 
@@ -229,3 +239,4 @@
     </script>
 </body>
 </html>
+

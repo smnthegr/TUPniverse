@@ -44,8 +44,24 @@ const navbarHTML = `
     </div>
   </nav>
 `;
+  document.body.insertAdjacentHTML('afterbegin', navbarHTML);
 
-// ... keep steps 2 and 3 the same ...
+/// 2. HIGHLIGHT ACTIVE PAGE
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links-global a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+      link.classList.add('active-page');
+    }
+  });
+
+  // 3. CLOSE DROPDOWN ON OUTSIDE CLICK
+  document.addEventListener('click', function(e) {
+    const container = document.querySelector('.profile-container');
+    const dropdown = document.getElementById('profileDropdown');
+    if (container && !container.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+  });
 
 // 4. UPDATED UNIVERSAL PROFILE & ROLE UPDATER
 if (typeof firebase !== 'undefined') {

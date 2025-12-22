@@ -185,23 +185,13 @@
         async function sendOTP() {
             // 1. Generate the 6-digit code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            const now = new Date();
-            const expiration = new Date(now.getTime() + 5 * 60000); // 60000ms = 1 minute
-            
-            const timeString = expiration.toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
         
             const params = {
-                email: userEmail,      
-                otp_code: generatedOTP, 
-                time: timeString        
+                email: userEmail,       // Matches {{email}}
+                otp_code: generatedOTP  // Matches {{otp_code}}
             };
         
             try {
-                // Use your verified Service ID from successful logs
                 await emailjs.send("service_zcnxli8", "template_96kbbou", params);
                 
                 // UI Transitions
@@ -211,7 +201,7 @@
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                showError("OTP delivery failed. Please try again.");
+                showError("OTP delivery failed. Please check your EmailJS service connection.");
             }
         }
 
@@ -247,6 +237,7 @@
     </script>
 </body>
 </html>
+
 
 
 

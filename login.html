@@ -183,33 +183,29 @@
         }
 
         async function sendOTP() {
-            // 1. Generate the 6-digit code
+            // 1. Generate the code
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
         
-            const now = new Date();
-            const expiration = new Date(now.getTime() + 15 * 60000);
-            const timeString = expiration.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-            // 3. Prepare parameters to match your EmailJS Template EXACTLY
+            // 2. Prepare parameters to match your EmailJS Template EXACTLY
             const params = {
-                email: userEmail,       // Matches {{email}} in your template
-                otp_code: generatedOTP, // Matches {{otp_code}} in your template
-                time: timeString        // Fills the {{time}} placeholder
+                email: userEmail,       // Matches {{email}}
+                otp_code: generatedOTP, // Matches {{otp_code}}
+                time: "15 minutes"      // Matches {{time}}
             };
         
             try {
-                // Use the Template ID from your screenshot: template_b1zz1ik
+                // Use the active Template ID from your dashboard: template_b1zz1ik
                 await emailjs.send("service_8n6be4c", "template_b1zz1ik", params);
                 
-                // UI Transitions
                 document.getElementById('step1').classList.add('step-hidden');
                 document.getElementById('step2').classList.remove('step-hidden');
                 document.getElementById('stepTitle').innerText = "Two-Factor Verification";
                 document.getElementById('errorBox').classList.add('hidden');
             } catch (error) {
                 console.error("EmailJS Error:", error);
-                showError("OTP delivery failed.");
+                showError("OTP delivery failed. Please check your variable names.");
             }
+        }
         }
 
         async function handleStep2() {
@@ -244,6 +240,7 @@
     </script>
 </body>
 </html>
+
 
 
 

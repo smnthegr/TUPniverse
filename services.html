@@ -233,168 +233,135 @@ const icons = {
     // UPDATED DEFAULT DATA (EXACT TEXT FROM DOCUMENT)
     // ------------------------------------------------------------------
     const defaultServicesData = {
-        ctc: {
-            title: 'Certified True Copy (CTC)',
-            subtitle: 'Request certified true copies',
-            type: 'pinboard',
-            fee: '₱100',
-            processing: '3–5 working days',
-            icon: 'doc_check',
-            steps: [
-                { number: '01', title: 'Visit Registrar', description: 'Proceed to the Office of the Registrar and present the document that needs to be certified true copy (CTC).', color: 'blue' },
-                { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the registrar.', color: 'lavender' },
-                { number: '03', title: 'Pay Fee', description: 'Go to the Cashier’s Office at the Administration Building and pay the fee of ₱100 for the CTC.', color: 'peach' },
-                { number: '04', title: 'Submit & Claim', description: 'Return to the Office of the Registrar and submit the accomplished form together with the official receipt. You will then be issued a claim slip indicating the date when you may claim your CTC (processing usually takes 3–5 working days, depending on the volume of requests).', color: 'green' }
-            ]
-        },
-        goodmoral: {
-            title: 'Certificate of Good Moral',
-            subtitle: 'Request for the Certificate of Good Moral',
-            type: 'pinboard',
-            fee: '₱100',
-            processing: '3–5 working days',
-            icon: 'doc_check',
-            steps: [
-                { number: '01', title: 'Visit OSA', description: 'Proceed to the Office of Students Affairs (OSA) and request for the Certificate of Good Moral', color: 'pink' },
-                { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the OSA.', color: 'blue' },
-                { number: '03', title: 'Pay Fee', description: 'Go to the Cashier’s Office at the Administration Building and pay the fee of ₱100 for the Certificate of Good Moral.', color: 'yellow' },
-                { number: '04', title: 'Submit & Claim', description: 'Return to the OSA and submit the accomplished form together with the official receipt. You will then be issued a claim slip indicating the date when you may claim your Certificate of Good Moral (processing usually takes 3–5 working days, depending on the volume of requests).', color: 'green' }
-            ]
-        },
-        ratingslip: {
-            title: 'Rating Slip Request',
-            subtitle: 'How to request for rating slip if was not able to complete Faculty Evaluation',
-            type: 'pinboard',
-            fee: 'None',
-            processing: 'Same day',
-            icon: 'doc_edit',
-            steps: [
-                { number: '01', title: 'Request from Dept Head', description: 'Proceed to the Department Head of your College and request your rating slip, stating that you were unable to complete the faculty evaluation.', color: 'blue' },
-                { number: '02', title: 'Community Service', description: 'Complete the required community service for one to two hours.', color: 'peach' },
-                { number: '03', title: 'Receive Slip', description: 'After completing the community service, return to the Department Head of your College to receive the printed copy of your rating slip.', color: 'green' }
-            ]
-        },
-        enrollment: {
-            title: 'Process of Enrollment',
-            subtitle: 'Guide for all students',
-            type: 'accordion',
-            icon: 'user',
-            sections: [
-                {
-                    title: 'For First Year Students',
-                    icon: '👤',
-                    steps: [
-                        { title: 'Secure Notice of Admission', description: 'Secure Notice of Admission from the Office of the Admissions upon presentations of the following documents:', details: ['High School Card (Form 138) and Transcript of Records for Transferees (original)', 'Certificate of Good Moral', 'Test Permit'] },
-                        { title: 'Student Profiling', description: 'With your Notice of Admission and Medical Certificate, proceed to the Office of Admission for profiling' },
-                        { title: 'Enlistment', description: 'Proceed to your course adviser for enlistment' },
-                        { title: 'Scholarship Notation', description: 'Students availing scholarship, report to the Office of Student Affairs for scholarship notation' },
-                        { title: 'Assessment', description: 'Proceed to the Accounting office for assessment and secure registration form' },
-                        { title: 'Confirmation', description: 'With your Registration Form, present original requirements stated in step #1 to the Registrar’s Office for confirmation' },
-                        { title: 'Medical Certificate', description: 'Report to the University Clinic and Secure Medical Certificate' },
-                        { title: 'ID Processing', description: 'Proceed to the Office of Student Affairs for Identification card (ID) processing' }
-                    ]
-                },
-                {
-                    title: 'For Old Students (2nd year - Fifth year & Graduate Students)',
-                    icon: '💻',
-                    intro: 'Online Enrollment for Regular Students:',
-                    steps: [
-                        { title: 'Send Rating Slips', description: 'Students shall send online their last semester rating slips to their department heads' },
-                        { title: 'Enlistment & Assessment', description: 'Department Head is responsible for enlistment and assessment of fees' },
-                        { title: 'Confirmation', description: 'Registrar confirms enrollment' },
-                        { title: 'Access COR', description: 'First Semester Certificate of Registration (COR) can be accessed thru the ERS' },
-                        { title: 'Receive COR', description: 'All COR\'S will be forwarded to the respective Department Heads by Second Week of Classes' }
-                    ]
-                },
-                {
-                    title: 'Onsite Enrollment',
-                    icon: '🏫',
-                    intro: 'Graduate Students (New & Old) | Returning Students (Report to Registrar to Secure Checklist and to Guidance Office for Clearance for Returning Student, Warning Agreement for students under probation) | All Irregular Students (2nd to 5th year) for face to face compliance of Enrollment Requirements. (Warning Agreement if necessary)',
-                    steps: [
-                        { title: 'Present Rating Slips', description: 'Student presents rating slips to Department Heads/Enlistment Adviser' },
-                        { title: 'Warning Agreements', description: 'Completion of Warning Agreements if necessary' },
-                        { title: 'Enlistment & Assessment', description: 'Department Head is responsible for enlistment and assessment of fees' },
-                        { title: 'Confirmation', description: 'Registrar confirms and issues Certificate of Registration (COR) thru the Department Heads' }
-                    ]
-                }
-            ]
-        },
-
-        // Add these to your defaultServicesData object
-handbookinfo: {
-    title: 'Student Rules & Definitions',
-    subtitle: 'Essential handbook guidelines for conduct and academic life',
-    type: 'accordion',
-    icon: 'doc_check',
-    sections: [
-        {
-            title: 'Disciplinary Sanctions',
-            icon: '🔨',
-            intro: 'The university imposes specific punishments for violations of the norms of conduct.',
-            steps: [
-                { title: 'Community Service', description: 'Mandatory public good activities (beautification, campus maintenance) assigned by the disciplinary authority.' },
-                { title: 'Suspension', description: 'Students are barred or prohibited from attending classes, joining school activities, or entering the premises for a specific period.' },
-                { title: 'Dismissal', description: 'A severe sanction where the student is permanently removed. The transcript of records will contain a statement of the sanction imposed.' },
-                { title: 'Expulsion', description: 'An extreme sanction where the student is banned from the University. This is a permanent disqualification from attendance.' }
-            ]
-        },
-        {
-            title: 'Appearance & Grooming',
-            icon: '👤',
-            steps: [
-                { title: 'Official ID', description: 'Your official identification card must be worn at all times while inside the university.' },
-                { title: 'Male Haircut', description: 'Male students must maintain a clean and decent haircut regardless of NSTP enrollment.' },
-                { title: 'Hair Color', description: 'Hair dyeing is strictly prohibited for all students.' }
-            ]
-        },
-        {
-            title: 'Prohibited Actions',
-            icon: '🚫',
-            steps: [
-                { title: 'Academic Dishonesty', description: 'Fraudulent acts including plagiarism or cheating during examinations result in academic sanctions.' },
-                { title: 'Gambling', description: 'Possession of gambling paraphernalia or engaging in betting games is strictly prohibited on campus.' },
-                { title: 'Physical Intimacy', description: 'Public displays of affection such as hugging, kissing, or caressing are subject to disciplinary action.' },
-                { title: 'Incendiary Material', description: 'Carrying any materials that can cause large-scale fire or explosions is a grave violation.' }
-            ]
-        },
-dresscode: {
-    title: 'Student Uniform & Dress Code',
-    subtitle: 'Daily attire and specialized uniform requirements',
-    type: 'accordion',
-    icon: 'user',
-    sections: [
-        {
-            title: 'Standard University Uniform',
-            icon: '👔',
-            intro: 'Students must strictly adhere to the following schedule for the official TUP uniform.',
-            steps: [
-                { title: 'Prescribed Attire', description: 'Must wear the official uniform bearing the TUP IPO-registered logo on Mondays, Tuesdays, Thursdays, and Fridays.' },
-                { title: 'Shop & Lab Work', description: 'Specific laboratory/shop uniforms must be worn during designated practical periods.' }
-            ]
-        },
-        {
-            title: 'PE & Training Rules',
-            icon: '👟',
-            steps: [
-                { title: 'The First Subject Rule', description: 'PE uniforms are only allowed upon entry if PE is your very first class of the day.' },
-                { title: 'Mandatory Change', description: 'Students must change back into the prescribed formal uniform immediately after their PE class ends.' },
-                { title: 'NSTP Training', description: 'Citizen Military Training uniforms are required specifically during training days.' }
-            ]
-        }
-    ]
-},
-        transfer: {
-            title: 'Transfer of Students',
-            subtitle: 'Transferring in or out of TUP',
-            type: 'list',
-            icon: 'arrow_right',
-            sections: [
-                { title: 'Transfer Within TUP', icon: '🔄', content: 'A Student from a campus of a University is allowed to transfer to another TUP campus; provided that he satisfies the admission requirements of the program in the college concerned.' },
-                { title: 'Transfer from SUCs', icon: '🏛️', content: 'A transfer student from other SUCs may be admitted provided that he has no failed / dropped mark and he satisfies the admission requirements of the program in the college concerned.' },
-                { title: 'Transfer from Private', icon: '🎓', content: 'A transfer student from private institutions may be admitted to any three-year program of the University provided that he has no failed / dropped mark and he satisfies the admission requirements of the program in the college concerned' },
-                { title: 'Clearance Requirement', icon: '📋', content: 'Any student who intends to transfer to another school, college or university must be cleared of all liabilities and responsibilities (administrative, academic, and financial) in the University. The necessary documents for transfer could be secured from the Office of the Registrar.' }
-            ]
-        },
+    ctc: {
+        title: 'Certified True Copy (CTC)',
+        subtitle: 'Request certified true copies',
+        type: 'pinboard',
+        fee: '₱100',
+        processing: '3–5 working days',
+        icon: 'doc_check',
+        steps: [
+            { number: '01', title: 'Visit Registrar', description: 'Proceed to the Office of the Registrar and present the document.', color: 'blue' },
+            { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the registrar.', color: 'lavender' },
+            { number: '03', title: 'Pay Fee', description: 'Go to the Cashier’s Office and pay the fee of ₱100.', color: 'peach' },
+            { number: '04', title: 'Submit & Claim', description: 'Return to the Office of the Registrar with the receipt.', color: 'green' }
+        ]
+    },
+    goodmoral: {
+        title: 'Certificate of Good Moral',
+        subtitle: 'Request for the Certificate of Good Moral',
+        type: 'pinboard',
+        fee: '₱100',
+        processing: '3–5 working days',
+        icon: 'doc_check',
+        steps: [
+            { number: '01', title: 'Visit OSA', description: 'Proceed to the Office of Students Affairs (OSA).', color: 'pink' },
+            { number: '02', title: 'Accomplish Form', description: 'Secure and accomplish the form provided by the OSA.', color: 'blue' },
+            { number: '03', title: 'Pay Fee', description: 'Pay the fee of ₱100 at the Cashier’s Office.', color: 'yellow' },
+            { number: '04', title: 'Submit & Claim', description: 'Return to the OSA with your official receipt.', color: 'green' }
+        ]
+    },
+    ratingslip: {
+        title: 'Rating Slip Request',
+        subtitle: 'Request for slip if Faculty Evaluation was missed',
+        type: 'pinboard',
+        fee: 'None',
+        processing: 'Same day',
+        icon: 'doc_edit',
+        steps: [
+            { number: '01', title: 'Request from Dept Head', description: 'Visit your Department Head to request the slip.', color: 'blue' },
+            { number: '02', title: 'Community Service', description: 'Complete 1-2 hours of community service.', color: 'peach' },
+            { number: '03', title: 'Receive Slip', description: 'Return to the Dept Head to receive your printed slip.', color: 'green' }
+        ]
+    },
+    enrollment: {
+        title: 'Process of Enrollment',
+        subtitle: 'Guide for all students',
+        type: 'accordion',
+        icon: 'user',
+        sections: [
+            {
+                title: 'For First Year Students',
+                icon: '👤',
+                steps: [
+                    { title: 'Secure Notice of Admission', description: 'Present Form 138, Good Moral, and Test Permit at Admissions.' },
+                    { title: 'Student Profiling', description: 'Proceed to Admissions for profiling with your Medical Certificate.' },
+                    { title: 'Enlistment', description: 'Proceed to your course adviser for enlistment.' }
+                ]
+            }
+        ]
+    },
+    handbookinfo: {
+        title: 'Conduct & Punishments',
+        subtitle: 'Official university policies on behavior and sanctions',
+        type: 'accordion',
+        icon: 'warning',
+        sections: [
+            {
+                title: 'Disciplinary Sanctions',
+                icon: '🔨',
+                intro: 'The university imposes specific punishments for violations of the norms of conduct.',
+                steps: [
+                    { title: 'Community Service', description: 'Mandatory campus maintenance assigned by disciplinary authority.' },
+                    { title: 'Suspension', description: 'Prohibited from attending classes or entering premises for a specific period.' },
+                    { title: 'Dismissal', description: 'Permanent removal from the university with an official record statement.' },
+                    { title: 'Expulsion', description: 'Extreme sanction; total ban and permanent disqualification from TUP.' }
+                ]
+            },
+            {
+                title: 'Appearance & Grooming',
+                icon: '👤',
+                steps: [
+                    { title: 'Official ID', description: 'Identification cards must be worn at all times inside the university.' },
+                    { title: 'Hair Standards', description: 'Male students must maintain clean haircuts; dyed hair is prohibited for all.' }
+                ]
+            },
+            {
+                title: 'Prohibited Actions',
+                icon: '🚫',
+                steps: [
+                    { title: 'Academic Dishonesty', description: 'Plagiarism or cheating results in immediate academic sanctions.' },
+                    { title: 'Campus Behavior', description: 'Gambling and public displays of affection are subject to disciplinary action.' }
+                ]
+            }
+        ]
+    },
+    dresscode: {
+        title: 'Dress Code & Uniforms',
+        subtitle: 'Daily attire and specialized uniform requirements',
+        type: 'accordion',
+        icon: 'user',
+        sections: [
+            {
+                title: 'Standard University Uniform',
+                icon: '👔',
+                intro: 'Strict adherence to the following schedule for the official TUP uniform is required.',
+                steps: [
+                    { title: 'Daily Schedule', description: 'Official uniform must be worn on Mondays, Tuesdays, Thursdays, and Fridays.' },
+                    { title: 'Shop & Lab Work', description: 'Designated uniforms must be worn during practical laboratory periods.' }
+                ]
+            },
+            {
+                title: 'PE & Training Rules',
+                icon: '👟',
+                steps: [
+                    { title: 'PE Uniforms', description: 'Only allowed upon entry if PE is your very first class of the day.' },
+                    { title: 'Mandatory Change', description: 'Change back to formal uniform immediately after PE class ends.' }
+                ]
+            }
+        ]
+    },
+    transfer: {
+        title: 'Transfer of Students',
+        subtitle: 'Transferring in or out of TUP',
+        type: 'list',
+        icon: 'arrow_right',
+        sections: [
+            { title: 'Within TUP', icon: '🔄', content: 'Allowed if admission requirements of the new program are met.' },
+            { title: 'From Other Schools', icon: '🏛️', content: 'Students must have no failed or dropped marks to be eligible.' }
+        ]
+    }
+};
         addsubject: {
             title: 'Adding of Subject',
             subtitle: 'Conditions for adding subjects',
